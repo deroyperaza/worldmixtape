@@ -589,7 +589,7 @@ document.addEventListener("keydown", e => {
   if (e.code === "Space"){ e.preventDefault(); togglePlay(); }
   if (e.code === "ArrowRight") next();
   if (e.code === "ArrowLeft") prev();
-  if (e.code === "Escape") backToMap();
+  if (e.code === "Escape"){ const am = document.getElementById("art-modal"); if (am && !am.hidden) closeArt(); else backToMap(); }
 });
 
 
@@ -617,3 +617,16 @@ function setView(list){
   if (list && (!listBuilt || !document.querySelector(".clist__item"))){ buildCountryList(); listBuilt = features.length > 0; }
 }
 document.getElementById("view-toggle").onclick = () => setView(!document.body.classList.contains("list-view"));
+
+
+/* ---------- album art lightbox ---------- */
+const artModal = document.getElementById("art-modal");
+function openArt(){
+  const t = queue[qIndex]; if (!t || !t.cover) return;
+  document.getElementById("art-modal-img").src = t.cover;
+  artModal.hidden = false;
+}
+function closeArt(){ artModal.hidden = true; document.getElementById("art-modal-img").src = ""; }
+document.getElementById("p-art").addEventListener("click", openArt);
+document.getElementById("art-x").addEventListener("click", closeArt);
+artModal.addEventListener("click", e => { if (e.target === artModal) closeArt(); });

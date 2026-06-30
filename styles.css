@@ -269,12 +269,13 @@ body{
   .panel{top:26px;width:100vw;border-left:none;border-top:5px solid var(--lime)}
   .map-hint{bottom:144px;font-size:11px}
   .player{height:72px;gap:7px;padding:0 7px}
-  .player__art{width:46px;height:46px}
+  .player__art{width:40px;height:40px}
+  #p-prev,#p-next{display:none}
   .player__full svg{width:22px;height:22px}
   .player__fav{font-size:18px;padding:0 2px}
   .player__ctrls{gap:2px}
   .player__ctrls button{padding:4px;font-size:17px}
-  .player__ctrls .is-big{width:40px;height:40px}
+  .player__ctrls .is-big{width:36px;height:36px}
 }
 @media (max-width:680px) and (orientation:portrait){
   /* panel as bottom sheet feel */
@@ -306,3 +307,17 @@ body.list-view #map,body.list-view #map-hint,body.list-view .brand{display:none}
   .clist__soon-item{font-size:15px}
   .view-toggle{bottom:88px;font-size:14px;padding:7px 15px}
 }
+
+
+/* album art lightbox */
+.player__art{cursor:zoom-in}
+.art-modal{position:fixed;inset:0;z-index:65;display:flex;align-items:center;justify-content:center;
+  background:rgba(5,4,12,.9);backdrop-filter:blur(4px);padding:24px}
+.art-modal[hidden]{display:none}
+.art-modal__img{width:min(86vw,86vh,560px);height:auto;aspect-ratio:1;object-fit:cover;border-radius:10px;
+  border:3px solid #0a0916;box-shadow:8px 8px 0 var(--pink);background:#000}
+.art-modal__x{position:absolute;top:16px;right:16px;width:46px;height:46px;border-radius:50%;cursor:pointer;
+  background:var(--lime);color:#0a0916;border:3px solid #0a0916;font-size:20px;font-weight:700;
+  box-shadow:3px 3px 0 var(--pink);transition:transform .12s}
+.art-modal__x:hover{transform:scale(1.08)}
+.art-modal__x:active{transform:translateY(2px)}
