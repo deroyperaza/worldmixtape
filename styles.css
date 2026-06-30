@@ -258,8 +258,13 @@ body{
   .shuffle-pop{top:74px;right:10px}
   .panel{top:26px;width:100vw;border-left:none;border-top:5px solid var(--lime)}
   .map-hint{bottom:88px;font-size:11px}
-  .player{height:72px;gap:8px;padding:0 8px}
-  .player__art{width:50px;height:50px}
+  .player{height:72px;gap:7px;padding:0 7px}
+  .player__art{width:46px;height:46px}
+  .player__full{font-size:8px;padding:4px 6px;letter-spacing:.04em}
+  .player__fav{font-size:18px;padding:0 2px}
+  .player__ctrls{gap:2px}
+  .player__ctrls button{padding:4px;font-size:17px}
+  .player__ctrls .is-big{width:40px;height:40px}
 }
 @media (max-width:680px) and (orientation:portrait){
   /* panel as bottom sheet feel */
