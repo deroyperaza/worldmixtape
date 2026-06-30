@@ -7,6 +7,8 @@ Object.entries(COUNTRIES).forEach(([code, c]) => { isoToCode[+c.iso] = code; });
 
 // teams that played the 2026 FIFA World Cup (⚽ sticker on their country label)
 const WC2026 = new Set(["AR","AU","BR","CA","CO","EG","ES","FR","GB","GH","JP","KR","MX","PA","SN","TR","US","ZA","DE","CD","CV","PT","TN","CI","NO","SE","EC","BE","BA","AT","HR","CH","DZ","MA","PY"]);
+// crisp soccer-ball glyph (fills its box edge-to-edge — no emoji padding)
+const BALL = '<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#fbfbf5" stroke="#0a0916" stroke-width="7"/><path fill="#0a0916" d="M50 28l17 12.5-6.5 20H39.5L33 40.5z"/><path fill="#0a0916" d="M50 11l-5.5 10.5h11z"/><path fill="#0a0916" d="M84 39l-9 6 3.5 10z"/><path fill="#0a0916" d="M72 82l-9.5-3.5L59 89z"/><path fill="#0a0916" d="M28 82l9.5-3.5L41 89z"/><path fill="#0a0916" d="M16 39l9 6-3.5 10z"/></svg>';
 
 // alpha-2 code -> flag emoji
 const flag = code => code.replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt()));
@@ -200,7 +202,7 @@ function openCountry(code){
     <div class="jhead">
       <div class="jhead__top">
         <div class="jhead__flag">${flagImg(code)}</div>
-        <h2 class="jhead__name" style="--accent:${c.color}">${c.name}${WC2026.has(code) ? '<span class="wc-ball" title="2026 World Cup team" aria-label="2026 World Cup team">⚽</span>' : ''}</h2>
+        <h2 class="jhead__name" style="--accent:${c.color}">${c.name}${WC2026.has(code) ? '<span class="wc-ball" title="2026 World Cup team" aria-label="2026 World Cup team">' + BALL + '</span>' : ''}</h2>
       </div>
       <div class="jhead__meta" id="jmeta">NATIVES + DIÁSPORA · ${c.name.toUpperCase()}</div>
     </div>
@@ -665,7 +667,7 @@ function buildCountryList(){
     '<div class="clist__head"><div class="brand__tape"><img class="brand__logo" src="logo.png" alt="World Mixtape"><div class="brand__title">WORLD<br><span>MIXTAPE</span></div></div><p class="brand__sub">The world&#39;s local music,<br>decade by decade.</p></div>' +
     '<div class="clist__sec">' +
     have.map(c => '<button class="clist__item" data-code="' + c.code + '" style="--accent:' + c.color + '">'
-      + flagImg(c.code) + '<span class="clist__name">' + esc(c.name) + (WC2026.has(c.code) ? '<span class="wc-ball wc-ball--list" aria-hidden="true">⚽</span>' : '') + '</span></button>').join("") +
+      + flagImg(c.code) + '<span class="clist__name">' + esc(c.name) + (WC2026.has(c.code) ? '<span class="wc-ball wc-ball--list" aria-hidden="true">' + BALL + '</span>' : '') + '</span></button>').join("") +
     '</div>' +
     (soon.length ? '<div class="clist__soonhdr">more countries — coming soon</div><div class="clist__soon">'
       + soon.map(n => '<span class="clist__soon-item">' + esc(n) + '</span>').join("") + '</div>' : "");
@@ -674,7 +676,7 @@ function buildCountryList(){
 function setView(list){
   document.body.classList.toggle("list-view", list);
   document.getElementById("view-toggle").innerHTML = list
-    ? '<svg class="vt-ic" viewBox="0 0 50 26" fill="currentColor" aria-hidden="true"><path d="M3 4c3-1 7-1 10 0 0 2-2 3-4 3 1 1 3 2 1 4-2 1-5 0-6-2-1-2-1-4-1-5z"/><path d="M11 13c2-1 4 0 4 2 0 3-1 6-3 8-2 0-3-3-2-6 0-2 0-3 1-4z"/><path d="M22 4c3-1 6-1 8 1-1 2-3 2-2 4 1 3 0 7-2 9-2 1-3-2-3-4-1-4-1-7-1-10z"/><path d="M31 3c5-1 11 0 15 2-2 2-5 3-9 3-3 0-5-2-6-5z"/><path d="M38 16c3 0 6 1 7 3-2 2-5 2-7 1-2-1-2-3 0-4z"/></svg>map view'
+    ? '<svg class="vt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.3"/><line x1="2.7" y1="12" x2="21.3" y2="12"/><line x1="12" y1="2.7" x2="12" y2="21.3"/><path d="M12 2.7c2.7 2.6 4.2 5.9 4.2 9.3S14.7 18.7 12 21.3C9.3 18.7 7.8 15.4 7.8 12S9.3 5.3 12 2.7z"/></svg>map view'
     : "☰ all countries";
   if (list && (!listBuilt || !document.querySelector(".clist__item"))){ buildCountryList(); listBuilt = features.length > 0; }
 }
