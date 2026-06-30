@@ -459,15 +459,27 @@ async function play(i){
   highlightRow();
   refreshFavHearts();
 
-  // full-song mode: play the whole track via Spotify (Premium), else fall back to the 30s preview
-  if (fullMode && SPOT.ready()){
+  // full-song mode: desktop streams in-browser (SDK); mobile remote-controls the Spotify app (Connect)
+  if (fullMode && SPOT.fullReady()){
     audio.pause();
     let uri = t._spUri;
     if (uri === undefined){ uri = await SPOT.search(t.artist, t.title); t._spUri = uri || null; }
     if (queue[qIndex] !== t) return;                 // user skipped while we were resolving
-    if (uri && await SPOT.playUri(uri)){ playSource = "full"; lastPos = 0; return; }
-    // no Spotify match → fall through to the preview for this one
+    if (uri){
+      const r = await SPOT.playFull(uri);
+      if (r === "ok"){ playSource = "full"; lastPos = 0; startFullPoll(); return; }
+      if (r === "needs-auth"){ SPOT.login(); return; }
+      if (r === "no-device"){ flashPlayerNote("Open Spotify on your phone, hit play once, then tap ▶ here"); playSource = "full"; stopFullPoll(); setPlayIcon(false); player.classList.remove("playing"); return; }
+    }
+    if (SPOT.isMobile){                              // Connect-only: never silently fall back to a preview on mobile
+      flashPlayerNote(uri ? "Spotify couldn't play that — open the app & retry" : "not on Spotify — skipping");
+      playSource = "full"; stopFullPoll(); setPlayIcon(false); player.classList.remove("playing");
+      if (!uri) setTimeout(() => { if (queue[qIndex] === t) next(); }, 1300);
+      return;
+    }
+    // desktop only: no Spotify match → fall through to the 30s preview for this one
   }
+  stopFullPoll();
   if (SPOT.isConnected()) SPOT.pause();
   playSource = "preview";
   dzTrack(t.trackId, data => {
@@ -518,17 +530,17 @@ function flashPlayerNote(msg){
 async function toggleFull(){
   if (!fullMode){
     if (!SPOT.hasClientId()){ flashPlayerNote("connect Spotify: add your Client ID in spotify.js"); return; }
-    if (!SPOT.isConnected()){ SPOT.login(); return; }     // redirects to Spotify, returns with full mode on
+    if (!SPOT.isConnected() || SPOT.needsReauth()){ SPOT.login(); return; }   // mobile Connect needs extra scopes → re-auth
     fullMode = true; localStorage.setItem("wmx_fullmode", "1"); SPOT.initSDK();
-    flashPlayerNote("full songs on · connecting Spotify…");
+    flashPlayerNote(SPOT.isMobile ? "full songs on · plays through your Spotify app" : "full songs on · connecting Spotify…");
   } else {
-    fullMode = false; localStorage.removeItem("wmx_fullmode"); SPOT.pause(); playSource = "preview";
+    fullMode = false; localStorage.removeItem("wmx_fullmode"); SPOT.pause(); stopFullPoll(); playSource = "preview";
   }
   updateFullUI();
   if (qIndex >= 0) play(qIndex);
 }
 
-SPOT.onState(s => {                                          // drive the bar + auto-advance from Spotify
+SPOT.onState(s => {                                          // desktop SDK: drive the bar + auto-advance
   if (!fullMode || !s) return;
   const dur = s.duration || 0, pos = s.position || 0;
   curDuration = dur;
@@ -537,6 +549,26 @@ SPOT.onState(s => {                                          // drive the bar + 
   if (s.paused && pos === 0 && lastPos > 2000){ lastPos = 0; next(); return; }   // track finished
   lastPos = pos;
 });
+
+/* mobile Connect: no SDK state events, so poll the Spotify app's playback to drive the bar + auto-advance */
+let fullPoll = null;
+function stopFullPoll(){ if (fullPoll){ clearInterval(fullPoll); fullPoll = null; } }
+function startFullPoll(){
+  if (!SPOT.isMobile) return;                                // desktop is driven by the SDK's onState
+  stopFullPoll();
+  fullPoll = setInterval(async () => {
+    if (playSource !== "full"){ stopFullPoll(); return; }
+    const s = await SPOT.getPlayback(); if (!s) return;
+    curDuration = s.duration || 0;
+    if (!scrubbing && s.duration) document.getElementById("p-progress").style.width = (s.position / s.duration * 100) + "%";
+    setPlayIcon(!s.paused); player.classList.toggle("playing", !s.paused);
+    if (s.duration){
+      const ended = (!s.paused && s.position >= s.duration - 1200) || (s.paused && lastPos > 3000 && s.position <= 2000);
+      if (ended){ lastPos = 0; next(); return; }
+    }
+    if (!s.paused) lastPos = s.position;
+  }, 1000);
+}
 
 const pFull = document.getElementById("p-full");
 if (pFull) pFull.onclick = toggleFull;

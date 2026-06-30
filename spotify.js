@@ -11,15 +11,20 @@
 */
 const SPOT = (() => {
   const CLIENT_ID = "e43e8316d97949939f556e053cf20299";  // Spotify app Client ID (worldmixtape.com)
-  const SCOPES = "streaming user-read-email user-read-private";
+  // streaming = desktop Web Playback SDK; user-*-playback-state = mobile Spotify Connect (remote-control the app)
+  const SCOPES = "streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state";
+  const SCOPE_VER = 2;   // bump whenever SCOPES change → forces mobile users to re-authorize (for Connect)
+  // Spotify's Web Playback SDK is DESKTOP-ONLY; on phones/tablets we drive the user's Spotify app via Connect.
+  const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent)
+    || (navigator.maxTouchPoints > 1 && /Mac/i.test(navigator.platform || ""));   // iPadOS masquerades as a Mac
   const TOKEN_KEY = "wmx_spotify_tok";
   const redirectUri = () => location.origin + location.pathname;
 
-  let token = null, tokenExp = 0, refreshTok = null;
+  let token = null, tokenExp = 0, refreshTok = null, tokVer = 0;
   let player = null, deviceId = null, ready = false, premiumOK = true;
   let stateCb = null;
 
-  try { const t = JSON.parse(localStorage.getItem(TOKEN_KEY)); if (t){ token = t.access; tokenExp = t.exp; refreshTok = t.refresh; } } catch {}
+  try { const t = JSON.parse(localStorage.getItem(TOKEN_KEY)); if (t){ token = t.access; tokenExp = t.exp; refreshTok = t.refresh; tokVer = t.ver || 0; } } catch {}
 
   /* ---- PKCE helpers ---- */
   const rand = n => { const a = new Uint8Array(n); crypto.getRandomValues(a); return [...a].map(x => ("0" + x.toString(16)).slice(-2)).join(""); };
@@ -30,7 +35,8 @@ const SPOT = (() => {
     token = j.access_token;
     tokenExp = Date.now() + (j.expires_in * 1000) - 60000;
     if (j.refresh_token) refreshTok = j.refresh_token;
-    localStorage.setItem(TOKEN_KEY, JSON.stringify({ access: token, exp: tokenExp, refresh: refreshTok }));
+    tokVer = SCOPE_VER;
+    localStorage.setItem(TOKEN_KEY, JSON.stringify({ access: token, exp: tokenExp, refresh: refreshTok, ver: SCOPE_VER }));
   }
   async function tokenReq(params){
     const r = await fetch("https://accounts.spotify.com/api/token", {
@@ -69,7 +75,7 @@ const SPOT = (() => {
   }
 
   function initSDK(){
-    if (player || !token) return;
+    if (isMobile || player || !token) return;   // mobile uses Connect, not the in-browser SDK
     if (!window.Spotify){
       if (!document.getElementById("spot-sdk")){
         const s = document.createElement("script"); s.id = "spot-sdk"; s.src = "https://sdk.scdn.co/spotify-player.js"; document.body.appendChild(s);
@@ -106,15 +112,50 @@ const SPOT = (() => {
     return r.ok;
   }
 
+  /* ---- Mobile: Spotify Connect — remote-control the user's open Spotify app via the Web API ---- */
+  async function listDevices(){
+    const t = await validToken(); if (!t) return "auth";
+    const r = await fetch("https://api.spotify.com/v1/me/player/devices", { headers: { Authorization: "Bearer " + t } });
+    if (r.status === 401) return "auth";
+    if (r.status === 403) return "scope";
+    const j = await r.json().catch(() => ({}));
+    return j.devices || [];
+  }
+  async function playConnect(uri){
+    const t = await validToken(); if (!t) return "needs-auth";
+    const devs = await listDevices();
+    if (devs === "auth" || devs === "scope") return "needs-auth";
+    if (!devs.length) return "no-device";                          // Spotify app not open anywhere
+    const dev = devs.find(d => d.is_active) || devs[0];
+    const r = await fetch("https://api.spotify.com/v1/me/player/play?" + new URLSearchParams({ device_id: dev.id }),
+      { method: "PUT", headers: { Authorization: "Bearer " + t, "Content-Type": "application/json" }, body: JSON.stringify({ uris: [uri] }) });
+    if (r.status === 401 || r.status === 403) return "needs-auth";
+    return r.ok ? "ok" : "fail";
+  }
+  async function getPlayback(){
+    const t = await validToken(); if (!t) return null;
+    const r = await fetch("https://api.spotify.com/v1/me/player", { headers: { Authorization: "Bearer " + t } });
+    if (r.status === 204 || !r.ok) return null;
+    const j = await r.json().catch(() => null); if (!j) return null;
+    return { position: j.progress_ms || 0, duration: (j.item && j.item.duration_ms) || 0, paused: !j.is_playing, uri: j.item && j.item.uri };
+  }
+  function putPlayer(path){ return validToken().then(t => t && fetch("https://api.spotify.com/v1/me/player/" + path, { method: "PUT", headers: { Authorization: "Bearer " + t } }).catch(() => {})); }
+  async function toggleConnect(){ const pb = await getPlayback(); if (pb && !pb.paused) putPlayer("pause"); else putPlayer("play"); }
+
+  async function playFull(uri){ return isMobile ? playConnect(uri) : ((await playUri(uri)) ? "ok" : "fail"); }
+
   return {
     hasClientId: () => !!CLIENT_ID,
     isConnected: () => !!token,
+    isMobile,
     ready: () => ready,
+    fullReady: () => isMobile ? !!token : ready,                   // desktop needs the SDK device; mobile just needs a token
+    needsReauth: () => isMobile && !!token && tokVer < SCOPE_VER,   // old token lacks Connect scopes → re-login
     premiumOK: () => premiumOK,
-    login, handleRedirect, initSDK, search, playUri,
-    toggle: () => player && player.togglePlay(),
-    pause: () => player && player.pause(),
-    seek: ms => player && player.seek(ms),
+    login, handleRedirect, initSDK, search, playUri, playFull, getPlayback,
+    toggle: () => { isMobile ? toggleConnect() : (player && player.togglePlay()); },
+    pause: () => { isMobile ? putPlayer("pause") : (player && player.pause()); },
+    seek: ms => { isMobile ? putPlayer("seek?" + new URLSearchParams({ position_ms: Math.round(ms) })) : (player && player.seek(ms)); },
     onState: cb => { stateCb = cb; },
   };
 })();
