@@ -87,11 +87,11 @@ body{
   color:#3a3460;padding:4px 6px;transition:transform .12s,color .15s}
 .track__fav:hover{transform:scale(1.22);color:var(--pink)}
 .track__fav.on{color:var(--pink)}
-.player__full{flex:0 0 auto;cursor:pointer;font-family:"Space Mono",monospace;font-weight:700;font-size:9px;
-  letter-spacing:.08em;padding:5px 8px;border-radius:10px;border:2px solid var(--lime);background:transparent;
-  color:var(--lime);text-transform:uppercase;transition:transform .1s;white-space:nowrap}
-.player__full.on{background:var(--lime);color:#0a0916}
-.player__full:hover{transform:scale(1.05)}
+.player__full{flex:0 0 auto;cursor:pointer;background:none;border:none;padding:2px;display:flex;align-items:center;
+  color:#6b6486;transition:transform .12s,color .15s}
+.player__full.on{color:#1DB954}
+.player__full:hover{transform:scale(1.12)}
+.player__full svg{width:25px;height:25px;display:block}
 .player__fav{flex:0 0 auto;background:none;border:none;cursor:pointer;font-size:21px;line-height:1;
   color:#4a4470;padding:0 4px;transition:transform .12s,color .15s}
 .player__fav:hover{transform:scale(1.15);color:var(--pink)}
@@ -270,7 +270,7 @@ body{
   .map-hint{bottom:88px;font-size:11px}
   .player{height:72px;gap:7px;padding:0 7px}
   .player__art{width:46px;height:46px}
-  .player__full{font-size:8px;padding:4px 6px;letter-spacing:.04em}
+  .player__full svg{width:22px;height:22px}
   .player__fav{font-size:18px;padding:0 2px}
   .player__ctrls{gap:2px}
   .player__ctrls button{padding:4px;font-size:17px}

@@ -507,7 +507,6 @@ let lastPos = 0;
 function updateFullUI(){
   const b = document.getElementById("p-full"); if (!b) return;
   b.classList.toggle("on", fullMode);
-  b.textContent = fullMode ? "FULL" : "PREVIEW";
   b.title = fullMode ? "Full songs via Spotify — tap for 30s previews" : "Switch to full songs (needs Spotify Premium)";
 }
 function flashPlayerNote(msg){
