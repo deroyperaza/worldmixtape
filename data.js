@@ -53193,6 +53193,20 @@ const COUNTRIES = {
      "genre": "mande"
     },
     {
+     "artist": "Sidiki Diabaté",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Madou Sidiki Diabaté",
+     "title": "Kaira",
+     "trackId": 1652317722,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/7a76afbfc7d0ec908ee4c46edf368ac6/500x500-000000-80-0-0.jpg",
+     "album": "Live At Amarrass Desert Music Festival 2011",
+     "year": 1975,
+     "eraAccurate": true,
+     "artistId": 1114486,
+     "genre": "griot"
+    },
+    {
      "artist": "Super Rail Band",
      "diaspora": false,
      "decade": "1970s",
@@ -53334,6 +53348,20 @@ const COUNTRIES = {
     }
    ],
    "1980s": [
+    {
+     "artist": "Fanta Damba",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Fanta Damba",
+     "title": "Loterie nationale",
+     "trackId": 125342988,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/82da64a4291d2aab83d4144fe4f484d2/500x500-000000-80-0-0.jpg",
+     "album": "Fanta Damba",
+     "year": 1982,
+     "eraAccurate": true,
+     "artistId": 377249,
+     "genre": "griot"
+    },
     {
      "artist": "Ali Farka Toure",
      "diaspora": false,
@@ -53501,6 +53529,34 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 210833,
      "genre": "griot"
+    },
+    {
+     "artist": "Abdoulaye Diabaté",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Abdoulaye Diabaté",
+     "title": "Kassikoun",
+     "trackId": 369743521,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/0aa3e258661f9f4e4caa09dc217bfac1/500x500-000000-80-0-0.jpg",
+     "album": "Kassikoun",
+     "year": 1989,
+     "eraAccurate": true,
+     "artistId": 55395,
+     "genre": "mande"
+    },
+    {
+     "artist": "Mamou Sidibé",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Mamou Sidibé",
+     "title": "Saya",
+     "trackId": 1498283162,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/ad633e726dfb78220529e313e28b8ca0/500x500-000000-80-0-0.jpg",
+     "album": "Bassemory",
+     "year": 1989,
+     "eraAccurate": true,
+     "artistId": 256788,
+     "genre": "wassoulou"
     }
    ],
    "1990s": [
@@ -53531,6 +53587,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 210833,
      "genre": "griot"
+    },
+    {
+     "artist": "Nahawa Doumbia",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Nahawa Doumbia",
+     "title": "Mangoni",
+     "trackId": 367521751,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/12f2f018a4ff10f9b099fbb486f30b4b/500x500-000000-80-0-0.jpg",
+     "album": "Mangoni",
+     "year": 1990,
+     "eraAccurate": true,
+     "artistId": 55419,
+     "genre": "wassoulou"
     },
     {
      "artist": "Salif Keita",
@@ -53581,6 +53651,20 @@ const COUNTRIES = {
      "dzArtist": "Oumou Sangaré",
      "title": "Saa Magni",
      "trackId": 3750759372,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/9ff2a4935d60ecbbc7b7f640bfd8819b/500x500-000000-80-0-0.jpg",
+     "album": "Ko Sira",
+     "year": 1993,
+     "eraAccurate": true,
+     "artistId": 15929,
+     "genre": "wassoulou"
+    },
+    {
+     "artist": "Oumou Sangaré",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Oumou Sangaré",
+     "title": "Ko Sira",
+     "trackId": 3750759452,
      "cover": "https://cdn-images.dzcdn.net/images/cover/9ff2a4935d60ecbbc7b7f640bfd8819b/500x500-000000-80-0-0.jpg",
      "album": "Ko Sira",
      "year": 1993,
@@ -53645,6 +53729,20 @@ const COUNTRIES = {
      "genre": "kora"
     },
     {
+     "artist": "Habib Koité",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Habib Koite",
+     "title": "Cigarette Abana",
+     "trackId": 16446459,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/3db7f922f483d09aa63181eae259d216/500x500-000000-80-0-0.jpg",
+     "album": "Baro",
+     "year": 1995,
+     "eraAccurate": true,
+     "artistId": 68430,
+     "genre": "mande"
+    },
+    {
      "artist": "Oumou Sangare",
      "diaspora": false,
      "decade": "1990s",
@@ -53657,6 +53755,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 15929,
      "genre": "wassoulou"
+    },
+    {
+     "artist": "Djelimady Tounkara",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Djelimady",
+     "title": "Kedo (feat. Solo Tounkara)",
+     "trackId": "it790548913",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music6/v4/e7/9e/5b/e79e5b1f-c45d-184f-0827-c4499a2edf90/740042108929.jpg/600x600bb.jpg",
+     "album": "In Griot Time - String Music from Mali",
+     "year": 1996,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "griot",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/Music/v4/74/aa/a6/74aaa62d-97ee-e08d-bde6-c554f53b8126/mzaf_6244244673954904523.plus.aac.p.m4a"
     },
     {
      "artist": "Nahawa Doumbia",
@@ -53713,6 +53827,50 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 789,
      "genre": "mande"
+    },
+    {
+     "artist": "Mamou Sidibé",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Mamou Sidibé",
+     "title": "Nakan",
+     "trackId": 1208535752,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/22063bd979d95e49837f6f317b322a97/500x500-000000-80-0-0.jpg",
+     "album": "Nakan",
+     "year": 1998,
+     "eraAccurate": true,
+     "artistId": 256788,
+     "genre": "wassoulou"
+    },
+    {
+     "artist": "Kandia Kouyaté",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Abou Sylla, Mahamadou Diabaté, Cheik Hamala Diabaté & Séycouba Kandia Kouyate",
+     "title": "Kita Foly",
+     "trackId": "it1648967145",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/03/da/3b/03da3bfc-01de-87b4-3bbe-c4a1c25833f3/cover.jpg/600x600bb.jpg",
+     "album": "Authentic Africa, Vol. 2",
+     "year": 1999,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "griot",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/ea/74/e8/ea74e839-a267-34f3-7fee-176d5c174352/mzaf_1237872787170607916.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Mama Sissoko",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Mama Sissoko",
+     "title": "Soleil de minuit",
+     "trackId": 227530,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/ae39b1b1521e7f64b14729b04833ba68/500x500-000000-80-0-0.jpg",
+     "album": "Soleil de minuit",
+     "year": 1999,
+     "eraAccurate": true,
+     "artistId": 12712,
+     "genre": "mande"
     }
    ],
    "2000s": [
@@ -53757,6 +53915,36 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1399,
      "genre": "mande"
+    },
+    {
+     "artist": "Tata Bambo Kouyaté",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Tata Bambo Kouyate",
+     "title": "Hommage à Baba Cissoko",
+     "trackId": 67118885,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/53ec66bb69a43faa8768e8bb3e6560c3/500x500-000000-80-0-0.jpg",
+     "album": "Hommage à Baba Cissoko",
+     "year": 2002,
+     "eraAccurate": true,
+     "artistId": 377246,
+     "genre": "griot"
+    },
+    {
+     "artist": "Oumou Sangaré",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Oumou Sangaré",
+     "title": "Sounsoumba",
+     "trackId": "it1716600164",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/e1/5f/d5/e15fd55e-642e-c789-4440-abcd7c88bd43/0859381180906.jpg/600x600bb.jpg",
+     "album": "Seya",
+     "year": 2003,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "wassoulou",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/89/e5/9d/89e59d24-caf2-3805-8714-d0d4f1931c29/mzaf_14831396893959800755.plus.aac.p.m4a"
     },
     {
      "artist": "Amadou & Mariam",
@@ -53843,6 +54031,20 @@ const COUNTRIES = {
      "genre": "mande"
     },
     {
+     "artist": "Mamadou Diabaté",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Mamadou Diabaté",
+     "title": "Behmanka",
+     "trackId": 63114720,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/03256ccb06201a72fe42df8d5471749f/500x500-000000-80-0-0.jpg",
+     "album": "Behmanka",
+     "year": 2005,
+     "eraAccurate": true,
+     "artistId": 337994,
+     "genre": "griot"
+    },
+    {
      "artist": "Ali Farka Toure",
      "diaspora": false,
      "decade": "2000s",
@@ -53869,6 +54071,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 368558152,
      "genre": "kora"
+    },
+    {
+     "artist": "Mamani Keïta",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Mamani Keïta",
+     "title": "Yelema",
+     "trackId": 5100392,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/b0eb91e238cce5c434440856e860f31d/500x500-000000-80-0-0.jpg",
+     "album": "Yelema (By Nicolas Repac)",
+     "year": 2006,
+     "eraAccurate": true,
+     "artistId": 81189,
+     "genre": "mande"
     },
     {
      "artist": "Tinariwen",
@@ -53927,6 +54143,20 @@ const COUNTRIES = {
      "genre": "desert blues"
     },
     {
+     "artist": "Baba Salah",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Baba Salah",
+     "title": "Borey",
+     "trackId": 51189081,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/a334585bfbe87f425082ea7e41c39952/500x500-000000-80-0-0.jpg",
+     "album": "Borey",
+     "year": 2008,
+     "eraAccurate": true,
+     "artistId": 82912,
+     "genre": "desert blues"
+    },
+    {
      "artist": "Oumou Sangare",
      "diaspora": false,
      "decade": "2000s",
@@ -53953,6 +54183,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 398173,
      "genre": "mande"
+    },
+    {
+     "artist": "Samba Touré",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Samba Touré",
+     "title": "White Crocodile Blues (A Song for M)",
+     "trackId": 420221462,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/342a1b2e422d7fce95751b5f50fec6bc/500x500-000000-80-0-0.jpg",
+     "album": "Rough Guide To Acoustic Africa",
+     "year": 2009,
+     "eraAccurate": true,
+     "artistId": 1261405,
+     "genre": "desert blues"
     }
    ],
    "2010s": [
@@ -54013,6 +54257,36 @@ const COUNTRIES = {
      "genre": "desert blues"
     },
     {
+     "artist": "Tamikrest",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Tamikrest",
+     "title": "Toumastin",
+     "trackId": 65187494,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/cc135bd7c938e0565402cf46ee68fdcf/500x500-000000-80-0-0.jpg",
+     "album": "Adagh",
+     "year": 2011,
+     "eraAccurate": true,
+     "artistId": 90764,
+     "genre": "desert blues"
+    },
+    {
+     "artist": "Terakaft",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Terakaft",
+     "title": "Karambani",
+     "trackId": "it974110680",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/4b/a4/b5/4ba4b5c3-487b-dac0-216c-98ee65472517/CoverPhoto.jpg/600x600bb.jpg",
+     "album": "Alone (Ténéré)",
+     "year": 2012,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "desert blues",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/4b/b2/64/4bb2647f-514e-e829-fd7a-326642789187/mzaf_50022461206046923.plus.aac.p.m4a"
+    },
+    {
      "artist": "Bassekou Kouyate",
      "diaspora": false,
      "decade": "2010s",
@@ -54038,6 +54312,34 @@ const COUNTRIES = {
      "year": 2013,
      "eraAccurate": true,
      "artistId": 198436,
+     "genre": "desert blues"
+    },
+    {
+     "artist": "Samba Touré",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Samba Touré",
+     "title": "Gandadiko",
+     "trackId": 92373200,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/4b0b9e33ffcb726b505cff516d68aaf8/500x500-000000-80-0-0.jpg",
+     "album": "Gandadiko",
+     "year": 2013,
+     "eraAccurate": true,
+     "artistId": 1261405,
+     "genre": "desert blues"
+    },
+    {
+     "artist": "Afel Bocoum",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Afel Bocoum",
+     "title": "TABITAL PULAAKU",
+     "trackId": 16448350,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/bfd78ec1aee72673c5cf79dee07a4c0c/500x500-000000-80-0-0.jpg",
+     "album": "Tabital Pulaaku",
+     "year": 2013,
+     "eraAccurate": true,
+     "artistId": 68697,
      "genre": "desert blues"
     },
     {
@@ -54081,6 +54383,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 81189,
      "genre": "wassoulou"
+    },
+    {
+     "artist": "Baba Salah",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Baba Salah",
+     "title": "Dangay",
+     "trackId": 1073060922,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/b86947efc7e5d13503e8587525252298/500x500-000000-80-0-0.jpg",
+     "album": "Maliba",
+     "year": 2014,
+     "eraAccurate": true,
+     "artistId": 82912,
+     "genre": "desert blues"
     },
     {
      "artist": "Songhoy Blues",
@@ -54167,6 +54483,22 @@ const COUNTRIES = {
      "genre": "wassoulou"
     },
     {
+     "artist": "Trio Da Kali",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Trio Da Kali & Kronos Quartet",
+     "title": "Ladilikan",
+     "trackId": "it1474831096",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/50/12/7d/50127d05-59fc-ffc5-e1ae-6f1f02e0b04f/5056032309319.jpg/600x600bb.jpg",
+     "album": "Ladilikan",
+     "year": 2017,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "griot",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/91/a5/5a/91a55a70-b310-872c-d756-590f07559c74/mzaf_6891607819784674319.plus.aac.p.m4a"
+    },
+    {
      "artist": "Fatoumata Diawara",
      "diaspora": false,
      "decade": "2010s",
@@ -54237,6 +54569,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 152610,
      "genre": "kora"
+    },
+    {
+     "artist": "Baba Salah",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Baba Salah",
+     "title": "Fleuve Niger",
+     "trackId": 51189121,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/a334585bfbe87f425082ea7e41c39952/500x500-000000-80-0-0.jpg",
+     "album": "Borey",
+     "year": 2021,
+     "eraAccurate": true,
+     "artistId": 82912,
+     "genre": "desert blues"
     },
     {
      "artist": "Vieux Farka Toure",
@@ -75824,6 +76170,20 @@ const COUNTRIES = {
      "genre": "afro-cuban"
     },
     {
+     "artist": "Orchestra Baobab",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Orchestra Baobab",
+     "title": "Coumba",
+     "trackId": 3783363322,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/04a28ef544e77a8dc857231b3a8bd219/500x500-000000-80-0-0.jpg",
+     "album": "Pirates Choice",
+     "year": 1976,
+     "eraAccurate": true,
+     "artistId": 9143,
+     "genre": "afro-cuban"
+    },
+    {
      "artist": "Star Number One de Dakar",
      "diaspora": false,
      "decade": "1970s",
@@ -75962,6 +76322,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 372140,
      "genre": "mbalax"
+    },
+    {
+     "artist": "Xalam",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Xalam",
+     "title": "Gorée",
+     "trackId": 13032589,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/18c3b0caa869abf8c32debd3ad70a36e/500x500-000000-80-0-0.jpg",
+     "album": "Gorée",
+     "year": 1979,
+     "eraAccurate": true,
+     "artistId": 84342,
+     "genre": "afro-jazz"
     }
    ],
    "1980s": [
@@ -75978,6 +76352,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 3569,
      "genre": "folk"
+    },
+    {
+     "artist": "Étoile de Dakar",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Etoile de Dakar",
+     "title": "Tolou Badou Ndiaye",
+     "trackId": 3806138832,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e08416b0a4e920b8b34ec930bc11d898/500x500-000000-80-0-0.jpg",
+     "album": "Senegal Super Star",
+     "year": 1981,
+     "eraAccurate": true,
+     "artistId": 372140,
+     "genre": "mbalax"
     },
     {
      "artist": "Youssou N'Dour",
@@ -76036,6 +76424,20 @@ const COUNTRIES = {
      "genre": "afro-cuban"
     },
     {
+     "artist": "Xalam",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Xalam",
+     "title": "Apartheid",
+     "trackId": 113427384,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/40349deb80c3de5166ac45375464cff7/500x500-000000-80-0-0.jpg",
+     "album": "Apartheid",
+     "year": 1984,
+     "eraAccurate": true,
+     "artistId": 84342,
+     "genre": "afro-jazz"
+    },
+    {
      "artist": "Ouza",
      "diaspora": false,
      "decade": "1980s",
@@ -76064,6 +76466,20 @@ const COUNTRIES = {
      "genre": "mbalax"
     },
     {
+     "artist": "Xalam",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Xalam",
+     "title": "Xarit",
+     "trackId": 113427710,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/aed977cebc48e840d2836913acc4a8ab/500x500-000000-80-0-0.jpg",
+     "album": "Nitou Tey (Remastered)",
+     "year": 1986,
+     "eraAccurate": true,
+     "artistId": 84342,
+     "genre": "afro-jazz"
+    },
+    {
      "artist": "Super Diamono",
      "diaspora": false,
      "decade": "1980s",
@@ -76089,6 +76505,20 @@ const COUNTRIES = {
      "year": 1988,
      "eraAccurate": true,
      "artistId": 8081,
+     "genre": "folk"
+    },
+    {
+     "artist": "Ismaël Lô",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Ismaël Lo",
+     "title": "Xiif",
+     "trackId": 937782112,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/181528366a69e7bc9149c906806b90b1/500x500-000000-80-0-0.jpg",
+     "album": "Xiif",
+     "year": 1988,
+     "eraAccurate": true,
+     "artistId": 6911,
      "genre": "folk"
     },
     {
@@ -76178,6 +76608,20 @@ const COUNTRIES = {
      "genre": "hip-hop"
     },
     {
+     "artist": "Baaba Maal",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Baaba Maal",
+     "title": "Yela",
+     "trackId": 675338762,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/7a2d54c685978a24c4396f3237341233/500x500-000000-80-0-0.jpg",
+     "album": "Lam Toro",
+     "year": 1994,
+     "eraAccurate": true,
+     "artistId": 8081,
+     "genre": "folk"
+    },
+    {
      "artist": "Omar Pene",
      "diaspora": false,
      "decade": "1990s",
@@ -76248,6 +76692,20 @@ const COUNTRIES = {
      "genre": "mbalax"
     },
     {
+     "artist": "Alioune Mbaye Nder",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Alioune Mbaye Nder",
+     "title": "Lenene",
+     "trackId": 2534521901,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/57c7ee9c674832f30527d088ef79725b/500x500-000000-80-0-0.jpg",
+     "album": "30 Ans Déja",
+     "year": 1998,
+     "eraAccurate": true,
+     "artistId": 1377355,
+     "genre": "mbalax"
+    },
+    {
      "artist": "Youssou N'Dour",
      "diaspora": false,
      "decade": "1990s",
@@ -76292,6 +76750,34 @@ const COUNTRIES = {
      "genre": "salsa"
     },
     {
+     "artist": "Youssou N'Dour",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Youssou N'Dour",
+     "title": "Birima",
+     "trackId": 3267562301,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/2540954937c2673b01d3aefcc6a65cf6/500x500-000000-80-0-0.jpg",
+     "album": "Spécial Fin D'Année",
+     "year": 2000,
+     "eraAccurate": true,
+     "artistId": 203,
+     "genre": "mbalax"
+    },
+    {
+     "artist": "Alioune Mbaye Nder",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Alioune Mbaye Nder",
+     "title": "Aduna",
+     "trackId": 12814221,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/75508caec0820c8b71686ea60d2334bf/500x500-000000-80-0-0.jpg",
+     "album": "Muchano",
+     "year": 2001,
+     "eraAccurate": true,
+     "artistId": 1377355,
+     "genre": "mbalax"
+    },
+    {
      "artist": "Orchestra Baobab",
      "diaspora": false,
      "decade": "2000s",
@@ -76306,6 +76792,20 @@ const COUNTRIES = {
      "genre": "afro-cuban"
     },
     {
+     "artist": "Pape & Cheikh",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Pape & Cheikh",
+     "title": "Mariama",
+     "trackId": 99268786,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/368aab27b52c184abd3fa59bc3e873be/500x500-000000-80-0-0.jpg",
+     "album": "Mariama",
+     "year": 2002,
+     "eraAccurate": true,
+     "artistId": 241278,
+     "genre": "folk"
+    },
+    {
      "artist": "Daara J",
      "diaspora": false,
      "decade": "2000s",
@@ -76318,6 +76818,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 406086,
      "genre": "hip-hop"
+    },
+    {
+     "artist": "Pape & Cheikh",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Pape & Cheikh",
+     "title": "Yatal Gueew",
+     "trackId": 99268798,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/368aab27b52c184abd3fa59bc3e873be/500x500-000000-80-0-0.jpg",
+     "album": "Mariama",
+     "year": 2003,
+     "eraAccurate": true,
+     "artistId": 241278,
+     "genre": "folk"
     },
     {
      "artist": "Akon",
@@ -76346,6 +76860,34 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 55428,
      "genre": "mbalax"
+    },
+    {
+     "artist": "Coumba Gawlo",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Coumba Gawlo",
+     "title": "Yo male",
+     "trackId": 365945591,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/8401f2f24e0ee415cf8396c7e4e7a8ac/500x500-000000-80-0-0.jpg",
+     "album": "Aldiana",
+     "year": 2004,
+     "eraAccurate": true,
+     "artistId": 84314,
+     "genre": "mbalax"
+    },
+    {
+     "artist": "Daara J",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Daara J",
+     "title": "Boomerang",
+     "trackId": 62280074,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/ca59c67811208a9688bfd8a5ebe9dfae/500x500-000000-80-0-0.jpg",
+     "album": "Boomerang",
+     "year": 2004,
+     "eraAccurate": true,
+     "artistId": 13196,
+     "genre": "hip-hop"
     },
     {
      "artist": "Akon",
@@ -76402,6 +76944,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 6911,
      "genre": "folk"
+    },
+    {
+     "artist": "Assane Ndiaye",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Abdou Guité Seck, Pape Diouf, Titi & Assane Ndiaye",
+     "title": "Bienvenue au Sénégal",
+     "trackId": "it1778457627",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/35/e2/b6/35e2b66e-27ed-5963-273f-04506a1064da/cover.jpg/600x600bb.jpg",
+     "album": "Une Fleur en hiver (Une comédie musicale de Frédéric Mazé)",
+     "year": 2006,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "mbalax",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d8/0a/b7/d80ab754-8241-a028-7fb4-d9c98a8c596d/mzaf_5444578493740392898.plus.aac.p.m4a"
     },
     {
      "artist": "Akon",
@@ -76558,6 +77116,36 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1194587,
      "genre": "hip-hop"
+    },
+    {
+     "artist": "Pape Diouf",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Pape Diouf",
+     "title": "Rewmi Yeen Bayi Leen (feat. Omar Bassoum)",
+     "trackId": "it924325877",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music5/v4/53/12/89/531289b5-98aa-a070-8b42-a8ba55a020fd/cover.jpg/600x600bb.jpg",
+     "album": "Ràkkaaju",
+     "year": 2015,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "mbalax",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/8c/44/ba/8c44ba3e-f6d3-de91-5f6e-761211d03416/mzaf_16684016304659856221.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Élage Diouf",
+     "diaspora": true,
+     "decade": "2010s",
+     "dzArtist": "Élage Diouf",
+     "title": "Aksil",
+     "trackId": 66614585,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/68e188a6a9acafd7a7c9fb29bb31e752/500x500-000000-80-0-0.jpg",
+     "album": "Askil",
+     "year": 2015,
+     "eraAccurate": true,
+     "artistId": 436145,
+     "genre": "afro-folk"
     },
     {
      "artist": "Faada Freddy",
@@ -82472,6 +83060,20 @@ const COUNTRIES = {
      "diaspora": false,
      "decade": "1960s",
      "dzArtist": "Bana",
+     "title": "Sina de Cabo Verde",
+     "trackId": 362620501,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/512545c44017e5504dd5a87f4c9fa450/500x500-000000-80-0-0.jpg",
+     "album": "Nha Terra",
+     "year": 1965,
+     "eraAccurate": true,
+     "artistId": 283624851,
+     "genre": "morna"
+    },
+    {
+     "artist": "Bana",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Bana",
      "title": "Sodade de M. Graciela",
      "trackId": 118817200,
      "cover": "https://cdn-images.dzcdn.net/images/cover/d3b350ca3962816eb026e717501996e1/500x500-000000-80-0-0.jpg",
@@ -82497,6 +83099,20 @@ const COUNTRIES = {
     }
    ],
    "1970s": [
+    {
+     "artist": "Luís Morais",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Luis Morais",
+     "title": "Saudades",
+     "trackId": 97280094,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/d27d13c443fc80e632f887a55b3b33e3/500x500-000000-80-0-0.jpg",
+     "album": "Boas Festas",
+     "year": 1972,
+     "eraAccurate": true,
+     "artistId": 312829,
+     "genre": "morna"
+    },
     {
      "artist": "Luis Morais",
      "diaspora": false,
@@ -82524,6 +83140,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 56265,
      "genre": "funana"
+    },
+    {
+     "artist": "Os Tubarões",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Os Tubaroes",
+     "title": "Tchon Di Morgado",
+     "trackId": 116016436,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/529bea3278b6163f4eb3bd20593fd007/500x500-000000-80-0-0.jpg",
+     "album": "Tchon Di Morgado",
+     "year": 1976,
+     "eraAccurate": true,
+     "artistId": 56265,
+     "genre": "coladeira"
     }
    ],
    "1980s": [
@@ -82536,6 +83166,20 @@ const COUNTRIES = {
      "trackId": 70716716,
      "cover": "https://cdn-images.dzcdn.net/images/cover/498404c9ec1465e356bc1e51c5406de9/500x500-000000-80-0-0.jpg",
      "album": "Bulimundo / Djâm Brancu Dja",
+     "year": 1981,
+     "eraAccurate": true,
+     "artistId": 5185888,
+     "genre": "funana"
+    },
+    {
+     "artist": "Bulimundo",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Bulimundo",
+     "title": "Bulimundo",
+     "trackId": 112780952,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/3f06b8b29f929f92eefa6dd27a2ebe4f/500x500-000000-80-0-0.jpg",
+     "album": "Bulimundo",
      "year": 1981,
      "eraAccurate": true,
      "artistId": 5185888,
@@ -82642,6 +83286,20 @@ const COUNTRIES = {
      "genre": "morna"
     },
     {
+     "artist": "Tito Paris",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Tito Paris",
+     "title": "Mim Ê Bô",
+     "trackId": 362685371,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/26db4c7463f7b1934e44c19365d64eac/500x500-000000-80-0-0.jpg",
+     "album": "Mim Ê Bô",
+     "year": 1994,
+     "eraAccurate": true,
+     "artistId": 12747,
+     "genre": "coladeira"
+    },
+    {
      "artist": "Cesária Évora",
      "diaspora": false,
      "decade": "1990s",
@@ -82654,6 +83312,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 4086,
      "genre": "coladeira"
+    },
+    {
+     "artist": "Ildo Lobo",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Ildo Lobo",
+     "title": "Nos Morna",
+     "trackId": 2866484792,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/cc27b5050b638d85c270ee0710969c37/500x500-000000-80-0-0.jpg",
+     "album": "Africa 99",
+     "year": 1996,
+     "eraAccurate": true,
+     "artistId": 312827,
+     "genre": "morna"
     },
     {
      "artist": "Cesária Évora",
@@ -82682,6 +83354,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 56305,
      "genre": "morna"
+    },
+    {
+     "artist": "Ferro Gaita",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Ferro Gaita",
+     "title": "Fundo Baxo",
+     "trackId": "it1439334911",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music128/v4/7d/ae/a8/7daea893-e020-08eb-b01f-36e1a0114e34/859729097644_cover.jpg/600x600bb.jpg",
+     "album": "Fundu Baxo",
+     "year": 1997,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "funana",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/af/5a/0a/af5a0ac2-2e2c-345c-8191-2e55893d08ce/mzaf_11841537412791267066.plus.aac.p.m4a"
     },
     {
      "artist": "Maria de Barros",
@@ -82724,9 +83412,37 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 4086,
      "genre": "coladeira"
+    },
+    {
+     "artist": "Gardénia Benrós",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Gardénia Benrós",
+     "title": "Rainha No Atlântico",
+     "trackId": 1110641532,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/f788b2e565073c8e1cd8a075870dd9cd/500x500-000000-80-0-0.jpg",
+     "album": "Gardenia Benrós",
+     "year": 1999,
+     "eraAccurate": true,
+     "artistId": 314677,
+     "genre": "morna"
     }
    ],
    "2000s": [
+    {
+     "artist": "Cesária Évora",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Cesária Évora",
+     "title": "Vento de Sueste",
+     "trackId": 4301207,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/c130f160689cb569976f67d94285e28a/500x500-000000-80-0-0.jpg",
+     "album": "Nha Sentimento",
+     "year": 2000,
+     "eraAccurate": true,
+     "artistId": 4086,
+     "genre": "morna"
+    },
     {
      "artist": "Cesária Évora",
      "diaspora": false,
@@ -82770,6 +83486,20 @@ const COUNTRIES = {
      "genre": "morna"
     },
     {
+     "artist": "Zeca di Nha Reinalda",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Zeca di Nha Reinalda",
+     "title": "Fomi 47",
+     "trackId": 3906539041,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/4583d46264098862c4b7f11324531c10/500x500-000000-80-0-0.jpg",
+     "album": "Na Caminho",
+     "year": 2003,
+     "eraAccurate": true,
+     "artistId": 1699733,
+     "genre": "funana"
+    },
+    {
      "artist": "Sara Tavares",
      "diaspora": true,
      "decade": "2000s",
@@ -82810,6 +83540,34 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 56261,
      "genre": "folk"
+    },
+    {
+     "artist": "Tcheka",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Tcheka",
+     "title": "Lonji",
+     "trackId": 13784379,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/cdd574957ae3ab120291f0ca9d8e5440/500x500-000000-80-0-0.jpg",
+     "album": "Lonji",
+     "year": 2005,
+     "eraAccurate": true,
+     "artistId": 56261,
+     "genre": "batuko"
+    },
+    {
+     "artist": "Lura",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Lura",
+     "title": "Nha Vida",
+     "trackId": 112419314,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/1254e311ded54766e81c431458c45fce/500x500-000000-80-0-0.jpg",
+     "album": "Nha Vida",
+     "year": 2005,
+     "eraAccurate": true,
+     "artistId": 10134,
+     "genre": "coladeira"
     },
     {
      "artist": "Cesária Évora",
@@ -82926,6 +83684,20 @@ const COUNTRIES = {
      "genre": "afro-pop"
     },
     {
+     "artist": "Nelson Freitas",
+     "diaspora": true,
+     "decade": "2010s",
+     "dzArtist": "Nelson Freitas",
+     "title": "Bo Tem Mel",
+     "trackId": 2557327172,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/fb48e96fe1c3390918d705f353b6eb4d/500x500-000000-80-0-0.jpg",
+     "album": "Greatest Hits",
+     "year": 2011,
+     "eraAccurate": true,
+     "artistId": 470802,
+     "genre": "kizomba"
+    },
+    {
      "artist": "Mayra Andrade",
      "diaspora": true,
      "decade": "2010s",
@@ -82938,6 +83710,80 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 15736,
      "genre": "afro-pop"
+    },
+    {
+     "artist": "Mayra Andrade",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Mayra Andrade",
+     "title": "Lua",
+     "trackId": 441167572,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/78c118f374ef2a461e77f7ccbb6287dd/500x500-000000-80-0-0.jpg",
+     "album": "Navega",
+     "year": 2013,
+     "eraAccurate": true,
+     "artistId": 15736,
+     "genre": "morna"
+    },
+    {
+     "artist": "Djodje",
+     "diaspora": true,
+     "decade": "2010s",
+     "dzArtist": "Djodje",
+     "title": "Nha Música",
+     "trackId": "it675980897",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music4/v4/61/c3/7d/61c37d74-fffc-c5f4-b1f0-2b254ebd28fe/888174144481.jpg/600x600bb.jpg",
+     "album": "Feedback",
+     "year": 2013,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "afro-pop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/ba/2c/d1/ba2cd107-c90e-547b-c302-ce1c8e743fe6/mzaf_8335861202717901108.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Nelson Freitas",
+     "diaspora": true,
+     "decade": "2010s",
+     "dzArtist": "Nelson Freitas",
+     "title": "Saia Branca",
+     "trackId": 16866174,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/9969d224dd59dcc371165be38c9061ac/500x500-000000-80-0-0.jpg",
+     "album": "Rei Helder apresenta A Familia Certa",
+     "year": 2014,
+     "eraAccurate": true,
+     "artistId": 470802,
+     "genre": "kizomba"
+    },
+    {
+     "artist": "Elida Almeida",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Elida Almeida",
+     "title": "Nta Konsigui",
+     "trackId": "it982636629",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/69/bf/b2/69bfb2b6-3877-f550-245e-dcad66896ab1/3567256629821.jpg/600x600bb.jpg",
+     "album": "Ora Doci Ora Margos (Bonus Track Version)",
+     "year": 2015,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "funana",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/1d/ee/d8/1deed8e4-5848-4b6f-744b-b6d513767848/mzaf_4269154508858226820.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Loony Johnson",
+     "diaspora": true,
+     "decade": "2010s",
+     "dzArtist": "Loony Johnson",
+     "title": "Bo Ke Nha Vida",
+     "trackId": 1450979672,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/07d07b4fe37a2fc8520248f60f55bf5d/500x500-000000-80-0-0.jpg",
+     "album": "Believe",
+     "year": 2016,
+     "eraAccurate": true,
+     "artistId": 329995,
+     "genre": "kizomba"
     },
     {
      "artist": "Elida Almeida",
@@ -82954,6 +83800,20 @@ const COUNTRIES = {
      "genre": "afro-pop"
     },
     {
+     "artist": "Elida Almeida",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Elida Almeida",
+     "title": "Bersu d'Oru",
+     "trackId": 143569538,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/d8aaa5653f34724c8322b357f5527dad/500x500-000000-80-0-0.jpg",
+     "album": "Djunta Kudjer",
+     "year": 2017,
+     "eraAccurate": true,
+     "artistId": 7013663,
+     "genre": "batuko"
+    },
+    {
      "artist": "Dino d'Santiago",
      "diaspora": true,
      "decade": "2010s",
@@ -82965,6 +83825,20 @@ const COUNTRIES = {
      "year": 2018,
      "eraAccurate": true,
      "artistId": 4890737,
+     "genre": "afro-pop"
+    },
+    {
+     "artist": "Mayra Andrade",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Mayra Andrade",
+     "title": "Afeto",
+     "trackId": 2650969032,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/5fdd0491ae901e846a2100dbcad4dcdb/500x500-000000-80-0-0.jpg",
+     "album": "Afeto (Ankhoï Remix)",
+     "year": 2019,
+     "eraAccurate": true,
+     "artistId": 15736,
      "genre": "afro-pop"
     }
    ],
@@ -82996,6 +83870,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1473793,
      "genre": "kizomba"
+    },
+    {
+     "artist": "Lucibela",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Lucibela",
+     "title": "Laço Umbilical",
+     "trackId": 3804285122,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/f6895ade991a0c4df3553969b4cd689c/500x500-000000-80-0-0.jpg",
+     "album": "Laço Umbilical",
+     "year": 2022,
+     "eraAccurate": true,
+     "artistId": 13946497,
+     "genre": "morna"
     }
    ]
   }
@@ -83247,7 +84135,24 @@ const COUNTRIES = {
      "genre": "folk"
     }
    ],
+   "1980s": [],
    "1990s": [
+    {
+     "artist": "Rim Banna",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Rim Banna",
+     "title": "Ya Jammal",
+     "trackId": "it79405488",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music/y2005/m08/d25/h14/mzi.dcahzcah.tif/600x600bb.jpg",
+     "album": "The Mirrors of My Soul",
+     "year": 1993,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "folk",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview62/v4/61/6d/ce/616dce8f-f6cb-2f33-75e0-08d1d9ee85c3/mzaf_304006194195236100.plus.aac.p.m4a"
+    },
     {
      "artist": "Rim Banna",
      "diaspora": false,
@@ -83307,6 +84212,22 @@ const COUNTRIES = {
    ],
    "2000s": [
     {
+     "artist": "DAM",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "DAM",
+     "title": "Min Imhabi",
+     "trackId": "it371902547",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music/16/91/7e/mzi.hbrzvfkg.jpg/600x600bb.jpg",
+     "album": "Il y a un pays. . . Palestine",
+     "year": 2001,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "hip-hop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/9b/6c/71/9b6c71d0-6caf-fd17-6054-7eaf51adb15a/mzaf_370586700764762769.plus.aac.p.m4a"
+    },
+    {
      "artist": "Kamilya Jubran",
      "diaspora": true,
      "decade": "2000s",
@@ -83349,6 +84270,22 @@ const COUNTRIES = {
      "genre": "folk"
     },
     {
+     "artist": "Rim Banna",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Rim Banna",
+     "title": "Fares Odeh",
+     "trackId": "it79405593",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music/y2005/m08/d25/h14/mzi.dcahzcah.tif/600x600bb.jpg",
+     "album": "The Mirrors of My Soul",
+     "year": 2005,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "folk",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview71/v4/70/98/7b/70987bba-6ed2-2601-b841-a00e4b0303c0/mzaf_3150709572962936128.plus.aac.p.m4a"
+    },
+    {
      "artist": "Reem Kelani",
      "diaspora": true,
      "decade": "2000s",
@@ -83369,6 +84306,20 @@ const COUNTRIES = {
      "dzArtist": "Le Trio Joubran",
      "title": "Majâz",
      "trackId": 252019,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/206e908bd4347815bfea172d5679fd66/500x500-000000-80-0-0.jpg",
+     "album": "Majâz",
+     "year": 2007,
+     "eraAccurate": true,
+     "artistId": 56203,
+     "genre": "oud"
+    },
+    {
+     "artist": "Le Trio Joubran",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Le Trio Joubran",
+     "title": "Roubbama",
+     "trackId": 252016,
      "cover": "https://cdn-images.dzcdn.net/images/cover/206e908bd4347815bfea172d5679fd66/500x500-000000-80-0-0.jpg",
      "album": "Majâz",
      "year": 2007,
@@ -83477,6 +84428,20 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "Dalal Abu Amneh",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Dalal Abu Amneh",
+     "title": "يا ستي يا ستي - Ya Sitti Ya Sitti",
+     "trackId": 1571963792,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/7f0024c2ab0e16f55a0057f5cfe6672e/500x500-000000-80-0-0.jpg",
+     "album": "يا ستي - Ya Sitti",
+     "year": 2017,
+     "eraAccurate": true,
+     "artistId": 14960189,
+     "genre": "folk"
+    },
+    {
      "artist": "Bashar Murad",
      "diaspora": false,
      "decade": "2010s",
@@ -83491,6 +84456,22 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "47Soul",
+     "diaspora": true,
+     "decade": "2010s",
+     "dzArtist": "47SOUL",
+     "title": "Don't Care Where You From",
+     "trackId": "it1016969198",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music5/v4/d4/6b/ef/d46bef56-f98f-be1e-1590-41906381996a/cover.jpg/600x600bb.jpg",
+     "album": "Shamstep - EP",
+     "year": 2018,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "shamstep",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/fc/92/8c/fc928c86-ffc5-18ef-e894-4b376cc9714e/mzaf_1893363417206768550.plus.aac.p.m4a"
+    },
+    {
      "artist": "Daboor",
      "diaspora": false,
      "decade": "2010s",
@@ -83503,6 +84484,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 130467252,
      "genre": "hip-hop"
+    },
+    {
+     "artist": "Bashar Murad",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Bashar Murad",
+     "title": "Ana Wnafsi",
+     "trackId": 2005260067,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/86d55bf6c3c98d60fa05198cc09ba895/500x500-000000-80-0-0.jpg",
+     "album": "Maskhara",
+     "year": 2019,
+     "eraAccurate": true,
+     "artistId": 5415742,
+     "genre": "pop"
     }
    ],
    "2020s": [
@@ -83532,6 +84527,20 @@ const COUNTRIES = {
      "year": 2020,
      "eraAccurate": true,
      "artistId": 5415742,
+     "genre": "pop"
+    },
+    {
+     "artist": "Rasha Nahas",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Rasha Nahas",
+     "title": "Desert",
+     "trackId": 1779809317,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/4c42c37512be305064a0eb2ce3a9522b/500x500-000000-80-0-0.jpg",
+     "album": "Desert",
+     "year": 2021,
+     "eraAccurate": true,
+     "artistId": 10499259,
      "genre": "pop"
     },
     {
@@ -83574,6 +84583,48 @@ const COUNTRIES = {
      "year": 2023,
      "eraAccurate": true,
      "artistId": 148852642,
+     "genre": "pop"
+    },
+    {
+     "artist": "Saint Levant",
+     "diaspora": true,
+     "decade": "2020s",
+     "dzArtist": "Saint Levant",
+     "title": "Galbi",
+     "trackId": 2766031121,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/bbcb7bab6094f56685284c009cd587cd/500x500-000000-80-0-0.jpg",
+     "album": "Galbi",
+     "year": 2023,
+     "eraAccurate": true,
+     "artistId": 148852642,
+     "genre": "pop"
+    },
+    {
+     "artist": "Saint Levant",
+     "diaspora": true,
+     "decade": "2020s",
+     "dzArtist": "Saint Levant",
+     "title": "Deira",
+     "trackId": 2665993252,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/067fdc9b3d72f26a5a88d3cf00f2b1f6/500x500-000000-80-0-0.jpg",
+     "album": "Deira",
+     "year": 2024,
+     "eraAccurate": true,
+     "artistId": 148852642,
+     "genre": "pop"
+    },
+    {
+     "artist": "Bashar Murad",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Bashar Murad",
+     "title": "Wild West",
+     "trackId": 2630517542,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/a68ea4b5a33453a2be56db8720a03eaf/500x500-000000-80-0-0.jpg",
+     "album": "Söngvakeppnin 2024",
+     "year": 2024,
+     "eraAccurate": true,
+     "artistId": 5415742,
      "genre": "pop"
     }
    ]
@@ -91404,6 +92455,20 @@ const COUNTRIES = {
      "diaspora": false,
      "decade": "1960s",
      "dzArtist": "Cumar Dhuule",
+     "title": "Dardaaran",
+     "trackId": 2900633441,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/fe975a59df896feec686868599116d8d/500x500-000000-80-0-0.jpg",
+     "album": "Best of Dhuule",
+     "year": 1966,
+     "eraAccurate": true,
+     "artistId": 122475022,
+     "genre": "qaraami"
+    },
+    {
+     "artist": "Cumar Dhuule",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Cumar Dhuule",
      "title": "Afka Hooyo Waa Hodan",
      "trackId": 3176958401,
      "cover": "https://cdn-images.dzcdn.net/images/cover/9247084fe47d5dbd545feebad5883788/500x500-000000-80-0-0.jpg",
@@ -91704,6 +92769,22 @@ const COUNTRIES = {
      "genre": "somali folk"
     },
     {
+     "artist": "Aar Maanta",
+     "diaspora": true,
+     "decade": "2010s",
+     "dzArtist": "Aar Maanta",
+     "title": "Hiddo & Dhaqan",
+     "trackId": "it299718428",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e6/b1/b1/e6b1b116-8ffb-2d35-6494-0b2ab234dceb/mzi.hhecacaw.jpg/600x600bb.jpg",
+     "album": "Hiddo & Dhaqan",
+     "year": 2013,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "somali folk",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/27/fe/4d/27fe4d33-55fa-dc76-3f0e-d6bcc0415e76/mzaf_7054177256497370507.plus.aac.p.m4a"
+    },
+    {
      "artist": "Sahra Halgan",
      "diaspora": true,
      "decade": "2010s",
@@ -91774,6 +92855,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 54184532,
      "genre": "hip-hop"
+    },
+    {
+     "artist": "Nimco Happy",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Nimco Happy",
+     "title": "Isii Nafta (Love You More Than My Life)",
+     "trackId": 1533644222,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/19ebef3a1b8fd36bc91ad85fe9539ae8/500x500-000000-80-0-0.jpg",
+     "album": "Isii Nafta (Love You More Than My Life)",
+     "year": 2021,
+     "eraAccurate": true,
+     "artistId": 58960482,
+     "genre": "somali pop"
     },
     {
      "artist": "Sahra Halgan",
@@ -109402,6 +110497,20 @@ const COUNTRIES = {
      "genre": "guarania"
     },
     {
+     "artist": "Herminio Giménez",
+     "diaspora": false,
+     "decade": "1940s",
+     "dzArtist": "Herminio Gimenez",
+     "title": "Che Trompo Arasa",
+     "trackId": 861833592,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/6f084b5c114379159306c9fd8de3ff3b/500x500-000000-80-0-0.jpg",
+     "album": "Paraguay Romántico",
+     "year": 1945,
+     "eraAccurate": true,
+     "artistId": 4488374,
+     "genre": "polca paraguaya"
+    },
+    {
      "artist": "Félix Pérez Cardozo",
      "diaspora": false,
      "decade": "1940s",
@@ -109445,6 +110554,20 @@ const COUNTRIES = {
     }
    ],
    "1950s": [
+    {
+     "artist": "Trío Los Paraguayos",
+     "diaspora": true,
+     "decade": "1950s",
+     "dzArtist": "Trio Los Paraguayos",
+     "title": "Galopera (Remastered)",
+     "trackId": 100950390,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/c91a5cbdb7954a4ab5ed37e892d205b1/500x500-000000-80-0-0.jpg",
+     "album": "Paraguayos",
+     "year": 1956,
+     "eraAccurate": true,
+     "artistId": 305248,
+     "genre": "polca paraguaya"
+    },
     {
      "artist": "Luis Alberto del Paraná",
      "diaspora": false,
@@ -109572,6 +110695,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 4978993,
      "genre": "folk"
+    },
+    {
+     "artist": "Los Paraguayos",
+     "diaspora": true,
+     "decade": "1960s",
+     "dzArtist": "Trio Los Paraguayos",
+     "title": "Pájaro Campana (Remastered)",
+     "trackId": 100950394,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/c91a5cbdb7954a4ab5ed37e892d205b1/500x500-000000-80-0-0.jpg",
+     "album": "Paraguayos",
+     "year": 1962,
+     "eraAccurate": true,
+     "artistId": 305248,
+     "genre": "polca paraguaya"
     },
     {
      "artist": "Luis Alberto del Paraná",
@@ -109702,6 +110839,20 @@ const COUNTRIES = {
      "genre": "folk"
     },
     {
+     "artist": "Los Paraguayos",
+     "diaspora": true,
+     "decade": "1970s",
+     "dzArtist": "Luis Alberto del Parana y Los Paraguayos",
+     "title": "Recuerdos de Ypacaraí",
+     "trackId": 360533451,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e8fa2a62494f472828f1f561be76aff6/500x500-000000-80-0-0.jpg",
+     "album": "Luis Alberto del Paraná y los Paraguayos - Sus Grandes Éxitos, Vol. 1",
+     "year": 1972,
+     "eraAccurate": true,
+     "artistId": 4218420,
+     "genre": "guarania"
+    },
+    {
      "artist": "Luis Bordón",
      "diaspora": false,
      "decade": "1970s",
@@ -109728,6 +110879,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 7669048,
      "genre": "polca"
+    },
+    {
+     "artist": "Reinaldo",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Reinaldo y Alberto",
+     "title": "Soy de la chacarita",
+     "trackId": 528203431,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/f9ef3323e22a8ef14750b058f6468514/500x500-000000-80-0-0.jpg",
+     "album": "Álbum musical del Paraguay CD. 2",
+     "year": 1975,
+     "eraAccurate": true,
+     "artistId": 15353191,
+     "genre": "polca paraguaya"
     },
     {
      "artist": "Quemil Yambay",
@@ -109786,6 +110951,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 7669048,
      "genre": "polca"
+    },
+    {
+     "artist": "Perla",
+     "diaspora": true,
+     "decade": "1980s",
+     "dzArtist": "brillo de la perla",
+     "title": "\"Bandido\"",
+     "trackId": 2497155841,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/04bb5408001b9f33adf1e349479c92ab/500x500-000000-80-0-0.jpg",
+     "album": "\"Bandido\"",
+     "year": 1984,
+     "eraAccurate": true,
+     "artistId": 110906802,
+     "genre": "pop"
     },
     {
      "artist": "Lizza Bogado",
@@ -110032,6 +111211,20 @@ const COUNTRIES = {
      "genre": "classical"
     },
     {
+     "artist": "Gaia",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Rafa De GAIA",
+     "title": "Volver a empezar",
+     "trackId": 3961033771,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/4cf424d4be1be3e6cb4f79b792078cff/500x500-000000-80-0-0.jpg",
+     "album": "Al mal tiempo, todo sigue igual",
+     "year": 2013,
+     "eraAccurate": true,
+     "artistId": 384823981,
+     "genre": "pop"
+    },
+    {
      "artist": "Lizza Bogado",
      "diaspora": false,
      "decade": "2010s",
@@ -110129,7 +111322,8 @@ const COUNTRIES = {
      "artistId": 7215778,
      "genre": "folk"
     }
-   ]
+   ],
+   "2020s": []
   }
  }
 };
