@@ -20,11 +20,11 @@ const SPOT = (() => {
   const TOKEN_KEY = "wmx_spotify_tok";
   const redirectUri = () => location.origin + location.pathname;
 
-  let token = null, tokenExp = 0, refreshTok = null, tokVer = 0;
+  let token = null, tokenExp = 0, refreshTok = null, tokVer = 0, tokScopes = "";
   let player = null, deviceId = null, ready = false, premiumOK = true;
   let stateCb = null;
 
-  try { const t = JSON.parse(localStorage.getItem(TOKEN_KEY)); if (t){ token = t.access; tokenExp = t.exp; refreshTok = t.refresh; tokVer = t.ver || 0; } } catch {}
+  try { const t = JSON.parse(localStorage.getItem(TOKEN_KEY)); if (t){ token = t.access; tokenExp = t.exp; refreshTok = t.refresh; tokVer = t.ver || 0; tokScopes = t.scope || ""; } } catch {}
 
   /* ---- PKCE helpers ---- */
   const rand = n => { const a = new Uint8Array(n); crypto.getRandomValues(a); return [...a].map(x => ("0" + x.toString(16)).slice(-2)).join(""); };
@@ -35,8 +35,9 @@ const SPOT = (() => {
     token = j.access_token;
     tokenExp = Date.now() + (j.expires_in * 1000) - 60000;
     if (j.refresh_token) refreshTok = j.refresh_token;
+    if (typeof j.scope === "string") tokScopes = j.scope;   // Spotify returns the ACTUAL granted scopes (on auth AND refresh)
     tokVer = SCOPE_VER;
-    localStorage.setItem(TOKEN_KEY, JSON.stringify({ access: token, exp: tokenExp, refresh: refreshTok, ver: SCOPE_VER }));
+    localStorage.setItem(TOKEN_KEY, JSON.stringify({ access: token, exp: tokenExp, refresh: refreshTok, ver: SCOPE_VER, scope: tokScopes }));
   }
   async function tokenReq(params){
     const r = await fetch("https://accounts.spotify.com/api/token", {
@@ -193,8 +194,8 @@ const SPOT = (() => {
     isMobile,
     ready: () => ready,
     fullReady: () => isMobile ? !!token : ready,                   // desktop needs the SDK device; mobile just needs a token
-    needsReauth: () => isMobile && !!token && tokVer < SCOPE_VER,   // old token lacks Connect scopes → re-login
-    playlistReady: () => !!token && tokVer >= SCOPE_VER,           // token has playlist-modify scope
+    needsReauth: () => isMobile && !!token && !/user-modify-playback-state/.test(tokScopes),   // token lacks Connect scope → re-login
+    playlistReady: () => !!token && /playlist-modify/.test(tokScopes),                          // token actually has playlist-modify scope
     hasPlaylist: () => !!localStorage.getItem("wmx_sp_playlist"),
     premiumOK: () => premiumOK,
     login, handleRedirect, initSDK, search, playUri, playFull, getPlayback, me, syncPlaylist,

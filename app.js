@@ -168,6 +168,7 @@ async function syncFavesToSpotify(auto){
   if (!SPOT.hasClientId() || !favs.length) return;
   if (!SPOT.isConnected() || !SPOT.playlistReady()){
     if (auto) return;                                   // auto-sync never redirects
+    sessionStorage.setItem("wmx_resume_faves", "1");    // after auth, reopen Favorites + finish the sync
     flashFavSync("connecting Spotify…"); SPOT.login(); return;   // first-time / re-auth for the playlist scope
   }
   if (spSyncing) return;
@@ -187,7 +188,8 @@ async function syncFavesToSpotify(auto){
     if (res.ok){
       flashFavSync("✓ " + res.count + (res.count === favs.length ? "" : " of " + favs.length) + " synced", res.url);
       const btn = document.getElementById("fav-sp-sync"); if (btn) btn.textContent = "♫ update playlist";
-    } else if (res.error === "scope"){ SPOT.login(); }
+    } else if (res.error === "scope"){ sessionStorage.setItem("wmx_resume_faves", "1"); SPOT.login(); }
+    else if (res.error === "auth"){ flashFavSync("Spotify session expired — tap again"); }
     else flashFavSync("sync failed — try again");
   } finally { spSyncing = false; }
 }
@@ -643,9 +645,15 @@ if (pFull) pFull.onclick = toggleFull;
 
 (async () => {                                               // complete OAuth handoff / restore session
   const cameBack = await SPOT.handleRedirect();
-  if (cameBack){ fullMode = true; localStorage.setItem("wmx_fullmode", "1"); }
+  const resumeFaves = cameBack && sessionStorage.getItem("wmx_resume_faves") === "1";
+  if (cameBack && !resumeFaves){ fullMode = true; localStorage.setItem("wmx_fullmode", "1"); }   // a full-song connect
   if (SPOT.isConnected()) SPOT.initSDK(); else fullMode = false;
   updateFullUI();
+  if (resumeFaves){                                          // came back from the playlist auth → finish + confirm
+    sessionStorage.removeItem("wmx_resume_faves");
+    openFavorites();
+    syncFavesToSpotify(false);
+  }
 })();
 
 audio.addEventListener("timeupdate", () => {
