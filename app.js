@@ -663,7 +663,7 @@ function buildCountryList(){
     '<div class="clist__head"><div class="brand__tape"><img class="brand__logo" src="logo.png" alt="World Mixtape"><div class="brand__title">WORLD<br><span>MIXTAPE</span></div></div><p class="brand__sub">The world&#39;s local music,<br>decade by decade.</p></div>' +
     '<div class="clist__sec">' +
     have.map(c => '<button class="clist__item" data-code="' + c.code + '" style="--accent:' + c.color + '">'
-      + flagImg(c.code) + '<span class="clist__name">' + esc(c.name) + '</span></button>').join("") +
+      + flagImg(c.code) + '<span class="clist__name">' + esc(c.name) + (WC2026.has(c.code) ? '<span class="wc-ball wc-ball--list" aria-hidden="true">⚽</span>' : '') + '</span></button>').join("") +
     '</div>' +
     (soon.length ? '<div class="clist__soonhdr">more countries — coming soon</div><div class="clist__soon">'
       + soon.map(n => '<span class="clist__soon-item">' + esc(n) + '</span>').join("") + '</div>' : "");
@@ -671,7 +671,9 @@ function buildCountryList(){
 }
 function setView(list){
   document.body.classList.toggle("list-view", list);
-  document.getElementById("view-toggle").innerHTML = list ? "🗺 map view" : "☰ all countries";
+  document.getElementById("view-toggle").innerHTML = list
+    ? '<svg class="vt-ic" viewBox="0 0 50 26" fill="currentColor" aria-hidden="true"><path d="M3 4c3-1 7-1 10 0 0 2-2 3-4 3 1 1 3 2 1 4-2 1-5 0-6-2-1-2-1-4-1-5z"/><path d="M11 13c2-1 4 0 4 2 0 3-1 6-3 8-2 0-3-3-2-6 0-2 0-3 1-4z"/><path d="M22 4c3-1 6-1 8 1-1 2-3 2-2 4 1 3 0 7-2 9-2 1-3-2-3-4-1-4-1-7-1-10z"/><path d="M31 3c5-1 11 0 15 2-2 2-5 3-9 3-3 0-5-2-6-5z"/><path d="M38 16c3 0 6 1 7 3-2 2-5 2-7 1-2-1-2-3 0-4z"/></svg>map view'
+    : "☰ all countries";
   if (list && (!listBuilt || !document.querySelector(".clist__item"))){ buildCountryList(); listBuilt = features.length > 0; }
 }
 document.getElementById("view-toggle").onclick = () => setView(!document.body.classList.contains("list-view"));

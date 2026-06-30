@@ -324,7 +324,11 @@ body.list-view #map,body.list-view #map-hint,body.list-view .brand{display:none}
 .clist__item .flag{height:26px;width:auto;border-radius:3px;box-shadow:0 0 0 1.5px #0a0916;flex:0 0 auto}
 .clist__name{font-family:"Anton",sans-serif;font-size:33px;text-transform:uppercase;color:#0a0916;
   background:var(--accent,var(--pink));padding:3px 12px 5px;border-radius:2px;transform:rotate(-1deg);
-  box-shadow:3px 3px 0 #0a0916;letter-spacing:.01em;line-height:.95}
+  box-shadow:3px 3px 0 #0a0916;letter-spacing:.01em;line-height:.95;position:relative}
+.wc-ball--list{width:21px;height:21px;top:-9px;right:-9px;font-size:12px;box-shadow:1.5px 1.5px 0 #0a0916}
+@media(max-width:680px){.wc-ball--list{width:19px;height:19px;font-size:11px;top:-8px;right:-8px}}
+/* continents icon for the map-view toggle */
+.vt-ic{width:18px;height:auto;vertical-align:-3px;margin-right:6px}
 .clist__item:hover .clist__name{transform:rotate(-1deg) scale(1.03)}
 .clist__soonhdr{font-family:"Permanent Marker",cursive;color:var(--yellow);font-size:15px;margin:26px 0 12px;transform:rotate(-1deg)}
 .clist__soon{display:flex;flex-wrap:wrap;gap:7px 16px}
