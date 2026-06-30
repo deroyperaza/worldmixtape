@@ -12,8 +12,8 @@
 const SPOT = (() => {
   const CLIENT_ID = "e43e8316d97949939f556e053cf20299";  // Spotify app Client ID (worldmixtape.com)
   // streaming = desktop Web Playback SDK; user-*-playback-state = mobile Spotify Connect (remote-control the app)
-  const SCOPES = "streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state";
-  const SCOPE_VER = 2;   // bump whenever SCOPES change → forces mobile users to re-authorize (for Connect)
+  const SCOPES = "streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private";
+  const SCOPE_VER = 3;   // bump whenever SCOPES change → forces users to re-authorize (Connect + playlist sync)
   // Spotify's Web Playback SDK is DESKTOP-ONLY; on phones/tablets we drive the user's Spotify app via Connect.
   const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent)
     || (navigator.maxTouchPoints > 1 && /Mac/i.test(navigator.platform || ""));   // iPadOS masquerades as a Mac
@@ -144,6 +144,49 @@ const SPOT = (() => {
 
   async function playFull(uri){ return isMobile ? playConnect(uri) : ((await playUri(uri)) ? "ok" : "fail"); }
 
+  /* ---- Playlists: mirror the user's favorites into a real Spotify playlist ---- */
+  let cachedUid = null;
+  async function me(){
+    if (cachedUid) return cachedUid;
+    const t = await validToken(); if (!t) return null;
+    const r = await fetch("https://api.spotify.com/v1/me", { headers: { Authorization: "Bearer " + t } });
+    if (!r.ok) return null;
+    const j = await r.json().catch(() => null);
+    return (cachedUid = j && j.id);
+  }
+  const PL_KEY = "wmx_sp_playlist";
+  async function syncPlaylist(name, uris){
+    const t = await validToken(); if (!t) return { ok:false, error:"auth" };
+    let id = localStorage.getItem(PL_KEY), url = null;
+    if (id){                                                   // does our stored playlist still exist?
+      const chk = await fetch("https://api.spotify.com/v1/playlists/" + id + "?fields=id,external_urls", { headers: { Authorization: "Bearer " + t } });
+      if (chk.ok){ const j = await chk.json().catch(() => ({})); url = j.external_urls && j.external_urls.spotify; }
+      else id = null;                                          // deleted/unfollowed → make a fresh one
+    }
+    if (!id){
+      const uid = await me(); if (!uid) return { ok:false, error:"auth" };
+      const cr = await fetch("https://api.spotify.com/v1/users/" + uid + "/playlists", {
+        method:"POST", headers:{ Authorization:"Bearer "+t, "Content-Type":"application/json" },
+        body: JSON.stringify({ name, description:"My WORLD MIXTAPE favorites · worldmixtape.com", public:false }) });
+      if (cr.status === 401 || cr.status === 403) return { ok:false, error:"scope" };
+      if (!cr.ok) return { ok:false, error:"create" };
+      const j = await cr.json().catch(() => ({})); id = j.id; url = j.external_urls && j.external_urls.spotify;
+      if (!id) return { ok:false, error:"create" };
+      localStorage.setItem(PL_KEY, id);
+    }
+    const put = await fetch("https://api.spotify.com/v1/playlists/" + id + "/tracks", {   // replace contents to match faves
+      method:"PUT", headers:{ Authorization:"Bearer "+t, "Content-Type":"application/json" },
+      body: JSON.stringify({ uris: uris.slice(0, 100) }) });
+    if (put.status === 401 || put.status === 403) return { ok:false, error:"scope" };
+    if (!put.ok) return { ok:false, error:"tracks" };
+    for (let i = 100; i < uris.length; i += 100){             // append the rest in 100-track chunks
+      await fetch("https://api.spotify.com/v1/playlists/" + id + "/tracks", {
+        method:"POST", headers:{ Authorization:"Bearer "+t, "Content-Type":"application/json" },
+        body: JSON.stringify({ uris: uris.slice(i, i + 100) }) });
+    }
+    return { ok:true, url, id, count: uris.length };
+  }
+
   return {
     hasClientId: () => !!CLIENT_ID,
     isConnected: () => !!token,
@@ -151,8 +194,10 @@ const SPOT = (() => {
     ready: () => ready,
     fullReady: () => isMobile ? !!token : ready,                   // desktop needs the SDK device; mobile just needs a token
     needsReauth: () => isMobile && !!token && tokVer < SCOPE_VER,   // old token lacks Connect scopes → re-login
+    playlistReady: () => !!token && tokVer >= SCOPE_VER,           // token has playlist-modify scope
+    hasPlaylist: () => !!localStorage.getItem("wmx_sp_playlist"),
     premiumOK: () => premiumOK,
-    login, handleRedirect, initSDK, search, playUri, playFull, getPlayback,
+    login, handleRedirect, initSDK, search, playUri, playFull, getPlayback, me, syncPlaylist,
     toggle: () => { isMobile ? toggleConnect() : (player && player.togglePlay()); },
     pause: () => { isMobile ? putPlayer("pause") : (player && player.pause()); },
     seek: ms => { isMobile ? putPlayer("seek?" + new URLSearchParams({ position_ms: Math.round(ms) })) : (player && player.seek(ms)); },

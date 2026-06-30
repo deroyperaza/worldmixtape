@@ -118,7 +118,13 @@ body{
 .player__fav.on{color:var(--pink)}
 .jhead__flag--ico{font-size:34px;color:var(--pink);line-height:1}
 /* favorites playlist: shuffle / shuffled-exit toggle */
-.fav-ctrls{display:flex;gap:6px;padding:2px 2px 12px;margin:2px 0 4px}
+.fav-ctrls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:2px 2px 12px;margin:2px 0 4px}
+/* "make/update Spotify playlist" button + sync status */
+.fav-sp{border-color:#1DB954;color:#1DB954}
+.fav-sp:hover{background:#1DB954;color:#0a0916;box-shadow:3px 3px 0 #0a0916}
+.fav-sp-status{font-family:"Space Mono",monospace;font-size:11px;color:var(--paper);opacity:.85}
+.fav-sp-status a{color:#1DB954;font-weight:700;text-decoration:none}
+.fav-sp-status a:hover{text-decoration:underline}
 .fav-mode{flex:0 0 auto;font-family:"Space Mono",monospace;font-weight:700;font-size:12px;cursor:pointer;
   padding:7px 14px;border-radius:14px;border:2px solid var(--pink);background:transparent;color:var(--pink);
   text-transform:uppercase;letter-spacing:.03em;transition:transform .12s}
