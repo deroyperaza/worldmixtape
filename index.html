@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Anton&family=Permanent+Marker&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=62" />
+<link rel="stylesheet" href="styles.css?v=63" />
 <link rel="icon" type="image/png" href="logo.png" />
 <link rel="apple-touch-icon" href="logo.png" />
 <meta name="theme-color" content="#c6ff00" />
@@ -47,7 +47,9 @@
   <main id="map-wrap" class="map-wrap">
     <svg id="map" role="img" aria-label="World map. Tap a highlighted country to hear its top tracks."></svg>
     <div class="map-hint" id="map-hint">spin · pinch · poke a glowing country</div>
+    <div class="clist" id="clist"></div>
   </main>
+  <button class="view-toggle" id="view-toggle" aria-label="Toggle list view">☰ all countries</button>
 
   <!-- hover tooltip -->
   <div class="tip" id="tip" aria-hidden="true"></div>
@@ -82,6 +84,6 @@
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
   <script src="data.js?v=55"></script>
   <script src="spotify.js?v=3"></script>
-  <script src="app.js?v=62"></script>
+  <script src="app.js?v=63"></script>
 </body>
 </html>

@@ -127,7 +127,7 @@ body{
 .country.dim{opacity:.9}
 .country.active{stroke:var(--paper);stroke-width:1.6px;filter:brightness(1.35) drop-shadow(0 0 16px currentColor)}
 
-.map-hint{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) rotate(-1deg);z-index:30;
+.map-hint{position:fixed;bottom:152px;left:50%;transform:translateX(-50%) rotate(-1deg);z-index:30;
   background:var(--tang);color:#0a0916;font-weight:700;font-size:12px;text-transform:uppercase;
   padding:5px 12px;letter-spacing:.05em;box-shadow:3px 3px 0 #0a0916;pointer-events:none}
 
@@ -267,7 +267,7 @@ body{
   .shuffle-filt{padding:0 7px;font-size:11px}
   .shuffle-pop{top:70px;right:9px}
   .panel{top:26px;width:100vw;border-left:none;border-top:5px solid var(--lime)}
-  .map-hint{bottom:88px;font-size:11px}
+  .map-hint{bottom:144px;font-size:11px}
   .player{height:72px;gap:7px;padding:0 7px}
   .player__art{width:46px;height:46px}
   .player__full svg{width:22px;height:22px}
@@ -279,4 +279,30 @@ body{
 @media (max-width:680px) and (orientation:portrait){
   /* panel as bottom sheet feel */
   .panel{top:auto;height:82vh;border-top:6px solid var(--lime);border-radius:18px 18px 0 0}
+}
+
+
+/* country list view (alternate to the map) */
+.view-toggle{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);z-index:42;cursor:pointer;
+  font-family:"Permanent Marker",cursive;font-size:16px;color:#0a0916;background:var(--lime);
+  border:3px solid #0a0916;border-radius:24px;padding:8px 18px;box-shadow:4px 4px 0 var(--pink);transition:transform .12s}
+.view-toggle:hover{transform:translateX(-50%) scale(1.05)}
+.view-toggle:active{transform:translateX(-50%) translateY(2px)}
+.clist{display:none;position:absolute;inset:0;overflow-y:auto;padding:24px 16px 160px}
+body.list-view .clist{display:block}
+body.list-view #map,body.list-view #map-hint,body.list-view .brand{display:none}
+.clist__sec{display:flex;flex-direction:column;gap:11px}
+.clist__item{display:flex;align-items:center;gap:12px;background:none;border:none;cursor:pointer;padding:0;text-align:left;width:max-content;max-width:100%}
+.clist__item .flag{height:26px;width:auto;border-radius:3px;box-shadow:0 0 0 1.5px #0a0916;flex:0 0 auto}
+.clist__name{font-family:"Anton",sans-serif;font-size:27px;text-transform:uppercase;color:#0a0916;
+  background:var(--accent,var(--pink));padding:3px 12px 5px;border-radius:2px;transform:rotate(-1deg);
+  box-shadow:3px 3px 0 #0a0916;letter-spacing:.01em;line-height:.95}
+.clist__item:hover .clist__name{transform:rotate(-1deg) scale(1.03)}
+.clist__soonhdr{font-family:"Permanent Marker",cursive;color:var(--yellow);font-size:15px;margin:26px 0 12px;transform:rotate(-1deg)}
+.clist__soon{display:flex;flex-wrap:wrap;gap:7px 16px}
+.clist__soon-item{font-family:"Anton",sans-serif;font-size:18px;text-transform:uppercase;color:#4a4470;letter-spacing:.02em}
+@media (max-width:680px){
+  .clist__name{font-size:22px}
+  .clist__soon-item{font-size:15px}
+  .view-toggle{bottom:88px;font-size:14px;padding:7px 15px}
 }

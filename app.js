@@ -591,3 +591,29 @@ document.addEventListener("keydown", e => {
   if (e.code === "ArrowLeft") prev();
   if (e.code === "Escape") backToMap();
 });
+
+
+/* ---------- list view (alternate to the map) ---------- */
+let listBuilt = false;
+function buildCountryList(){
+  const clist = document.getElementById("clist"); if (!clist) return;
+  const have = Object.entries(COUNTRIES).map(([code, c]) => ({ code, name: c.name, color: c.color }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const soon = [...new Set(features
+    .filter(f => +f.id !== 10 && !isoToCode[+f.id] && f.properties && f.properties.name)
+    .map(f => f.properties.name))].sort((a, b) => a.localeCompare(b));
+  clist.innerHTML =
+    '<div class="clist__sec">' +
+    have.map(c => '<button class="clist__item" data-code="' + c.code + '" style="--accent:' + c.color + '">'
+      + flagImg(c.code) + '<span class="clist__name">' + esc(c.name) + '</span></button>').join("") +
+    '</div>' +
+    (soon.length ? '<div class="clist__soonhdr">more countries — coming soon</div><div class="clist__soon">'
+      + soon.map(n => '<span class="clist__soon-item">' + esc(n) + '</span>').join("") + '</div>' : "");
+  clist.querySelectorAll(".clist__item").forEach(el => el.onclick = () => { openCountry(el.dataset.code); openPanel(); });
+}
+function setView(list){
+  document.body.classList.toggle("list-view", list);
+  document.getElementById("view-toggle").innerHTML = list ? "🗺 map view" : "☰ all countries";
+  if (list && (!listBuilt || !document.querySelector(".clist__item"))){ buildCountryList(); listBuilt = features.length > 0; }
+}
+document.getElementById("view-toggle").onclick = () => setView(!document.body.classList.contains("list-view"));
