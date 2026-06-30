@@ -62,7 +62,6 @@ d3.json(ATLAS).then(world => {
     .on("click", (e, d) => onCountry(e, d));
 
   svg.call(zoom);
-  document.getElementById("map-hint").style.opacity = 1;
   if (document.body.classList.contains("list-view")) buildCountryList();
 });
 
