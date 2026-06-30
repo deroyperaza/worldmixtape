@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>WORLD MIXTAPE — every country's local music, decade by decade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Anton&family=Permanent+Marker&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=51" />
+</head>
+<body>
+  <!-- film-grain + halftone overlays -->
+  <div class="grain" aria-hidden="true"></div>
+  <svg class="noise-svg" aria-hidden="true"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#noise)"/></svg>
+
+  <!-- top marquee ticker -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track" id="ticker"></div>
+  </div>
+
+  <header class="brand">
+    <div class="brand__tape">
+      <img class="brand__logo" src="logo.png" alt="World Mixtape" />
+      <h1 class="brand__title">WORLD<br><span>MIXTAPE</span></h1>
+    </div>
+    <p class="brand__sub">the world's local music, <b>decade by decade.</b> no imports.</p>
+  </header>
+
+  <!-- top-right controls: favorites + shuffle -->
+  <div class="topctrls">
+    <button class="faves-btn" id="faves-btn" aria-label="Favorites"><span class="faves-btn__h" aria-hidden="true">♥</span><i id="fav-count">0</i></button>
+    <!-- spin the globe: random tracks, optionally filtered by country / era / genre -->
+    <div class="shuffle-wrap" id="shuffle-wrap">
+      <button class="shuffle" id="shuffle" aria-label="Shuffle">
+        <span class="shuffle__ic" aria-hidden="true">🔀</span><span class="shuffle__tx">shuffle<br><b id="shuffle-scope">the world</b></span>
+      </button>
+      <button class="shuffle-filt" id="shuffle-filt" aria-label="Filter shuffle" aria-expanded="false">▾</button>
+    </div>
+  </div>
+  <div class="shuffle-pop" id="shuffle-pop" hidden></div>
+
+  <!-- the map = the navigation -->
+  <main id="map-wrap" class="map-wrap">
+    <svg id="map" role="img" aria-label="World map. Tap a highlighted country to hear its top tracks."></svg>
+    <div class="map-hint" id="map-hint">spin · pinch · poke a glowing country</div>
+  </main>
+
+  <!-- hover tooltip -->
+  <div class="tip" id="tip" aria-hidden="true"></div>
+
+  <!-- country panel / cassette J-card -->
+  <aside class="panel" id="panel" aria-hidden="true">
+    <button class="panel__close" id="panel-close" aria-label="Close">✕ back to map</button>
+    <div class="panel__inner" id="panel-inner"></div>
+  </aside>
+  <div class="scrim" id="scrim" aria-hidden="true"></div>
+
+  <!-- persistent player -->
+  <footer class="player" id="player" aria-hidden="true">
+    <img class="player__art" id="p-art" alt="" />
+    <div class="player__meta">
+      <div class="player__side" id="p-side">SIDE A</div>
+      <div class="player__title" id="p-title">—</div>
+      <div class="player__artist" id="p-artist">press play somewhere</div>
+      <div class="player__bar"><i id="p-progress"></i></div>
+    </div>
+    <button id="p-full" class="player__full" aria-label="Toggle full songs">PREVIEW</button>
+    <button id="p-fav" class="player__fav" aria-label="Save to favorites">♥</button>
+    <div class="player__ctrls">
+      <button id="p-prev" aria-label="Previous">⏮</button>
+      <button id="p-play" class="is-big" aria-label="Play/Pause">▶</button>
+      <button id="p-next" aria-label="Next">⏭</button>
+    </div>
+  </footer>
+
+  <audio id="audio" preload="none"></audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="data.js?v=55"></script>
+  <script src="spotify.js?v=1"></script>
+  <script src="app.js?v=57"></script>
+</body>
+</html>
