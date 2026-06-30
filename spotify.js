@@ -114,6 +114,7 @@ const SPOT = (() => {
     login, handleRedirect, initSDK, search, playUri,
     toggle: () => player && player.togglePlay(),
     pause: () => player && player.pause(),
+    seek: ms => player && player.seek(ms),
     onState: cb => { stateCb = cb; },
   };
 })();

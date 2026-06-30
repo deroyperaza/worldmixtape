@@ -231,8 +231,14 @@ body{
 .player__side{font-size:9px;font-weight:700;color:var(--lime);letter-spacing:.2em}
 .player__title{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .player__artist{font-size:11px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.player__bar{height:5px;background:#2a2350;margin-top:6px;border-radius:3px;overflow:hidden}
-.player__bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--lime),var(--cyan));transition:width .2s linear}
+.player__bar{height:5px;background:#2a2350;margin-top:6px;border-radius:3px;position:relative;cursor:pointer;touch-action:none}
+.player__bar::before{content:"";position:absolute;left:0;right:0;top:-8px;bottom:-8px}  /* bigger hit area */
+.player__bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--lime),var(--cyan));border-radius:3px;transition:width .2s linear;position:relative}
+.player__bar i::after{content:"";position:absolute;right:-6px;top:50%;width:12px;height:12px;border-radius:50%;
+  background:#fff;box-shadow:0 0 0 2px #0a0916;transform:translateY(-50%) scale(0);transition:transform .12s}
+.player__bar:hover i::after,.player__bar.scrub i::after{transform:translateY(-50%) scale(1)}
+.player__bar.scrub i{transition:none}
+.player__bar:hover{height:7px;margin-top:5px}
 .player__ctrls{display:flex;align-items:center;gap:6px;flex:0 0 auto}
 .player__ctrls button{background:transparent;border:none;color:var(--paper);font-size:18px;cursor:pointer;padding:6px}
 .player__ctrls .is-big{background:var(--lime);color:#0a0916;width:44px;height:44px;border-radius:50%;

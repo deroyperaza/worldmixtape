@@ -495,7 +495,8 @@ async function toggleFull(){
 SPOT.onState(s => {                                          // drive the bar + auto-advance from Spotify
   if (!fullMode || !s) return;
   const dur = s.duration || 0, pos = s.position || 0;
-  if (dur) document.getElementById("p-progress").style.width = (pos / dur * 100) + "%";
+  curDuration = dur;
+  if (!scrubbing && dur) document.getElementById("p-progress").style.width = (pos / dur * 100) + "%";
   setPlayIcon(!s.paused); player.classList.toggle("playing", !s.paused);
   if (s.paused && pos === 0 && lastPos > 2000){ lastPos = 0; next(); return; }   // track finished
   lastPos = pos;
@@ -512,11 +513,37 @@ if (pFull) pFull.onclick = toggleFull;
 })();
 
 audio.addEventListener("timeupdate", () => {
-  if (audio.duration) document.getElementById("p-progress").style.width = (audio.currentTime/audio.duration*100) + "%";
+  if (!scrubbing && audio.duration) document.getElementById("p-progress").style.width = (audio.currentTime/audio.duration*100) + "%";
 });
 audio.addEventListener("ended", next);
 audio.addEventListener("pause", () => { setPlayIcon(false); player.classList.remove("playing"); });
 audio.addEventListener("play",  () => { setPlayIcon(true);  player.classList.add("playing"); });
+
+/* ---------- seek: click or drag the progress bar (works for preview + Spotify) ---------- */
+let curDuration = 0, scrubbing = false;
+const seekBar = document.querySelector(".player__bar");
+function barFrac(e){
+  const r = seekBar.getBoundingClientRect();
+  const x = (e.clientX != null ? e.clientX : 0) - r.left;
+  return Math.max(0, Math.min(1, r.width ? x / r.width : 0));
+}
+const setFill = f => { document.getElementById("p-progress").style.width = (f * 100) + "%"; };
+function seekTo(f){
+  if (playSource === "full"){ if (curDuration) SPOT.seek(Math.round(f * curDuration)); }
+  else if (audio.duration){ audio.currentTime = f * audio.duration; }
+  setFill(f);
+}
+if (seekBar){
+  seekBar.addEventListener("pointerdown", e => {
+    if (qIndex < 0) return;
+    scrubbing = true; seekBar.classList.add("scrub");
+    try { seekBar.setPointerCapture(e.pointerId); } catch {}
+    setFill(barFrac(e)); e.preventDefault();
+  });
+  seekBar.addEventListener("pointermove", e => { if (scrubbing) setFill(barFrac(e)); });
+  seekBar.addEventListener("pointerup", e => { if (!scrubbing) return; scrubbing = false; seekBar.classList.remove("scrub"); seekTo(barFrac(e)); });
+  seekBar.addEventListener("pointercancel", () => { scrubbing = false; seekBar.classList.remove("scrub"); });
+}
 
 function highlightRow(){
   const live = renderedList === queue;   // only highlight when the visible list is what's playing
