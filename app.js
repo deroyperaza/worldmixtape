@@ -6,7 +6,7 @@ const isoToCode = {};
 Object.entries(COUNTRIES).forEach(([code, c]) => { isoToCode[+c.iso] = code; });
 
 // teams that played the 2026 FIFA World Cup (⚽ sticker on their country label)
-const WC2026 = new Set(["AR","AU","BR","CA","CO","EG","ES","FR","GB","JP","KR","MX","PA","SN","TR","US","ZA","DE","CD","CV","PT","TN","CI","NO","SE","EC","BE","BA","AT","HR","CH","DZ","MA","PY"]);
+const WC2026 = new Set(["AR","AU","BR","CA","CO","EG","ES","FR","GB","GH","JP","KR","MX","PA","SN","TR","US","ZA","DE","CD","CV","PT","TN","CI","NO","SE","EC","BE","BA","AT","HR","CH","DZ","MA","PY"]);
 
 // alpha-2 code -> flag emoji
 const flag = code => code.replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt()));
@@ -16,7 +16,9 @@ const flagImg = (code, cls) => `<img class="flag${cls ? " " + cls : ""}" src="ht
 /* ---------- ticker ---------- */
 (() => {
   const names = Object.entries(COUNTRIES).map(([code, c]) => `${flagImg(code)} ${c.name.toUpperCase()}`);
-  const msg = `★ NOW BROADCASTING ★ ${names.length} COUNTRIES ★ A CENTURY OF SOUND ★ 1920s TO NOW ★ NO IMPORTS ★ ${names.join("  ·  ")}  ·  `;
+  const songs = Object.values(COUNTRIES).reduce((n, c) => n + Object.values(c.eras).reduce((m, e) => m + e.length, 0), 0);
+  const hours = Math.round(songs * 217 / 3600);   // 217s = measured mean Deezer track length across the catalog
+  const msg = `★ NOW BROADCASTING ★ ${names.length} COUNTRIES ★ ${songs.toLocaleString()} SONGS ★ ${hours.toLocaleString()} HOURS OF MUSIC ★ A CENTURY OF SOUND ★ 1920s TO NOW ★ NO IMPORTS ★ ${names.join("  ·  ")}  ·  `;
   document.getElementById("ticker").innerHTML = msg + msg;
 })();
 
