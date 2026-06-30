@@ -32,35 +32,29 @@ body{
 
 /* ticker */
 .ticker{position:fixed;top:0;left:0;right:0;height:26px;background:var(--lime);color:#0a0916;
-  z-index:40;overflow:hidden;border-bottom:3px solid #0a0916;
-  font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center}
+  z-index:40;border-bottom:3px solid #0a0916;display:flex;align-items:stretch;
+  font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.ticker__scroll{flex:1 1 auto;min-width:0;overflow:hidden;display:flex;align-items:center}
 .ticker__track{white-space:nowrap;will-change:transform;animation:slide 80s linear infinite;padding-left:100%}
 @keyframes slide{to{transform:translateX(-50%)}}
 
-/* connect-Spotify CTA bar (homepage, under the ticker) */
-.sp-cta{position:fixed;top:26px;left:0;right:0;z-index:43;height:30px;display:flex;align-items:center;justify-content:center;
-  background:#ff5a1f;border-bottom:3px solid #0a0916;box-shadow:0 3px 0 rgba(0,0,0,.22);overflow:hidden}
+/* Spotify status — fixed section pinned to the LEFT of the ticker row (one row, not two) */
+.sp-cta{flex:0 0 auto;display:flex;align-items:stretch;background:#ff5a1f;border-right:3px solid #0a0916}
 .sp-cta[hidden]{display:none}
 .sp-cta.on{background:#1DB954}                       /* Spotify green once connected */
+.sp-cta__go{display:flex;align-items:center;gap:7px;height:100%;padding:0 11px;border:0;cursor:pointer;
+  background:none;color:#0a0916;font:inherit;white-space:nowrap;animation:cta-pulse 2.4s ease-in-out infinite}
 .sp-cta.on .sp-cta__go{animation:none}
-.sp-cta__go{font-family:"Space Mono",monospace;font-weight:700;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;
-  white-space:nowrap;color:#0a0916;background:none;border:0;cursor:pointer;padding:0 30px;height:100%;line-height:1;animation:cta-pulse 2.4s ease-in-out infinite}
-.sp-cta__go b{font-weight:700;opacity:.55}
-.sp-cta__go:hover{text-decoration:underline}
+.sp-cta__go:hover .sp-cta__lbl{text-decoration:underline}
+.sp-cta__ic{width:15px;height:15px;flex:0 0 auto}
+.sp-cta__ic svg{width:100%;height:100%;display:block}
 @keyframes cta-pulse{0%,100%{opacity:1}50%{opacity:.6}}
-.sp-cta__x{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;
-  color:#0a0916;font-size:13px;cursor:pointer;opacity:.55;padding:4px;line-height:1}
+.sp-cta__x{background:none;border:0;color:#0a0916;cursor:pointer;padding:0 8px 0 1px;opacity:.55;font-size:12px}
 .sp-cta__x:hover{opacity:1}
-/* nudge the top chrome down so the bar never overlaps it */
-body.cta-on .brand{top:74px}
-body.cta-on .topctrls{top:66px}
-body.cta-on .shuffle-pop{top:120px}
-body.cta-on .map-wrap{top:56px}
 @media(max-width:680px){
-  .sp-cta__go{font-size:9.5px;letter-spacing:.02em;padding:0 28px}
-  body.cta-on .brand{top:62px}
-  body.cta-on .topctrls{top:60px}
-  body.cta-on .shuffle-pop{top:100px}
+  .sp-cta__lbl{display:none}                         /* mobile: Spotify icon only — shorter */
+  .sp-cta__go{padding:0 9px;gap:0}
+  .sp-cta__x{padding:0 6px}
 }
 
 /* brand lockup */

@@ -533,17 +533,13 @@ function updateFullUI(){
 const spCta = document.getElementById("sp-cta");
 function updateSpCta(){
   if (!spCta) return;
-  const go = document.getElementById("sp-cta-go");
-  if (!SPOT.hasClientId() || sessionStorage.getItem("wmx_cta_x") === "1"){
-    spCta.hidden = true; document.body.classList.remove("cta-on"); return;
-  }
-  spCta.hidden = false; document.body.classList.add("cta-on");
+  const lbl = document.getElementById("sp-cta-lbl");
+  if (!SPOT.hasClientId() || sessionStorage.getItem("wmx_cta_x") === "1"){ spCta.hidden = true; return; }
+  spCta.hidden = false;
   const connected = SPOT.isConnected();
-  spCta.classList.toggle("on", connected);                       // green bar once connected
-  if (go) go.innerHTML = !connected
-    ? "▸ Connect Spotify to play full songs <b>· Premium</b>"
-    : (fullMode ? "✓ Spotify connected — full songs on"
-                : "✓ Spotify connected — <b>tap for full songs</b>");
+  spCta.classList.toggle("on", connected);                       // green once connected
+  if (lbl) lbl.textContent = !connected ? "Connect Spotify — full songs"
+    : (fullMode ? "Connected — full songs on" : "Connected — tap for full songs");
 }
 {
   const go = document.getElementById("sp-cta-go"), x = document.getElementById("sp-cta-x");

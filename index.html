@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Anton&family=Permanent+Marker&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=71" />
+<link rel="stylesheet" href="styles.css?v=72" />
 <link rel="icon" type="image/png" href="logo.png" />
 <link rel="apple-touch-icon" href="logo.png" />
 <meta name="theme-color" content="#c6ff00" />
@@ -17,15 +17,16 @@
   <div class="grain" aria-hidden="true"></div>
   <svg class="noise-svg" aria-hidden="true"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#noise)"/></svg>
 
-  <!-- top marquee ticker -->
-  <div class="ticker" aria-hidden="true">
-    <div class="ticker__track" id="ticker"></div>
-  </div>
-
-  <!-- connect-Spotify CTA bar (homepage, hidden once connected) -->
-  <div class="sp-cta" id="sp-cta" hidden>
-    <button class="sp-cta__go" id="sp-cta-go" type="button">▸ Connect Spotify to play full songs <b>· Premium</b></button>
-    <button class="sp-cta__x" id="sp-cta-x" type="button" aria-label="Dismiss">✕</button>
+  <!-- top row: Spotify status pinned left + scrolling ticker (one row) -->
+  <div class="ticker">
+    <div class="sp-cta" id="sp-cta" hidden>
+      <button class="sp-cta__go" id="sp-cta-go" type="button">
+        <span class="sp-cta__ic" aria-hidden="true"><svg viewBox="0 0 168 168"><circle cx="84" cy="84" r="84" fill="#0a0916"/><path fill="#fff7e6" d="M122.6 121.2c-1.6 2.6-5 3.4-7.6 1.8-20.8-12.7-47-15.6-77.9-8.6-3 .7-6-1.2-6.6-4.2-.7-3 1.2-6 4.2-6.6 33.8-7.7 62.8-4.4 86.1 9.8 2.6 1.6 3.4 5 1.8 7.6zm9.3-20.7c-2 3.2-6.2 4.2-9.4 2.2-23.8-14.6-60-18.9-88.1-10.4-3.6 1.1-7.4-.9-8.5-4.5-1.1-3.6.9-7.4 4.5-8.5 32.1-9.7 72-4.9 99.3 11.9 3.2 2 4.2 6.2 2.2 9.3zm.8-21.5c-28.5-16.9-75.6-18.5-102.8-10.2-4.3 1.3-8.9-1.1-10.2-5.4-1.3-4.3 1.1-8.9 5.4-10.2 31.2-9.5 83.2-7.6 116 11.9 3.9 2.3 5.1 7.3 2.8 11.2-2.3 3.9-7.3 5.2-11.2 2.9z"/></svg></span>
+        <span class="sp-cta__lbl" id="sp-cta-lbl">Connect Spotify — full songs</span>
+      </button>
+      <button class="sp-cta__x" id="sp-cta-x" type="button" aria-label="Dismiss">✕</button>
+    </div>
+    <div class="ticker__scroll" aria-hidden="true"><div class="ticker__track" id="ticker"></div></div>
   </div>
 
   <header class="brand">
@@ -93,8 +94,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
-  <script src="data.js?v=67"></script>
+  <script src="data.js?v=68"></script>
   <script src="spotify.js?v=4"></script>
-  <script src="app.js?v=71"></script>
+  <script src="app.js?v=72"></script>
 </body>
 </html>

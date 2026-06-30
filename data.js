@@ -8017,6 +8017,20 @@ const COUNTRIES = {
      "genre": "grupera"
     },
     {
+     "artist": "Maná",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Mana",
+     "title": "Vivir Sin Aire",
+     "trackId": 7505027,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/77dd06f412b80e67451bebad95249003/500x500-000000-80-0-0.jpg",
+     "album": "¿Dónde Jugarán Los Niños?",
+     "year": 1992,
+     "eraAccurate": true,
+     "artistId": 4115,
+     "genre": "rock en español"
+    },
+    {
      "artist": "Luis Miguel",
      "diaspora": false,
      "decade": "1990s",
@@ -8155,6 +8169,34 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1255983,
      "genre": "banda"
+    },
+    {
+     "artist": "Maná",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Mana",
+     "title": "En El Muelle de San Blas",
+     "trackId": 2820793,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/f6cb42fd8287c36fcd0ebaf5d0a7fd63/500x500-000000-80-0-0.jpg",
+     "album": "Sueños Líquidos",
+     "year": 1997,
+     "eraAccurate": true,
+     "artistId": 4115,
+     "genre": "rock en español"
+    },
+    {
+     "artist": "Maná",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Mana",
+     "title": "Clavado en Un Bar",
+     "trackId": 2820791,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/f6cb42fd8287c36fcd0ebaf5d0a7fd63/500x500-000000-80-0-0.jpg",
+     "album": "Sueños Líquidos",
+     "year": 1997,
+     "eraAccurate": true,
+     "artistId": 4115,
+     "genre": "rock en español"
     },
     {
      "artist": "Intocable",
@@ -8341,6 +8383,20 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "Maná",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Mana",
+     "title": "Mariposa Traicionera",
+     "trackId": 3887322,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/3acdb5d7fcb2a74686c598758f226aff/500x500-000000-80-0-0.jpg",
+     "album": "Revolución De Amor",
+     "year": 2003,
+     "eraAccurate": true,
+     "artistId": 4115,
+     "genre": "rock en español"
+    },
+    {
      "artist": "RBD",
      "diaspora": false,
      "decade": "2000s",
@@ -8521,6 +8577,34 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 4477,
      "genre": "pop"
+    },
+    {
+     "artist": "Maná",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Mana",
+     "title": "Labios Compartidos",
+     "trackId": 797372,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/384fb92f4ad9c4f74297ac3a30aab36f/500x500-000000-80-0-0.jpg",
+     "album": "Amar es Combatir (Limited Edition CD+DVD)",
+     "year": 2006,
+     "eraAccurate": true,
+     "artistId": 4115,
+     "genre": "rock en español"
+    },
+    {
+     "artist": "Maná",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Mana",
+     "title": "Bendita Tu Luz",
+     "trackId": 797410,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/384fb92f4ad9c4f74297ac3a30aab36f/500x500-000000-80-0-0.jpg",
+     "album": "Amar es Combatir (Limited Edition CD+DVD)",
+     "year": 2006,
+     "eraAccurate": true,
+     "artistId": 4115,
+     "genre": "rock en español"
     },
     {
      "artist": "Alejandro Fernández",
