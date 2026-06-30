@@ -321,3 +321,14 @@ body.list-view #map,body.list-view #map-hint,body.list-view .brand{display:none}
   box-shadow:3px 3px 0 var(--pink);transition:transform .12s}
 .art-modal__x:hover{transform:scale(1.08)}
 .art-modal__x:active{transform:translateY(2px)}
+
+.clist__head{display:flex;align-items:center;gap:12px;margin-bottom:20px;max-width:62%}
+.clist__logo{width:50px;height:50px;object-fit:contain;transform:rotate(-6deg);filter:drop-shadow(2px 2px 0 var(--pink));flex:0 0 auto}
+.clist__title{font-family:"Anton",sans-serif;font-size:28px;line-height:.82;color:var(--paper);text-shadow:3px 3px 0 var(--pink);text-transform:uppercase}
+.clist__sub{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;color:var(--paper);margin-top:7px;opacity:.9}
+@media (max-width:680px){
+  .view-toggle{display:none}
+  .clist__head{max-width:74%}
+  .clist__title{font-size:23px}
+  .clist__logo{width:44px;height:44px}
+}

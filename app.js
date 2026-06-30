@@ -58,6 +58,7 @@ d3.json(ATLAS).then(world => {
 
   svg.call(zoom);
   document.getElementById("map-hint").style.opacity = 1;
+  if (document.body.classList.contains("list-view")) buildCountryList();
 });
 
 function nameOf(d){ const c = isoToCode[+d.id]; return c ? COUNTRIES[c].name : (d.properties && d.properties.name) || "Somewhere"; }
@@ -603,6 +604,7 @@ function buildCountryList(){
     .filter(f => +f.id !== 10 && !isoToCode[+f.id] && f.properties && f.properties.name)
     .map(f => f.properties.name))].sort((a, b) => a.localeCompare(b));
   clist.innerHTML =
+    '<div class="clist__head"><img class="clist__logo" src="logo.png" alt=""><div><div class="clist__title">WORLD<br>MIXTAPE</div><div class="clist__sub">The world&#39;s local music, decade by decade.</div></div></div>' +
     '<div class="clist__sec">' +
     have.map(c => '<button class="clist__item" data-code="' + c.code + '" style="--accent:' + c.color + '">'
       + flagImg(c.code) + '<span class="clist__name">' + esc(c.name) + '</span></button>').join("") +
@@ -617,6 +619,7 @@ function setView(list){
   if (list && (!listBuilt || !document.querySelector(".clist__item"))){ buildCountryList(); listBuilt = features.length > 0; }
 }
 document.getElementById("view-toggle").onclick = () => setView(!document.body.classList.contains("list-view"));
+if (window.matchMedia && window.matchMedia("(max-width:680px)").matches) setView(true);  // mobile = list only
 
 
 /* ---------- album art lightbox ---------- */
