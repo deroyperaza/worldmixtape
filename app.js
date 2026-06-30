@@ -13,7 +13,7 @@ const flagImg = (code, cls) => `<img class="flag${cls ? " " + cls : ""}" src="ht
 /* ---------- ticker ---------- */
 (() => {
   const names = Object.entries(COUNTRIES).map(([code, c]) => `${flagImg(code)} ${c.name.toUpperCase()}`);
-  const msg = `★ NOW BROADCASTING ★ 28 COUNTRIES ★ FROM THE 50s TO NOW ★ NO IMPORTS ★ ${names.join("  ·  ")}  ·  `;
+  const msg = `★ NOW BROADCASTING ★ 28 COUNTRIES ★ A CENTURY OF SOUND ★ 1920s TO NOW ★ NO IMPORTS ★ ${names.join("  ·  ")}  ·  `;
   document.getElementById("ticker").innerHTML = msg + msg;
 })();
 
