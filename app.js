@@ -103,7 +103,7 @@ function updateFavCount(){
 function refreshFavHearts(){
   document.querySelectorAll(".track__fav").forEach(el => el.classList.toggle("on", isFav(+el.dataset.id)));
   const pf = document.getElementById("p-fav");
-  if (pf) pf.classList.toggle("on", qIndex >= 0 && queue[qIndex] && isFav(queue[qIndex].trackId));
+  if (pf) pf.classList.toggle("on", !!(qIndex >= 0 && queue[qIndex] && isFav(queue[qIndex].trackId)));
   const fm = document.getElementById("fav-meta"); if (fm && !/SHUFFLED/.test(fm.textContent)) fm.textContent = favs.length + " SAVED · TAP ♥ TO REMOVE";
   updateFavCount();
 }
@@ -471,14 +471,12 @@ async function play(i){
     if (queue[qIndex] !== t) return;                 // user skipped while we were resolving
     if (uri){
       const r = await SPOT.playFull(uri);
-      if (r === "ok"){ playSource = "full"; lastPos = 0; startFullPoll(); return; }
-      if (r === "needs-auth"){ SPOT.login(); return; }
-      if (r === "no-device") flashFullHint();        // Spotify app not active → tell the user how to enable full songs
+      if (r === "ok"){ playSource = "full"; lastPos = 0; startFullPoll(); startDeskProgress(); return; }
+      flashFullHint();   // auth/scope, no active device, or failed → guide, then fall back (never auto-redirect mid-play)
     }
-    // Spotify couldn't play this (no active device, not on Spotify, or playback failed)
-    // → fall through to the 30s preview so audio never goes silent after connecting
+    // Spotify couldn't play this → fall through to the 30s preview so audio never goes silent after connecting
   }
-  stopFullPoll();
+  stopFullPoll(); stopDeskProgress();
   if (SPOT.isConnected()) SPOT.pause();
   playSource = "preview";
   const onUrl = url => {
@@ -563,16 +561,30 @@ async function toggleFull(){
     fullMode = true; localStorage.setItem("wmx_fullmode", "1"); SPOT.initSDK();
     flashPlayerNote(SPOT.isMobile ? "full songs on · plays through your Spotify app" : "full songs on · connecting Spotify…");
   } else {
-    fullMode = false; localStorage.removeItem("wmx_fullmode"); SPOT.pause(); stopFullPoll(); playSource = "preview";
+    fullMode = false; localStorage.removeItem("wmx_fullmode"); SPOT.pause(); stopFullPoll(); stopDeskProgress(); playSource = "preview";
   }
   updateFullUI();
   if (qIndex >= 0) play(qIndex);
 }
 
+// desktop SDK only fires on state CHANGES (play/pause/seek/track), not every tick — so we snapshot
+// position+time on each event and interpolate between them for a smooth playhead.
+let spotBase = 0, spotBaseTs = 0, spotPlaying = false, deskTimer = null;
+function startDeskProgress(){
+  if (SPOT.isMobile || deskTimer) return;
+  deskTimer = setInterval(() => {
+    if (playSource !== "full" || !spotPlaying || scrubbing || !curDuration) return;
+    const pos = Math.min(curDuration, spotBase + (performance.now() - spotBaseTs));
+    document.getElementById("p-progress").style.width = (pos / curDuration * 100) + "%";
+  }, 250);
+}
+function stopDeskProgress(){ if (deskTimer){ clearInterval(deskTimer); deskTimer = null; } }
+
 SPOT.onState(s => {                                          // desktop SDK: drive the bar + auto-advance
   if (!fullMode || !s) return;
   const dur = s.duration || 0, pos = s.position || 0;
   curDuration = dur;
+  spotBase = pos; spotBaseTs = performance.now(); spotPlaying = !s.paused;   // snapshot for smooth interpolation
   if (!scrubbing && dur) document.getElementById("p-progress").style.width = (pos / dur * 100) + "%";
   setPlayIcon(!s.paused); player.classList.toggle("playing", !s.paused);
   if (s.paused && pos === 0 && lastPos > 2000){ lastPos = 0; next(); return; }   // track finished
