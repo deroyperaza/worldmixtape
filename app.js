@@ -17,7 +17,7 @@ const flagImg = (code, cls) => `<img class="flag${cls ? " " + cls : ""}" src="ht
 (() => {
   const names = Object.entries(COUNTRIES).map(([code, c]) => `${flagImg(code)} ${c.name.toUpperCase()}`);
   const songs = Object.values(COUNTRIES).reduce((n, c) => n + Object.values(c.eras).reduce((m, e) => m + e.length, 0), 0);
-  const hours = Math.round(songs * 244.5 / 3600);   // 244.5s = mean track length, measured across the full Deezer duration scan
+  const hours = Math.round(songs * 245.9 / 3600);   // 245.9s = mean track length, measured across the full Deezer duration scan (7,002 tracks)
   const msg = `★ NOW BROADCASTING ★ ${names.length} COUNTRIES ★ ${songs.toLocaleString()} SONGS ★ ${hours.toLocaleString()} HOURS OF MUSIC ★ A CENTURY OF SOUND ★ 1920s TO NOW ★ NO IMPORTS ★ ${names.join("  ·  ")}  ·  `;
   document.getElementById("ticker").innerHTML = msg + msg;
 })();
