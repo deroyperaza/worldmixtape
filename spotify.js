@@ -10,7 +10,7 @@
    3. Paste the app's Client ID below.
 */
 const SPOT = (() => {
-  const CLIENT_ID = "";                                  // ← paste your Spotify Client ID here
+  const CLIENT_ID = "e43e8316d97949939f556e053cf20299";  // Spotify app Client ID (worldmixtape.com)
   const SCOPES = "streaming user-read-email user-read-private";
   const TOKEN_KEY = "wmx_spotify_tok";
   const redirectUri = () => location.origin + location.pathname;
