@@ -197,6 +197,7 @@ const SPOT = (() => {
     needsReauth: () => isMobile && !!token && !/user-modify-playback-state/.test(tokScopes),   // token lacks Connect scope → re-login
     playlistReady: () => !!token && /playlist-modify/.test(tokScopes),                          // token actually has playlist-modify scope
     hasPlaylist: () => !!localStorage.getItem("wmx_sp_playlist"),
+    scopes: () => tokScopes,                                                                     // diagnostics: SPOT.scopes()
     premiumOK: () => premiumOK,
     login, handleRedirect, initSDK, search, playUri, playFull, getPlayback, me, syncPlaylist,
     toggle: () => { isMobile ? toggleConnect() : (player && player.togglePlay()); },

@@ -650,9 +650,10 @@ if (pFull) pFull.onclick = toggleFull;
   if (SPOT.isConnected()) SPOT.initSDK(); else fullMode = false;
   updateFullUI();
   if (resumeFaves){                                          // came back from the playlist auth → finish + confirm
-    sessionStorage.removeItem("wmx_resume_faves");
+    sessionStorage.removeItem("wmx_resume_faves");           // clear FIRST so nothing can re-loop the redirect
     openFavorites();
-    syncFavesToSpotify(false);
+    if (SPOT.isConnected() && SPOT.playlistReady()) syncFavesToSpotify(false);   // have the scope → build + confirm
+    else flashFavSync("Spotify didn't grant playlist access — tap the button to retry");   // never auto-redirect again
   }
 })();
 
