@@ -58,7 +58,8 @@ body{
 }
 
 /* brand lockup */
-.brand{position:fixed;top:42px;left:18px;z-index:35;pointer-events:none}
+.brand{position:fixed;top:42px;left:18px;z-index:45;pointer-events:none;transition:opacity .3s}
+body.panel-open .brand{opacity:.45}
 
 /* top-right controls: favorites + shuffle */
 .topctrls{position:fixed;top:36px;right:14px;z-index:48;display:flex;align-items:flex-start;gap:10px}

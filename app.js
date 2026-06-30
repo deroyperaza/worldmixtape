@@ -157,8 +157,8 @@ function onCountry(e, d) {
   openPanel();
 }
 
-function openPanel(){ panel.classList.add("show"); scrim.classList.add("show"); panel.setAttribute("aria-hidden","false"); }
-function closePanel(){ panel.classList.remove("show"); scrim.classList.remove("show"); panel.setAttribute("aria-hidden","true"); d3.selectAll("path.country").classed("active", false); }
+function openPanel(){ panel.classList.add("show"); scrim.classList.add("show"); document.body.classList.add("panel-open"); panel.setAttribute("aria-hidden","false"); }
+function closePanel(){ panel.classList.remove("show"); scrim.classList.remove("show"); document.body.classList.remove("panel-open"); panel.setAttribute("aria-hidden","true"); d3.selectAll("path.country").classed("active", false); }
 function backToMap(){ closePanel(); setShuf(""); }   // leaving for the map resets shuffle scope to the world
 document.getElementById("panel-close").onclick = backToMap;
 scrim.onclick = backToMap;
