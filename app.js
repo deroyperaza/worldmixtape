@@ -215,10 +215,10 @@ function renderTracks(list){
     : (activeCode && COUNTRIES[activeCode] ? COUNTRIES[activeCode].color : "#ff2e92"));
   tl.innerHTML = list.map((t, i) => `
     <div class="track" data-i="${i}" style="animation-delay:${Math.min(i,30)*0.03}s;--accent:${accOf(t)}">
-      <div class="track__rank">${i+1}</div>
+      <div class="track__rank">${i+1}${t.year?`<span class="track__yr">${t.year}</span>`:''}</div>
       <img class="track__art" loading="lazy" src="${t.cover||''}" alt="">
       <div class="track__txt">
-        <div class="track__title">${esc(t.title)}${t.year?`<span class="track__yr">${t.year}</span>`:''}</div>
+        <div class="track__title">${esc(t.title)}</div>
         <div class="track__artist">${esc(t.artist)}${t.diaspora?'<span class="track__nf">diáspora</span>':''}</div>
       </div>
       <button class="track__fav${isFav(t.trackId)?" on":""}" data-i="${i}" data-id="${t.trackId}" aria-label="Save to favorites">♥</button>
@@ -227,6 +227,10 @@ function renderTracks(list){
   tl.querySelectorAll(".track").forEach(el => el.onclick = () => play(+el.dataset.i));
   tl.querySelectorAll(".track__fav").forEach(el => el.onclick = e => {
     e.stopPropagation(); toggleFav(list[+el.dataset.i], activeCode); refreshFavHearts();
+  });
+  tl.querySelectorAll(".track").forEach(el => {   // hover → ticker any cut-off title/artist
+    el.addEventListener("mouseenter", () => { hoverMq(el.querySelector(".track__title"), true); hoverMq(el.querySelector(".track__artist"), true); });
+    el.addEventListener("mouseleave", () => { hoverMq(el.querySelector(".track__title"), false); hoverMq(el.querySelector(".track__artist"), false); });
   });
   highlightRow();
 }
@@ -400,6 +404,25 @@ function dzTrack(id, cb){
   s.onerror = () => { cb(null); s.remove(); };
   s.src = `https://api.deezer.com/track/${id}?output=jsonp&callback=${name}`;
   document.body.appendChild(s);
+}
+
+// marquee an element on demand (used on row hover) — only if its text is cut off
+function hoverMq(el, on){
+  if (!el) return;
+  if (on){
+    if (el.dataset.mq != null) return;
+    if (el.scrollWidth <= el.clientWidth + 4) return;     // fits → leave it
+    el.dataset.mq = el.innerHTML;
+    el.style.setProperty("--mq-dur", Math.max(6, Math.round(el.scrollWidth / 26)) + "s");
+    el.innerHTML = '<span class="mq-track"><span class="mq-seg">' + el.dataset.mq + '</span><span class="mq-seg" aria-hidden="true">' + el.dataset.mq + '</span></span>';
+    el.classList.add("mq");
+  } else {
+    if (el.dataset.mq == null) return;
+    el.classList.remove("mq");
+    el.innerHTML = el.dataset.mq;
+    delete el.dataset.mq;
+    el.style.removeProperty("--mq-dur");
+  }
 }
 
 // set player title/artist; gently marquee the line only when it overflows
