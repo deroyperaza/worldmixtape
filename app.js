@@ -105,13 +105,13 @@ function refreshFavHearts(){
 function openFavorites(){
   activeCode = null; currentEra = null; currentGenre = null;
   if (!favs.length){
-    inner.innerHTML = `<div class="jhead"><div class="jhead__flag jhead__flag--ico">♡</div>
-      <h2 class="jhead__name" style="--accent:var(--pink)">Favorites</h2></div>
+    inner.innerHTML = `<div class="jhead"><div class="jhead__top"><div class="jhead__flag jhead__flag--ico">♡</div>
+      <h2 class="jhead__name" style="--accent:var(--pink)">Favorites</h2></div></div>
       <div class="empty">no favorites yet… <em>tap the ♥</em><small>save tracks while you listen and they'll live here.</small></div>`;
     setShuf(""); openPanel(); return;
   }
-  inner.innerHTML = `<div class="jhead"><div class="jhead__flag jhead__flag--ico">♥</div>
-    <h2 class="jhead__name" style="--accent:var(--pink)">Favorites</h2>
+  inner.innerHTML = `<div class="jhead"><div class="jhead__top"><div class="jhead__flag jhead__flag--ico">♥</div>
+    <h2 class="jhead__name" style="--accent:var(--pink)">Favorites</h2></div>
     <div class="jhead__meta" id="fav-meta"></div></div>
     <div class="fav-ctrls" id="fav-ctrls"></div>
     <div id="tracklist"></div>`;
@@ -160,8 +160,8 @@ scrim.onclick = backToMap;
 
 function openEmpty(name){
   activeCode = null; queue = []; qIndex = -1;
-  inner.innerHTML = `<div class="jhead"><div class="jhead__flag">📻</div>
-    <h2 class="jhead__name" style="--accent:var(--yellow)">${name}</h2></div>
+  inner.innerHTML = `<div class="jhead"><div class="jhead__top"><div class="jhead__flag">📻</div>
+    <h2 class="jhead__name" style="--accent:var(--yellow)">${name}</h2></div></div>
     <div class="empty">no mixtape here… <em>yet</em><small>this prototype carries 28 countries. ${name} is on deck.</small></div>`;
   setShuf("");
 }
@@ -192,8 +192,10 @@ function openCountry(code){
 
   inner.innerHTML = `
     <div class="jhead">
-      <div class="jhead__flag">${flagImg(code)}</div>
-      <h2 class="jhead__name" style="--accent:${c.color}">${c.name}</h2>
+      <div class="jhead__top">
+        <div class="jhead__flag">${flagImg(code)}</div>
+        <h2 class="jhead__name" style="--accent:${c.color}">${c.name}</h2>
+      </div>
       <div class="jhead__meta" id="jmeta">NATIVES + DIÁSPORA · ${c.name.toUpperCase()}</div>
     </div>
     ${eraBar}
@@ -411,7 +413,6 @@ async function play(i){
   document.getElementById("p-artist").innerHTML = esc(t.artist)
     + (cc ? " · " + flagImg(cc) + " " + esc(COUNTRIES[cc].name) : "")
     + (t.year ? " · " + t.year : "") + (t.genre ? " · " + esc(t.genre.replace(/(^|[^\p{L}])(\p{L})/gu, (m, a, b) => a + b.toUpperCase())) : "");
-  document.getElementById("p-side").textContent = "SIDE " + (qIndex % 2 ? "B" : "A");
   document.getElementById("p-progress").style.width = "0%";
   setPlayIcon(true); player.classList.add("playing");
   // world-shuffle: light up the track's country on the map as it plays
