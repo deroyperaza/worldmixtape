@@ -108,7 +108,7 @@ body{
 .brand__tape{display:flex;align-items:center;gap:10px}
 .brand__logo{width:104px;height:104px;object-fit:contain;transform:rotate(-6deg);
   filter:drop-shadow(3px 3px 0 var(--pink));flex:0 0 auto}
-@media (max-width:680px){ .brand__logo{width:78px;height:78px} }
+@media (max-width:680px){ .brand__logo{width:62px;height:62px} }
 .brand__title{font-family:"Anton",sans-serif;font-weight:400;line-height:.82;margin:0;
   font-size:clamp(34px,7vw,68px);letter-spacing:.01em;color:var(--paper);
   text-shadow:4px 4px 0 var(--pink), 8px 8px 0 rgba(0,0,0,.35);transform:rotate(-3deg)}
@@ -247,15 +247,18 @@ body{
 
 /* mobile */
 @media (max-width:680px){
-  .brand{top:34px;left:12px}
-  .brand__sub{font-size:11px;max-width:160px}
-  .topctrls{top:30px;right:10px;gap:7px}
-  .faves-btn{font-size:13px;padding:6px 9px}
-  .faves-btn__h{font-size:15px}
-  .shuffle{font-size:12px;padding:6px 8px 6px 10px;gap:6px}
-  .shuffle__ic{font-size:16px}
-  .shuffle-filt{padding:0 9px}
-  .shuffle-pop{top:74px;right:10px}
+  .brand{top:32px;left:11px}
+  .brand__title{font-size:30px}
+  .brand__sub{font-size:10px;max-width:150px;margin-top:8px}
+  .topctrls{top:30px;right:9px;gap:6px}
+  .faves-btn{font-size:11px;padding:5px 8px;gap:4px}
+  .faves-btn__h{font-size:13px}
+  .faves-btn i{font-size:11px;padding:0 5px}
+  .shuffle{font-size:9px;padding:5px 6px 5px 8px;gap:5px}
+  .shuffle__ic{font-size:13px}
+  .shuffle__tx b{display:inline-block;max-width:92px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
+  .shuffle-filt{padding:0 7px;font-size:11px}
+  .shuffle-pop{top:70px;right:9px}
   .panel{top:26px;width:100vw;border-left:none;border-top:5px solid var(--lime)}
   .map-hint{bottom:88px;font-size:11px}
   .player{height:72px;gap:7px;padding:0 7px}
