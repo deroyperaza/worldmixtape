@@ -3005,6 +3005,34 @@ const COUNTRIES = {
      "year": 2017,
      "eraAccurate": true,
      "artistId": 8098
+    },
+    {
+     "artist": "Las Áñez",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Las Áñez",
+     "title": "En la Lucha",
+     "trackId": 860694302,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/296f355b75c50e3ccc1ae49674ceeba2/500x500-000000-80-0-0.jpg",
+     "album": "Reflexión",
+     "year": 2017,
+     "eraAccurate": true,
+     "artistId": 6153426,
+     "genre": "folk"
+    },
+    {
+     "artist": "Las Áñez",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Las Áñez",
+     "title": "Como Si Fuera Yo",
+     "trackId": 1833937797,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/db9771014e7fa4d69c3c4f01ada0a396/500x500-000000-80-0-0.jpg",
+     "album": "Como Si Fuera Yo",
+     "year": 2019,
+     "eraAccurate": true,
+     "artistId": 6153426,
+     "genre": "folk"
     }
    ],
    "2020s": [
@@ -3329,6 +3357,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 151217032,
      "genre": "pop"
+    },
+    {
+     "artist": "Las Áñez",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Las Áñez",
+     "title": "Las Aguas de Macondo",
+     "trackId": 3938919141,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/023de19c38410de596f0d2ead4925a22/500x500-000000-80-0-0.jpg",
+     "album": "Dualismo Mágico",
+     "year": 2023,
+     "eraAccurate": true,
+     "artistId": 6153426,
+     "genre": "folk"
     },
     {
      "artist": "Kapo",
@@ -8285,6 +8327,20 @@ const COUNTRIES = {
      "genre": "norteño"
     },
     {
+     "artist": "Julieta Venegas",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Julieta Venegas",
+     "title": "Lento",
+     "trackId": 15390406,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/5fa0a94d2b693c8794eee872bc3c9d57/500x500-000000-80-0-0.jpg",
+     "album": "Si",
+     "year": 2003,
+     "eraAccurate": true,
+     "artistId": 4477,
+     "genre": "pop"
+    },
+    {
      "artist": "RBD",
      "diaspora": false,
      "decade": "2000s",
@@ -8437,6 +8493,34 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 363109,
      "genre": "duranguense"
+    },
+    {
+     "artist": "Julieta Venegas",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Julieta Venegas",
+     "title": "Limón y Sal",
+     "trackId": 15604767,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/0901c3888106ea714af3b5958e086a62/500x500-000000-80-0-0.jpg",
+     "album": "Limon Y Sal",
+     "year": 2006,
+     "eraAccurate": true,
+     "artistId": 4477,
+     "genre": "pop"
+    },
+    {
+     "artist": "Julieta Venegas",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Julieta Venegas",
+     "title": "Eres para Mí",
+     "trackId": 15604774,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/0901c3888106ea714af3b5958e086a62/500x500-000000-80-0-0.jpg",
+     "album": "Limon Y Sal",
+     "year": 2006,
+     "eraAccurate": true,
+     "artistId": 4477,
+     "genre": "pop"
     },
     {
      "artist": "Alejandro Fernández",
@@ -10788,6 +10872,20 @@ const COUNTRIES = {
      "genre": "rock nacional"
     },
     {
+     "artist": "Soda Stereo",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Soda Stereo",
+     "title": "Persiana Americana",
+     "trackId": 13247454,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/c8740ff412c45180d98441c84159f232/500x500-000000-80-0-0.jpg",
+     "album": "Me Verás Volver (Hits & Más)",
+     "year": 1986,
+     "eraAccurate": true,
+     "artistId": 4345,
+     "genre": "rock nacional"
+    },
+    {
      "artist": "Charly García",
      "diaspora": false,
      "decade": "1980s",
@@ -10827,6 +10925,20 @@ const COUNTRIES = {
      "year": 1987,
      "eraAccurate": true,
      "artistId": 4941,
+     "genre": "rock nacional"
+    },
+    {
+     "artist": "Soda Stereo",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Soda Stereo",
+     "title": "En La Ciudad De La Furia",
+     "trackId": 13247458,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/c8740ff412c45180d98441c84159f232/500x500-000000-80-0-0.jpg",
+     "album": "Me Verás Volver (Hits & Más)",
+     "year": 1988,
+     "eraAccurate": true,
+     "artistId": 4345,
      "genre": "rock nacional"
     },
     {
@@ -10899,6 +11011,20 @@ const COUNTRIES = {
      "year": 1990,
      "eraAccurate": true,
      "artistId": 4300,
+     "genre": "rock nacional"
+    },
+    {
+     "artist": "Soda Stereo",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Soda Stereo",
+     "title": "De Música Ligera",
+     "trackId": 13247459,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/c8740ff412c45180d98441c84159f232/500x500-000000-80-0-0.jpg",
+     "album": "Me Verás Volver (Hits & Más)",
+     "year": 1990,
+     "eraAccurate": true,
+     "artistId": 4345,
      "genre": "rock nacional"
     },
     {
@@ -33152,6 +33278,34 @@ const COUNTRIES = {
      "genre": "rai"
     },
     {
+     "artist": "Manu Chao",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Manu Chao",
+     "title": "Clandestino",
+     "trackId": 71590745,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/d8799322e229f514cc543874e7726517/500x500-000000-80-0-0.jpg",
+     "album": "Clandestino",
+     "year": 1998,
+     "eraAccurate": true,
+     "artistId": 6,
+     "genre": "rock francais"
+    },
+    {
+     "artist": "Manu Chao",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Manu Chao",
+     "title": "Bongo Bong",
+     "trackId": 71590747,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/d8799322e229f514cc543874e7726517/500x500-000000-80-0-0.jpg",
+     "album": "Clandestino",
+     "year": 1998,
+     "eraAccurate": true,
+     "artistId": 6,
+     "genre": "rock francais"
+    },
+    {
      "artist": "Noir Desir",
      "diaspora": false,
      "decade": "1990s",
@@ -33474,6 +33628,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 6404,
      "genre": "electronique"
+    },
+    {
+     "artist": "Manu Chao",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Manu Chao",
+     "title": "Me Llaman Calle",
+     "trackId": 4207596,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/d61dd60c8f40a4f3d9951b1e5ea171ea/500x500-000000-80-0-0.jpg",
+     "album": "Me Llaman Calle",
+     "year": 2007,
+     "eraAccurate": true,
+     "artistId": 6,
+     "genre": "rock francais"
     },
     {
      "artist": "Booba",
@@ -58242,20 +58410,6 @@ const COUNTRIES = {
      "artistId": 139171932
     },
     {
-     "artist": "Daddy Yankee",
-     "diaspora": false,
-     "decade": "now",
-     "genre": "reggaeton",
-     "dzArtist": "Daddy Yankee",
-     "title": "Gasolina",
-     "trackId": 4094436391,
-     "cover": "https://cdn-images.dzcdn.net/images/cover/5e0ae822dc6fd9e18027ff37d1da2905/500x500-000000-80-0-0.jpg",
-     "album": "VERANO GASOLINA 2024",
-     "year": 2026,
-     "eraAccurate": true,
-     "artistId": 3839
-    },
-    {
      "artist": "Arcángel",
      "diaspora": false,
      "decade": "now",
@@ -58407,20 +58561,6 @@ const COUNTRIES = {
      "year": 2026,
      "eraAccurate": true,
      "artistId": 139171932,
-     "genre": "salsa"
-    },
-    {
-     "artist": "Daddy Yankee",
-     "diaspora": false,
-     "decade": "now",
-     "dzArtist": "Daddy Yankee",
-     "title": "Lo Que Pasó, Pasó",
-     "trackId": 4094436401,
-     "cover": "https://cdn-images.dzcdn.net/images/cover/5e0ae822dc6fd9e18027ff37d1da2905/500x500-000000-80-0-0.jpg",
-     "album": "VERANO GASOLINA 2024",
-     "year": 2026,
-     "eraAccurate": true,
-     "artistId": 3839,
      "genre": "salsa"
     },
     {
@@ -68722,20 +68862,6 @@ const COUNTRIES = {
      "genre": "indie"
     },
     {
-     "artist": "Tame Impala",
-     "diaspora": false,
-     "decade": "2010s",
-     "dzArtist": "Tame Impala",
-     "title": "Dracula",
-     "trackId": 3818963601,
-     "cover": "https://cdn-images.dzcdn.net/images/cover/b868399da682f34dcd7d98af1c0de80b/500x500-000000-80-0-0.jpg",
-     "album": "Dracula (Remix)",
-     "year": 2012,
-     "eraAccurate": true,
-     "artistId": 134790,
-     "genre": "indie"
-    },
-    {
      "artist": "Flume",
      "diaspora": false,
      "decade": "2010s",
@@ -68748,6 +68874,34 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1164295,
      "genre": "electronic"
+    },
+    {
+     "artist": "Tame Impala",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Tame Impala",
+     "title": "Feels Like We Only Go Backwards",
+     "trackId": 60765507,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/9fe30ce99ef17cb1250bef071f15ccee/500x500-000000-80-0-0.jpg",
+     "album": "Lonerism",
+     "year": 2012,
+     "eraAccurate": true,
+     "artistId": 134790,
+     "genre": "rock"
+    },
+    {
+     "artist": "Tame Impala",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Tame Impala",
+     "title": "Elephant",
+     "trackId": 60765509,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/9fe30ce99ef17cb1250bef071f15ccee/500x500-000000-80-0-0.jpg",
+     "album": "Lonerism",
+     "year": 2012,
+     "eraAccurate": true,
+     "artistId": 134790,
+     "genre": "rock"
     },
     {
      "artist": "Vance Joy",
@@ -71537,6 +71691,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 122316762,
      "genre": "dembow"
+    },
+    {
+     "artist": "Romeo Santos",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Romeo Santos",
+     "title": "Dardos",
+     "trackId": 3677908682,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/4fa4486790013698c966ed7789f8a2aa/500x500-000000-80-0-0.jpg",
+     "album": "Better Late Than Never",
+     "year": 2024,
+     "eraAccurate": true,
+     "artistId": 1272674,
+     "genre": "bachata"
     }
    ]
   }
