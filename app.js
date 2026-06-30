@@ -7,8 +7,6 @@ Object.entries(COUNTRIES).forEach(([code, c]) => { isoToCode[+c.iso] = code; });
 
 // teams that played the 2026 FIFA World Cup (⚽ sticker on their country label)
 const WC2026 = new Set(["AR","AU","BR","CA","CO","EG","ES","FR","GB","GH","JP","KR","MX","PA","SN","TR","US","ZA","DE","CD","CV","PT","TN","CI","NO","SE","EC","BE","BA","AT","HR","CH","DZ","MA","PY"]);
-// crisp soccer-ball glyph (fills its box edge-to-edge — no emoji padding)
-const BALL = '<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#fbfbf5" stroke="#0a0916" stroke-width="7"/><path fill="#0a0916" d="M50 28l17 12.5-6.5 20H39.5L33 40.5z"/><path fill="#0a0916" d="M50 11l-5.5 10.5h11z"/><path fill="#0a0916" d="M84 39l-9 6 3.5 10z"/><path fill="#0a0916" d="M72 82l-9.5-3.5L59 89z"/><path fill="#0a0916" d="M28 82l9.5-3.5L41 89z"/><path fill="#0a0916" d="M16 39l9 6-3.5 10z"/></svg>';
 
 // alpha-2 code -> flag emoji
 const flag = code => code.replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt()));
@@ -19,7 +17,7 @@ const flagImg = (code, cls) => `<img class="flag${cls ? " " + cls : ""}" src="ht
 (() => {
   const names = Object.entries(COUNTRIES).map(([code, c]) => `${flagImg(code)} ${c.name.toUpperCase()}`);
   const songs = Object.values(COUNTRIES).reduce((n, c) => n + Object.values(c.eras).reduce((m, e) => m + e.length, 0), 0);
-  const hours = Math.round(songs * 217 / 3600);   // 217s = measured mean Deezer track length across the catalog
+  const hours = Math.round(songs * 244.5 / 3600);   // 244.5s = mean track length, measured across the full Deezer duration scan
   const msg = `★ NOW BROADCASTING ★ ${names.length} COUNTRIES ★ ${songs.toLocaleString()} SONGS ★ ${hours.toLocaleString()} HOURS OF MUSIC ★ A CENTURY OF SOUND ★ 1920s TO NOW ★ NO IMPORTS ★ ${names.join("  ·  ")}  ·  `;
   document.getElementById("ticker").innerHTML = msg + msg;
 })();
@@ -202,7 +200,7 @@ function openCountry(code){
     <div class="jhead">
       <div class="jhead__top">
         <div class="jhead__flag">${flagImg(code)}</div>
-        <h2 class="jhead__name" style="--accent:${c.color}">${c.name}${WC2026.has(code) ? '<span class="wc-ball" title="2026 World Cup team" aria-label="2026 World Cup team">' + BALL + '</span>' : ''}</h2>
+        <h2 class="jhead__name" style="--accent:${c.color}">${c.name}${WC2026.has(code) ? '<span class="wc-ball" title="2026 World Cup team" aria-label="2026 World Cup team">⚽</span>' : ''}</h2>
       </div>
       <div class="jhead__meta" id="jmeta">NATIVES + DIÁSPORA · ${c.name.toUpperCase()}</div>
     </div>
@@ -667,7 +665,7 @@ function buildCountryList(){
     '<div class="clist__head"><div class="brand__tape"><img class="brand__logo" src="logo.png" alt="World Mixtape"><div class="brand__title">WORLD<br><span>MIXTAPE</span></div></div><p class="brand__sub">The world&#39;s local music,<br>decade by decade.</p></div>' +
     '<div class="clist__sec">' +
     have.map(c => '<button class="clist__item" data-code="' + c.code + '" style="--accent:' + c.color + '">'
-      + flagImg(c.code) + '<span class="clist__name">' + esc(c.name) + (WC2026.has(c.code) ? '<span class="wc-ball wc-ball--list" aria-hidden="true">' + BALL + '</span>' : '') + '</span></button>').join("") +
+      + flagImg(c.code) + '<span class="clist__name">' + esc(c.name) + (WC2026.has(c.code) ? '<span class="wc-ball wc-ball--list" aria-hidden="true">⚽</span>' : '') + '</span></button>').join("") +
     '</div>' +
     (soon.length ? '<div class="clist__soonhdr">more countries — coming soon</div><div class="clist__soon">'
       + soon.map(n => '<span class="clist__soon-item">' + esc(n) + '</span>').join("") + '</div>' : "");
