@@ -402,6 +402,18 @@ function dzTrack(id, cb){
   document.body.appendChild(s);
 }
 
+// set player title/artist; gently marquee the line only when it overflows
+function setMeta(el, html){
+  el.classList.remove("mq");
+  el.innerHTML = html;
+  const w = el.scrollWidth;
+  if (w > el.clientWidth + 4){
+    el.style.setProperty("--mq-dur", Math.max(9, Math.round(w / 26)) + "s");
+    el.innerHTML = '<span class="mq-track"><span class="mq-seg">' + html + '</span><span class="mq-seg" aria-hidden="true">' + html + '</span></span>';
+    el.classList.add("mq");
+  }
+}
+
 async function play(i){
   if (!queue.length) return;
   qIndex = (i + queue.length) % queue.length;
@@ -409,10 +421,10 @@ async function play(i){
   const cc = t._cc || activeCode;
   player.classList.add("show"); player.setAttribute("aria-hidden","false");
   document.getElementById("p-art").src = t.cover || "";
-  document.getElementById("p-title").textContent = t.title;
-  document.getElementById("p-artist").innerHTML = esc(t.artist)
+  setMeta(document.getElementById("p-title"), esc(t.title));
+  setMeta(document.getElementById("p-artist"), esc(t.artist)
     + (cc ? " · " + flagImg(cc) + " " + esc(COUNTRIES[cc].name) : "")
-    + (t.year ? " · " + t.year : "") + (t.genre ? " · " + esc(t.genre.replace(/(^|[^\p{L}])(\p{L})/gu, (m, a, b) => a + b.toUpperCase())) : "");
+    + (t.year ? " · " + t.year : "") + (t.genre ? " · " + esc(t.genre.replace(/(^|[^\p{L}])(\p{L})/gu, (m, a, b) => a + b.toUpperCase())) : ""));
   document.getElementById("p-progress").style.width = "0%";
   setPlayIcon(true); player.classList.add("playing");
   // world-shuffle: light up the track's country on the map as it plays

@@ -231,6 +231,12 @@ body{
 .player__meta{flex:1;min-width:0}
 .player__title{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .player__artist{font-size:11px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* gentle marquee — only applied (.mq) when the line overflows */
+.player__title.mq,.player__artist.mq{text-overflow:clip}
+.mq-track{display:inline-flex;animation:wmq var(--mq-dur,14s) linear infinite;will-change:transform}
+.mq-seg{display:inline-block;padding-right:2.6em;white-space:nowrap}
+@keyframes wmq{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.mq-track{animation:none}}
 .player__bar{height:5px;background:#2a2350;margin-top:6px;border-radius:3px;position:relative;cursor:pointer;touch-action:none}
 .player__bar::before{content:"";position:absolute;left:0;right:0;top:-8px;bottom:-8px}  /* bigger hit area */
 .player__bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--lime),var(--cyan));border-radius:3px;transition:width .2s linear;position:relative}
