@@ -473,15 +473,10 @@ async function play(i){
       const r = await SPOT.playFull(uri);
       if (r === "ok"){ playSource = "full"; lastPos = 0; startFullPoll(); return; }
       if (r === "needs-auth"){ SPOT.login(); return; }
-      if (r === "no-device"){ flashPlayerNote("Open Spotify on your phone, hit play once, then tap ▶ here"); playSource = "full"; stopFullPoll(); setPlayIcon(false); player.classList.remove("playing"); return; }
+      if (r === "no-device") flashFullHint();        // Spotify app not active → tell the user how to enable full songs
     }
-    if (SPOT.isMobile){                              // Connect-only: never silently fall back to a preview on mobile
-      flashPlayerNote(uri ? "Spotify couldn't play that — open the app & retry" : "not on Spotify — skipping");
-      playSource = "full"; stopFullPoll(); setPlayIcon(false); player.classList.remove("playing");
-      if (!uri) setTimeout(() => { if (queue[qIndex] === t) next(); }, 1300);
-      return;
-    }
-    // desktop only: no Spotify match → fall through to the 30s preview for this one
+    // Spotify couldn't play this (no active device, not on Spotify, or playback failed)
+    // → fall through to the 30s preview so audio never goes silent after connecting
   }
   stopFullPoll();
   if (SPOT.isConnected()) SPOT.pause();
@@ -548,10 +543,18 @@ function updateSpCta(){
   if (go) go.onclick = () => toggleFull();                       // kicks off the Spotify connect flow
   if (x)  x.onclick = e => { e.stopPropagation(); sessionStorage.setItem("wmx_cta_x", "1"); updateSpCta(); };
 }
-function flashPlayerNote(msg){
+function flashPlayerNote(msg, ms){
   const el = document.getElementById("p-artist"); if (!el) return;
   const prev = el.innerHTML; el.textContent = msg;
-  setTimeout(() => { if (el.textContent === msg) el.innerHTML = prev; }, 2400);
+  setTimeout(() => { if (el.textContent === msg) el.innerHTML = prev; }, ms || 2400);
+}
+// Shown when full-song mode is on but Spotify has no active device: explain how to make it work.
+// Once per page load so it guides without nagging on every track; playback still falls back to the preview.
+let fullHintShown = false;
+function flashFullHint(){
+  if (fullHintShown) return;
+  fullHintShown = true;
+  flashPlayerNote("For full songs: open your Spotify app and press play once · preview for now", 5200);
 }
 async function toggleFull(){
   if (!fullMode){
