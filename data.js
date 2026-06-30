@@ -83342,6 +83342,20 @@ const COUNTRIES = {
      "genre": "calypso"
     },
     {
+     "artist": "Lord Beginner",
+     "diaspora": false,
+     "decade": "pre1940s",
+     "dzArtist": "Lord Beginner",
+     "title": "Federation",
+     "trackId": 14085240,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/af57c4161a6e1ebcdc3957b2ebd3551d/500x500-000000-80-0-0.jpg",
+     "album": "Calypso in Britain (1950 - 1953), Vol. 2",
+     "year": 1937,
+     "eraAccurate": true,
+     "artistId": 12666,
+     "genre": "calypso"
+    },
+    {
      "artist": "King Radio",
      "diaspora": false,
      "decade": "pre1940s",
@@ -83456,6 +83470,20 @@ const COUNTRIES = {
      "genre": "calypso"
     },
     {
+     "artist": "Atilla the Hun",
+     "diaspora": false,
+     "decade": "1940s",
+     "dzArtist": "Atilla The Hun",
+     "title": "Commission's Report",
+     "trackId": 11454349,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/21ae19eac1ac8fdbde67b4043b62619a/500x500-000000-80-0-0.jpg",
+     "album": "Trinidad Calypsos - Recordings 1935 - 1940",
+     "year": 1947,
+     "eraAccurate": true,
+     "artistId": 1256001,
+     "genre": "calypso"
+    },
+    {
      "artist": "Lord Melody",
      "diaspora": false,
      "decade": "1940s",
@@ -83468,6 +83496,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 302083,
      "genre": "calypso"
+    },
+    {
+     "artist": "Lord Pretender",
+     "diaspora": false,
+     "decade": "1940s",
+     "dzArtist": "Brother Resistance & Lord Pretender",
+     "title": "Never Ever Worry",
+     "trackId": "it329591075",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/20/11/c1/2011c1d4-d217-bcbb-3cea-b25792cc1680/602707853523.jpg/600x600bb.jpg",
+     "album": "\"D Rapso Nation\" - Anthology of \"The Best of Rapso\"",
+     "year": 1948,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "calypso",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/53/df/f9/53dff929-c195-137d-cc0a-88fe3be1b458/mzaf_9990755965095971703.plus.aac.p.m4a"
     },
     {
      "artist": "Growling Tiger",
@@ -83542,6 +83586,20 @@ const COUNTRIES = {
      "genre": "calypso"
     },
     {
+     "artist": "Mighty Spoiler",
+     "diaspora": false,
+     "decade": "1950s",
+     "dzArtist": "The Mighty Spoiler",
+     "title": "Magistrate Try Himself",
+     "trackId": 917094892,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/741d319e050a73934683c3039e3406cb/500x500-000000-80-0-0.jpg",
+     "album": "Calypsos by the Mighty Spoiler",
+     "year": 1953,
+     "eraAccurate": true,
+     "artistId": 4223417,
+     "genre": "calypso"
+    },
+    {
      "artist": "Mighty Dictator",
      "diaspora": false,
      "decade": "1950s",
@@ -83581,6 +83639,20 @@ const COUNTRIES = {
      "year": 1955,
      "eraAccurate": true,
      "artistId": 274108,
+     "genre": "calypso"
+    },
+    {
+     "artist": "Lord Blakie",
+     "diaspora": false,
+     "decade": "1950s",
+     "dzArtist": "Lord Blakie",
+     "title": "Steelband Clash",
+     "trackId": 122460608,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/11c2a89b2826f4cc16dff06403921bed/500x500-000000-80-0-0.jpg",
+     "album": "Raw Kaiso I: Live In Concert In Port Of Spain, Trinidad",
+     "year": 1955,
+     "eraAccurate": true,
+     "artistId": 373345,
      "genre": "calypso"
     },
     {
@@ -83654,6 +83726,20 @@ const COUNTRIES = {
      "genre": "calypso"
     },
     {
+     "artist": "Lord Kitchener",
+     "diaspora": true,
+     "decade": "1950s",
+     "dzArtist": "Lord Kitchener",
+     "title": "Birth of Ghana",
+     "trackId": 13196305,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/9a3225362b5ade1c511c1bb767d561df/500x500-000000-80-0-0.jpg",
+     "album": "Calypso Romeo",
+     "year": 1957,
+     "eraAccurate": true,
+     "artistId": 92584,
+     "genre": "calypso"
+    },
+    {
      "artist": "Mighty Sparrow",
      "diaspora": false,
      "decade": "1950s",
@@ -83665,6 +83751,20 @@ const COUNTRIES = {
      "year": 1958,
      "eraAccurate": true,
      "artistId": 186789,
+     "genre": "calypso"
+    },
+    {
+     "artist": "Mighty Terror",
+     "diaspora": false,
+     "decade": "1950s",
+     "dzArtist": "Mighty Terror",
+     "title": "Patricia Gone with Millicent",
+     "trackId": 487666692,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/baa3586d166a487d0ed30e52466eb6af/500x500-000000-80-0-0.jpg",
+     "album": "London Is the Place for Me 5: Latin, Jazz, Calypso and Highlife from Young Black London",
+     "year": 1958,
+     "eraAccurate": true,
+     "artistId": 365803,
      "genre": "calypso"
     },
     {
@@ -83695,6 +83795,20 @@ const COUNTRIES = {
      "year": 1960,
      "eraAccurate": true,
      "artistId": 303944,
+     "genre": "calypso"
+    },
+    {
+     "artist": "Lord Melody",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Lord Melody",
+     "title": "Cowboy Sparrow",
+     "trackId": 1111622492,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/efd3e61432a711e01cf4265c64427302/500x500-000000-80-0-0.jpg",
+     "album": "The Modern Calypso Vol. 2",
+     "year": 1961,
+     "eraAccurate": true,
+     "artistId": 302083,
      "genre": "calypso"
     },
     {
@@ -83754,6 +83868,22 @@ const COUNTRIES = {
      "genre": "calypso"
     },
     {
+     "artist": "Lord Brynner",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Lord Brynner",
+     "title": "Congo War",
+     "trackId": "it1800093703",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/da/8f/80/da8f80fc-2a51-fa7e-d683-c8f67e6539c9/7204.jpg/600x600bb.jpg",
+     "album": "Original Reggae Hits of the 60's & 70's Vol. 4",
+     "year": 1964,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "calypso",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/17/db/ed/17dbed51-a0c3-cdb5-c24d-984e83098850/mzaf_7067322056765955191.plus.aac.p.m4a"
+    },
+    {
      "artist": "Mighty Sparrow",
      "diaspora": false,
      "decade": "1960s",
@@ -83807,6 +83937,20 @@ const COUNTRIES = {
      "year": 1966,
      "eraAccurate": true,
      "artistId": 361476,
+     "genre": "calypso"
+    },
+    {
+     "artist": "Lord Pretender",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "The Great Honourable Lord Pretender",
+     "title": "The Human Race",
+     "trackId": 63762011,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/6a2fc8e975dc344d61ca52e16ae1c5fa/500x500-000000-80-0-0.jpg",
+     "album": "The Man Who Never Ever Worried",
+     "year": 1966,
+     "eraAccurate": true,
+     "artistId": 1531263,
      "genre": "calypso"
     },
     {
@@ -83924,6 +84068,20 @@ const COUNTRIES = {
      "genre": "calypso"
     },
     {
+     "artist": "Shadow",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "SHADOW",
+     "title": "Unknown Bassman",
+     "trackId": 3266372441,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/d72232116919c792ad2af2806bd182e1/500x500-000000-80-0-0.jpg",
+     "album": "Just for You",
+     "year": 1974,
+     "eraAccurate": true,
+     "artistId": 203628,
+     "genre": "calypso"
+    },
+    {
      "artist": "Lord Shorty",
      "diaspora": false,
      "decade": "1970s",
@@ -83978,6 +84136,94 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 107213262,
      "genre": "soca"
+    },
+    {
+     "artist": "Lord Nelson",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Lord Nelson",
+     "title": "King Liar",
+     "trackId": 3267843761,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/fe803b6002d62b395c81bb7fd4abb48a/500x500-000000-80-0-0.jpg",
+     "album": "Greatest Hitz",
+     "year": 1976,
+     "eraAccurate": true,
+     "artistId": 490860,
+     "genre": "calypso"
+    },
+    {
+     "artist": "Maestro",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Maestro Tiquinho",
+     "title": "Tempo Tempo",
+     "trackId": 1085142272,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/b221a624d9519178e38f36f67454ad51/500x500-000000-80-0-0.jpg",
+     "album": "Trombonesia",
+     "year": 1976,
+     "eraAccurate": true,
+     "artistId": 11874075,
+     "genre": "soca"
+    },
+    {
+     "artist": "Calypso Rose",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Calypso Rose",
+     "title": "Tempo",
+     "trackId": 1534367222,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e99d254646b7f9f9018a1ed297a2d5c4/500x500-000000-80-0-0.jpg",
+     "album": "Nuits d'Afrique - 35 ans (Compilation rétrospective)",
+     "year": 1977,
+     "eraAccurate": true,
+     "artistId": 361476,
+     "genre": "calypso"
+    },
+    {
+     "artist": "Lord Kitchener",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Kitchener",
+     "title": "Sugar Bum Bum",
+     "trackId": "it1800237414",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/93/5a/d4/935ad473-f9c7-7c10-09c7-76d58397e81f/7957.jpg/600x600bb.jpg",
+     "album": "Port Royal Bacchanal",
+     "year": 1978,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "soca",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/55/a2/c2/55a2c202-f9e5-91b3-f166-331e10af8b76/mzaf_17772543140436883343.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Explainer",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Explainer",
+     "title": "Lorraine",
+     "trackId": 3270218591,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/415acf5e28b768db97f82ea90417d3a7/500x500-000000-80-0-0.jpg",
+     "album": "The Very Best of Explainer Vol.1 & 2",
+     "year": 1979,
+     "eraAccurate": true,
+     "artistId": 331843,
+     "genre": "soca"
+    },
+    {
+     "artist": "Shadow",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Shadow",
+     "title": "I Come Out to Play",
+     "trackId": "it353425356",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/d2/08/7c/d2087c2b-ad4d-781c-80d5-584c618291df/mzi.amcdhbnw.jpg/600x600bb.jpg",
+     "album": "The Best of the Shadow Vol. 1",
+     "year": 1979,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "soca",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/88/7d/77/887d7721-0f62-6323-04fc-ca790b0809f3/mzaf_1600453932493619979.plus.aac.p.m4a"
     }
    ],
    "1980s": [
@@ -84024,6 +84270,36 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "Penguin",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Penguin",
+     "title": "Soft Man",
+     "trackId": "it616903761",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music/v4/ce/a9/50/cea95098-fcab-7f01-ddca-dcf0ba7dccdd/Cover.jpg/600x600bb.jpg",
+     "album": "Soca Gold 2",
+     "year": 1984,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "soca",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/12/0a/b9/120ab9ff-d759-294d-f3b1-12617d003fff/mzaf_4623605560517618330.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Shadow",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "SHADOW",
+     "title": "Jump Judges",
+     "trackId": 3260453391,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/42c22e8dabf83f798615a88c45f1f331/500x500-000000-80-0-0.jpg",
+     "album": "Once Upon a Time",
+     "year": 1984,
+     "eraAccurate": true,
+     "artistId": 203628,
+     "genre": "soca"
+    },
+    {
      "artist": "Scrunter",
      "diaspora": false,
      "decade": "1980s",
@@ -84036,6 +84312,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 186784,
      "genre": "soca"
+    },
+    {
+     "artist": "Mighty Duke",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Mighty Duke",
+     "title": "Thunder",
+     "trackId": "it353425479",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music/29/db/33/mzi.wfovgjly.jpg/600x600bb.jpg",
+     "album": "The Mighty Duke Classic Collection 1986-1990",
+     "year": 1985,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "calypso",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/e1/74/09/e1740911-bae5-1d52-b424-6c44fa1b649c/mzaf_12197818557053029015.plus.aac.p.m4a"
     },
     {
      "artist": "David Rudder",
@@ -84066,6 +84358,20 @@ const COUNTRIES = {
      "genre": "soca"
     },
     {
+     "artist": "Gypsy",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Gypsy Jazz Caravan",
+     "title": "Beyond the Sea (La Mer)",
+     "trackId": 83219230,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/5dee8359eb0125f73fb6ed7370437eba/500x500-000000-80-0-0.jpg",
+     "album": "Gypsy Jazz Caravan III",
+     "year": 1986,
+     "eraAccurate": true,
+     "artistId": 1156710,
+     "genre": "calypso"
+    },
+    {
      "artist": "Baron",
      "diaspora": false,
      "decade": "1980s",
@@ -84092,6 +84398,36 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 502168,
      "genre": "calypso"
+    },
+    {
+     "artist": "Singing Sandra",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Singing Sandra",
+     "title": "Die with Dignity",
+     "trackId": 3267624861,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/7880230bb4acad4da2a3b1aecc136d7d/500x500-000000-80-0-0.jpg",
+     "album": "Sweet Sweet Soca",
+     "year": 1987,
+     "eraAccurate": true,
+     "artistId": 277741,
+     "genre": "calypso"
+    },
+    {
+     "artist": "Lord Kitchener",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Lord Kitchener",
+     "title": "Pan In Harmony",
+     "trackId": "it670604295",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music6/v4/f6/ee/70/f6ee706f-9831-c188-134e-f2042924ff40/Kitch_Home_for_Carnival.jpg/600x600bb.jpg",
+     "album": "Home For Carnival",
+     "year": 1987,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "soca",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/ef/12/04/ef12047f-f188-d42c-9a50-527e5bf338ce/mzaf_11807037826026077639.plus.aac.p.m4a"
     },
     {
      "artist": "Crazy",
@@ -84134,6 +84470,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 4700,
      "genre": "pop"
+    },
+    {
+     "artist": "Gypsy",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Gypsy Soul",
+     "title": "Little Drummer Boy",
+     "trackId": "it1541282807",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/4d/68/5d/4d685dc0-c115-7567-338d-03d4760cf682/195448802610.jpg/600x600bb.jpg",
+     "album": "Comfort and Joy",
+     "year": 1989,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "calypso",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview124/v4/b4/c2/f7/b4c2f730-9394-2f19-c125-3e6983dce543/mzaf_10923375088909795819.plus.aac.p.m4a"
     }
    ],
    "1990s": [
@@ -84194,6 +84546,20 @@ const COUNTRIES = {
      "genre": "soca"
     },
     {
+     "artist": "Sundar Popo",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Sundar Popo",
+     "title": "Scorpion Gyul",
+     "trackId": 3272059931,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/43767c0b68ba16e11fb2a09d6f25eee9/500x500-000000-80-0-0.jpg",
+     "album": "Classic",
+     "year": 1994,
+     "eraAccurate": true,
+     "artistId": 7063385,
+     "genre": "chutney soca"
+    },
+    {
      "artist": "Super Blue",
      "diaspora": false,
      "decade": "1990s",
@@ -84236,6 +84602,20 @@ const COUNTRIES = {
      "genre": "soca"
     },
     {
+     "artist": "Shadow",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "The Shadow Project",
+     "title": "Don't Be A Stranger",
+     "trackId": 63898949,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e868108b1afad9f90d428da8985b77ff/500x500-000000-80-0-0.jpg",
+     "album": "A Beauty To Fight For",
+     "year": 1995,
+     "eraAccurate": true,
+     "artistId": 1337829,
+     "genre": "soca"
+    },
+    {
      "artist": "Machel Montano",
      "diaspora": false,
      "decade": "1990s",
@@ -84264,6 +84644,34 @@ const COUNTRIES = {
      "genre": "soca"
     },
     {
+     "artist": "Xtatik",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Xtatik",
+     "title": "Big Truck",
+     "trackId": 2423750155,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/eeb07ad25562e8bb9b1623189f6a158e/500x500-000000-80-0-0.jpg",
+     "album": "Heavy Duty",
+     "year": 1997,
+     "eraAccurate": true,
+     "artistId": 393447,
+     "genre": "soca"
+    },
+    {
+     "artist": "Gypsy",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Gypsy George & The Open Road Love Affair",
+     "title": "Sailing Away",
+     "trackId": 903036902,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/88c2e2524d22fa66c4a65ff5f5e3edc0/500x500-000000-80-0-0.jpg",
+     "album": "Politics, Ex-Girlfriends & the Ayn Rand Shuffle",
+     "year": 1997,
+     "eraAccurate": true,
+     "artistId": 5331102,
+     "genre": "calypso"
+    },
+    {
      "artist": "Iwer George",
      "diaspora": false,
      "decade": "1990s",
@@ -84276,6 +84684,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 253298,
      "genre": "soca"
+    },
+    {
+     "artist": "Iwer George",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Iwer George",
+     "title": "Bottom in de Road",
+     "trackId": "it1642136172",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/ba/38/55/ba385504-2069-17c0-516b-93ccf17d918d/2702.jpg/600x600bb.jpg",
+     "album": "Greatest Hits",
+     "year": 1998,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "soca",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/48/3e/3a/483e3ab4-6823-0c93-e67c-aca0a5313610/mzaf_11074714360352999354.plus.aac.p.m4a"
     },
     {
      "artist": "Sanell Dempster",
@@ -84303,6 +84727,48 @@ const COUNTRIES = {
      "year": 1999,
      "eraAccurate": true,
      "artistId": 1410009,
+     "genre": "soca"
+    },
+    {
+     "artist": "Singing Sandra",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Singing Sandra",
+     "title": "Voices from De Ghetto",
+     "trackId": 3653106092,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/dd7d378996ad02251ae3f870dc228a27/500x500-000000-80-0-0.jpg",
+     "album": "Carnival in Trinidad",
+     "year": 1999,
+     "eraAccurate": true,
+     "artistId": 277741,
+     "genre": "calypso"
+    },
+    {
+     "artist": "Adesh Samaroo",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Adesh Samaroo",
+     "title": "Rum Till I Die",
+     "trackId": 1918964597,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/a4916c663cfbf058748d9f659e9b11bb/500x500-000000-80-0-0.jpg",
+     "album": "Rum Till I Die",
+     "year": 1999,
+     "eraAccurate": true,
+     "artistId": 1410235,
+     "genre": "chutney soca"
+    },
+    {
+     "artist": "KMC",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "KMC",
+     "title": "Soul On Fire (feat. Beenie Man & Massari)",
+     "trackId": 73063033,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e16370e4ae2714049f2719f1ce99fbdd/500x500-000000-80-0-0.jpg",
+     "album": "Soul On Fire (Can-Con Remixes) (feat. Beenie Man & Massari)",
+     "year": 1999,
+     "eraAccurate": true,
+     "artistId": 801,
      "genre": "soca"
     }
    ],
@@ -84350,6 +84816,52 @@ const COUNTRIES = {
      "genre": "soca"
     },
     {
+     "artist": "Destra Garcia",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Destra",
+     "title": "The Pre-Release Medley : Come Beta / It's Carnival / Negative Vibe / Up in Di Air / Celebrate (Bonnie & Clyde) [feat. Shurwayne Winchester & Machel Montano]",
+     "trackId": "it1072616070",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music49/v4/43/91/70/439170aa-4565-8375-221e-d8abdc06df64/740048128525.jpg/600x600bb.jpg",
+     "album": "Laventille",
+     "year": 2003,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "soca",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/Music49/v4/69/6b/46/696b46c5-4fed-a864-892f-3aaa751b07d6/mzaf_7179069863718506336.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Fay-Ann Lyons",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Invasion(feat. Fay-ann Lyons)",
+     "title": "Display",
+     "trackId": 63406810,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/4d8519937b9c8e6acb4faf72fd0428b3/500x500-000000-80-0-0.jpg",
+     "album": "Soca Gold 2003",
+     "year": 2003,
+     "eraAccurate": true,
+     "artistId": 1413507,
+     "genre": "soca"
+    },
+    {
+     "artist": "Denise Belfon",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Denise Belfon",
+     "title": "Wining Queen",
+     "trackId": "it1642064303",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/db/72/dc/db72dc61-116d-d221-81d2-8b4383097b2f/1007.jpg/600x600bb.jpg",
+     "album": "Project 5 Riddim - EP",
+     "year": 2003,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "soca",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview112/v4/41/f7/47/41f7477a-85ed-b74a-de8d-cdb8255bcd65/mzaf_12192688851155912274.plus.aac.p.m4a"
+    },
+    {
      "artist": "Bunji Garlin",
      "diaspora": false,
      "decade": "2000s",
@@ -84362,6 +84874,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 81698,
      "genre": "soca"
+    },
+    {
+     "artist": "Destra Garcia",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Destra",
+     "title": "Carnival (feat. Machel Montano)",
+     "trackId": "it1072191028",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music69/v4/0f/90/f8/0f90f883-7056-4377-2248-c048d4264397/740048125029.jpg/600x600bb.jpg",
+     "album": "Red, White, Black",
+     "year": 2004,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "soca",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview71/v4/ba/b3/92/bab39282-dfe1-45ce-55c4-a0b1816deab3/mzaf_1723777336119224108.plus.aac.p.m4a"
     },
     {
      "artist": "Iwer George",
@@ -84390,6 +84918,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 327336,
      "genre": "soca"
+    },
+    {
+     "artist": "Shurwayne Winchester",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Shurwayne Winchester",
+     "title": "Dead or Alive",
+     "trackId": "it448410897",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music/8e/98/83/mzi.ovqithmt.jpg/600x600bb.jpg",
+     "album": "Give Thanks",
+     "year": 2005,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "soca",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/59/0e/61/590e616a-c9b9-e693-5646-1162130f24ef/mzaf_9840374045263881274.plus.aac.p.m4a"
     },
     {
      "artist": "Machel Montano",
@@ -84534,6 +85078,20 @@ const COUNTRIES = {
      "genre": "soca"
     },
     {
+     "artist": "Patrice Roberts",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Patrice Roberts",
+     "title": "Like It Like This",
+     "trackId": 1917758557,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/42957878315941dbc74ef469e3254a78/500x500-000000-80-0-0.jpg",
+     "album": "The 2:00AM Project",
+     "year": 2015,
+     "eraAccurate": true,
+     "artistId": 158803,
+     "genre": "soca"
+    },
+    {
      "artist": "Voice",
      "diaspora": false,
      "decade": "2010s",
@@ -84604,6 +85162,20 @@ const COUNTRIES = {
      "genre": "chutney soca"
     },
     {
+     "artist": "Nadia Batson",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Nadia Batson",
+     "title": "So Long",
+     "trackId": 1919460037,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e90fbcb4ce2f0fc01e1333d487219d08/500x500-000000-80-0-0.jpg",
+     "album": "The Purple Heart Riddim",
+     "year": 2017,
+     "eraAccurate": true,
+     "artistId": 277606,
+     "genre": "soca"
+    },
+    {
      "artist": "Voice",
      "diaspora": false,
      "decade": "2010s",
@@ -84660,6 +85232,20 @@ const COUNTRIES = {
      "genre": "soca"
     },
     {
+     "artist": "Shal Marshall",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Shal Marshall",
+     "title": "Splinters",
+     "trackId": 1919710177,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/0a1ef598e657c80fbc4b6625c3fb0425/500x500-000000-80-0-0.jpg",
+     "album": "iShal",
+     "year": 2018,
+     "eraAccurate": true,
+     "artistId": 603557,
+     "genre": "soca"
+    },
+    {
      "artist": "Kes",
      "diaspora": false,
      "decade": "2010s",
@@ -84671,6 +85257,20 @@ const COUNTRIES = {
      "year": 2019,
      "eraAccurate": true,
      "artistId": 96939602,
+     "genre": "soca"
+    },
+    {
+     "artist": "Farmer Nappy",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Farmer Nappy",
+     "title": "Hookin' Meh",
+     "trackId": 1919460027,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e90fbcb4ce2f0fc01e1333d487219d08/500x500-000000-80-0-0.jpg",
+     "album": "The Purple Heart Riddim",
+     "year": 2019,
+     "eraAccurate": true,
+     "artistId": 254126,
      "genre": "soca"
     }
    ],
@@ -84746,6 +85346,66 @@ const COUNTRIES = {
      "genre": "soca"
     },
     {
+     "artist": "Patrice Roberts",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Dan Evens, Travis World & Patrice Roberts",
+     "title": "Mind My Business",
+     "trackId": "it1653622478",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/a8/f0/3a/a8f03acd-c36c-6792-1f11-6da976343cad/194690722646_cover.jpg/600x600bb.jpg",
+     "album": "Mind My Business - Single",
+     "year": 2020,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "soca",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview112/v4/39/b9/dc/39b9dc91-53bb-c740-a72b-3498f74cd1a4/mzaf_9391020191586717988.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Farmer Nappy",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Farmer Nappy",
+     "title": "Backyard Jam",
+     "trackId": "it1642183394",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/01/47/3d/01473ddf-be3b-6754-61d9-a159a17210b5/3766.jpg/600x600bb.jpg",
+     "album": "Backyard Jam - Single",
+     "year": 2020,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "soca",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview112/v4/35/86/a5/3586a52d-1845-b29e-49f6-2f8bcd0f3119/mzaf_2694128648467782004.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Voice",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Voice",
+     "title": "Year for Love: Upendo Riddim",
+     "trackId": 432344842,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/52b9bdd9855a4f37354919a310ee9f3c/500x500-000000-80-0-0.jpg",
+     "album": "Year for Love: Upendo Riddim",
+     "year": 2020,
+     "eraAccurate": true,
+     "artistId": 4842,
+     "genre": "soca"
+    },
+    {
+     "artist": "Nailah Blackman",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Nailah Blackman",
+     "title": "Iron Love",
+     "trackId": 1919460127,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/ee1309e8f14ac9b7f80ecf98e99a85f2/500x500-000000-80-0-0.jpg",
+     "album": "Iron Love",
+     "year": 2021,
+     "eraAccurate": true,
+     "artistId": 10462043,
+     "genre": "soca"
+    },
+    {
      "artist": "Kes",
      "diaspora": false,
      "decade": "2020s",
@@ -84771,6 +85431,62 @@ const COUNTRIES = {
      "year": 2022,
      "eraAccurate": true,
      "artistId": 4273666,
+     "genre": "soca"
+    },
+    {
+     "artist": "Olatunji",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Olatunji",
+     "title": "Engine Room",
+     "trackId": 2145803887,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/cf6bf5d5724b24158e49cdec7be680f8/500x500-000000-80-0-0.jpg",
+     "album": "Engine Room (Allstars Brass Refix)",
+     "year": 2022,
+     "eraAccurate": true,
+     "artistId": 73569,
+     "genre": "soca"
+    },
+    {
+     "artist": "Nadia Batson",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Nadia Batson",
+     "title": "Catching Feelings (Folklore Riddim)",
+     "trackId": 1917957137,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/663d4a9bc1c3856a6c7f76c82a47c311/500x500-000000-80-0-0.jpg",
+     "album": "Catching Feelings (Folklore Riddim)",
+     "year": 2023,
+     "eraAccurate": true,
+     "artistId": 277606,
+     "genre": "soca"
+    },
+    {
+     "artist": "Shal Marshall",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Shal Marshall",
+     "title": "Hot Gyal Soca",
+     "trackId": 1193297532,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/ca7d3fba3ba46caa5deaab0d1f788a10/500x500-000000-80-0-0.jpg",
+     "album": "Toatin Riddim",
+     "year": 2023,
+     "eraAccurate": true,
+     "artistId": 603557,
+     "genre": "soca"
+    },
+    {
+     "artist": "Yung Bredda",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Yung Bredda",
+     "title": "The Greatest Bend over [Afro House Remix]",
+     "trackId": 3217262301,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/33825c7bdb5d291955f3325aa32ad669/500x500-000000-80-0-0.jpg",
+     "album": "The Greatest Bend over [Afro House Remix]",
+     "year": 2024,
+     "eraAccurate": true,
+     "artistId": 64013262,
      "genre": "soca"
     }
    ]
@@ -89547,6 +90263,22 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "Lotfi Bouchnak",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Lotfi Bouchnak",
+     "title": "Ya Habibi Farrajni",
+     "trackId": "it6772192902",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f2/bd/e4/f2bde479-de38-3cae-53ce-81d0805e2030/665096800073_cover.jpg/600x600bb.jpg",
+     "album": "Hafla Haya Montreal",
+     "year": 2007,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "classical arabic",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/a1/da/ca/a1dacab5-606a-b803-e739-040563e4dc04/mzaf_14016420117646369189.plus.aac.p.m4a"
+    },
+    {
      "artist": "Balti",
      "diaspora": false,
      "decade": "2000s",
@@ -89556,6 +90288,20 @@ const COUNTRIES = {
      "cover": "https://cdn-images.dzcdn.net/images/cover/883a667c2ca6df60b2d23b92ef5ff076/500x500-000000-80-0-0.jpg",
      "album": "Allo",
      "year": 2008,
+     "eraAccurate": true,
+     "artistId": 470054,
+     "genre": "rap"
+    },
+    {
+     "artist": "Balti",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Balti",
+     "title": "Passe Partout",
+     "trackId": 70305130,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/494fedfff3a798d615d0e21b5e8a2f57/500x500-000000-80-0-0.jpg",
+     "album": "Le Journal",
+     "year": 2009,
      "eraAccurate": true,
      "artistId": 470054,
      "genre": "rap"
@@ -89687,6 +90433,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 470054,
      "genre": "rap"
+    },
+    {
+     "artist": "Emel Mathlouthi",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Emel",
+     "title": "Ensen Dhaif",
+     "trackId": "it1227173617",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/87/60/ac/8760acda-aae3-3d94-8636-85df16905707/720841213307_Cover.jpg/600x600bb.jpg",
+     "album": "Ensen",
+     "year": 2017,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "folk",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview111/v4/b6/51/45/b65145e2-61a0-5836-ef93-64cf4908d702/mzaf_2481234056187897327.plus.aac.p.m4a"
     },
     {
      "artist": "Dhafer Youssef",
@@ -89873,6 +90635,22 @@ const COUNTRIES = {
      "genre": "rap"
     },
     {
+     "artist": "Emel Mathlouthi",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Emel",
+     "title": "Holm",
+     "trackId": "it1530432099",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/c9/e4/31/c9e43131-f110-8a0d-552d-8807677610af/720841219200_Cover.jpg/600x600bb.jpg",
+     "album": "The Tunis Diaries",
+     "year": 2022,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "folk",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview114/v4/18/3a/39/183a3969-97fb-abe0-178c-0e1d9b174de6/mzaf_3676174045971613937.plus.aac.p.m4a"
+    },
+    {
      "artist": "Balti",
      "diaspora": false,
      "decade": "2020s",
@@ -89884,6 +90662,34 @@ const COUNTRIES = {
      "year": 2023,
      "eraAccurate": true,
      "artistId": 470054,
+     "genre": "rap"
+    },
+    {
+     "artist": "Samara",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Samara Ambrósio",
+     "title": "La Casa de Papel",
+     "trackId": 1162269712,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/64b728941f797257641ee75107312e94/500x500-000000-80-0-0.jpg",
+     "album": "Intimidade",
+     "year": 2023,
+     "eraAccurate": true,
+     "artistId": 91890582,
+     "genre": "rap"
+    },
+    {
+     "artist": "Tia",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "La Tía y asociados",
+     "title": "La Loma Dorada",
+     "trackId": 2838410082,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/d043615638b69572759194b65f0790e7/500x500-000000-80-0-0.jpg",
+     "album": "Tijuana Cartel",
+     "year": 2023,
+     "eraAccurate": true,
+     "artistId": 202945267,
      "genre": "rap"
     }
    ]
@@ -97315,6 +98121,20 @@ const COUNTRIES = {
    ],
    "1960s": [
     {
+     "artist": "Lolita",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Lolita",
+     "title": "Seemann (Deine Heimat ist das Meer)",
+     "trackId": 1067338192,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/93ccc03933cd9f39c15f27d8e0da1ae9/500x500-000000-80-0-0.jpg",
+     "album": "The Lolita Edition",
+     "year": 1960,
+     "eraAccurate": true,
+     "artistId": 14144771,
+     "genre": "Schlager"
+    },
+    {
      "artist": "Udo Jürgens",
      "diaspora": false,
      "decade": "1960s",
@@ -97355,6 +98175,92 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 71989,
      "genre": "austropop"
+    },
+    {
+     "artist": "Peter Alexander",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Peter Alexander",
+     "title": "Hier ist ein Mensch",
+     "trackId": 981914,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/6f210752811f081e84559accfe019c58/500x500-000000-80-0-0.jpg",
+     "album": "Spezialitäten mit Originalaufnahmen aus seinen Fernsehshows",
+     "year": 1969,
+     "eraAccurate": true,
+     "artistId": 70031,
+     "genre": "Schlager"
+    },
+    {
+     "artist": "Georg Danzer",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Georg Danzer",
+     "title": "Hupf in Gatsch",
+     "trackId": 15199350,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/fe2dfddf51077fc6405b22dde1bbc51d/500x500-000000-80-0-0.jpg",
+     "album": "JÖ SCHAU... SEINE GRÖSSTEN ERFOLGE",
+     "year": 1969,
+     "eraAccurate": true,
+     "artistId": 13772,
+     "genre": "Austropop"
+    },
+    {
+     "artist": "Wilfried",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Wilfried",
+     "title": "Highdelbeeren",
+     "trackId": 1002830572,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/f3bff48b37a84f0e9436f777d98c9a36/500x500-000000-80-0-0.jpg",
+     "album": "Austropop Party",
+     "year": 1975,
+     "eraAccurate": true,
+     "artistId": 57612,
+     "genre": "Austropop"
+    },
+    {
+     "artist": "Ludwig Hirsch",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Ludwig Hirsch",
+     "title": "Komm grosser schwarzer Vogel",
+     "trackId": 2294067,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/9333af3b1e40e6ad68fc88a07dd5e4f5/500x500-000000-80-0-0.jpg",
+     "album": "Komm Grosser Schwarzer Vogel",
+     "year": 1979,
+     "eraAccurate": true,
+     "artistId": 75124,
+     "genre": "Austropop"
+    },
+    {
+     "artist": "Schmetterlinge",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Schmetterlinge",
+     "title": "Die Erde von oben",
+     "trackId": 2547762782,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/2b213f5189994a6cb2bac47fa5926006/500x500-000000-80-0-0.jpg",
+     "album": "Flügel hat mein Schaukelpferd",
+     "year": 1979,
+     "eraAccurate": true,
+     "artistId": 75183,
+     "genre": "Folk"
+    },
+    {
+     "artist": "Erika Pluhar",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Erika Pluhar",
+     "title": "Hexenlied (feat. Klaus Trabitsch) [Live]",
+     "trackId": "it1498996884",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/83/81/55/83815530-34ee-2952-eeac-c2162ecec177/9006472017301_cover.jpg/600x600bb.jpg",
+     "album": "Mehr denn je: Ein Konzert mit Klaus Trabitsch (Live)",
+     "year": 1979,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "Chanson",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview114/v4/dd/77/83/dd77831d-791b-e2e1-ac89-c77a4dc1109b/mzaf_1152477819195817717.plus.aac.p.m4a"
     }
    ],
    "1970s": [
@@ -97399,6 +98305,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 13772,
      "genre": "austropop"
+    },
+    {
+     "artist": "Wolfgang Ambros",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Wolfgang Ambros",
+     "title": "Es lebe der Zentralfriedhof",
+     "trackId": 67755447,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e645b27e588582afd88f5a134cb97707/500x500-000000-80-0-0.jpg",
+     "album": "Es lebe der Zentralfriedhof (Remastered Version)",
+     "year": 1975,
+     "eraAccurate": true,
+     "artistId": 71859,
+     "genre": "Austropop"
     },
     {
      "artist": "Wolfgang Ambros",
@@ -97455,6 +98375,80 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 175029,
      "genre": "pop"
+    },
+    {
+     "artist": "Schmetterlinge",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Schmetterlinge",
+     "title": "Boom Boom Boomerang",
+     "trackId": "it6764819449",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/ed/2b/14/ed2b144e-0157-effb-394a-dc4ec72f5052/196874359785.jpg/600x600bb.jpg",
+     "album": "Boom Boom Boomerang - Single",
+     "year": 1977,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "Pop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/41/54/ab/4154abe6-a538-7e9b-947e-5371326eb2aa/mzaf_8783278305690428245.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Ludwig Hirsch",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Ludwig Hirsch",
+     "title": "Die Omama",
+     "trackId": 3924272661,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e8368df8a71a7a93137330bcf03cf015/500x500-000000-80-0-0.jpg",
+     "album": "Lagerfeuer Classics",
+     "year": 1979,
+     "eraAccurate": true,
+     "artistId": 75124,
+     "genre": "Austropop"
+    },
+    {
+     "artist": "Wilfried",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Wilfried",
+     "title": "Ziwui, ziwui",
+     "trackId": "it1712036972",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/1f/2c/54/1f2c5462-0648-22db-9474-aee59d7593a0/23UM1IM17154.rgb.jpg/600x600bb.jpg",
+     "album": "Austropop Hits 2024",
+     "year": 1979,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "Austropop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/95/8d/38/958d38cc-3815-5a83-3061-8d2463d1cb52/mzaf_15845588835365086958.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Peter Cornelius",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Peter Cornelius",
+     "title": "Du entschuldige - i kenn' di",
+     "trackId": 1848447727,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/1519c92058b25ba2443ee25257feb126/500x500-000000-80-0-0.jpg",
+     "album": "Austropop Klassiker",
+     "year": 1980,
+     "eraAccurate": true,
+     "artistId": 144060,
+     "genre": "Austropop"
+    },
+    {
+     "artist": "Rainhard Fendrich",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Rainhard Fendrich",
+     "title": "Strada del sole",
+     "trackId": 3115470691,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/549d196d86587e56eec56cc27fb85771/500x500-000000-80-0-0.jpg",
+     "album": "Wir sind Europa - Famous 5",
+     "year": 1981,
+     "eraAccurate": true,
+     "artistId": 69930,
+     "genre": "Austropop"
     }
    ],
    "1980s": [
@@ -97499,6 +98493,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 70292,
      "genre": "schlager"
+    },
+    {
+     "artist": "Reinhold Bilgeri",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Reinhold Bilgeri",
+     "title": "Video Life (Radio Edit Zum 75Iger)",
+     "trackId": 3285814261,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/799a772fa4543925c6ca93786a1c7358/500x500-000000-80-0-0.jpg",
+     "album": "Video Life (Radio Edit Zum 75Iger)",
+     "year": 1983,
+     "eraAccurate": true,
+     "artistId": 456890,
+     "genre": "Pop"
     },
     {
      "artist": "STS",
@@ -97589,6 +98597,34 @@ const COUNTRIES = {
      "diaspora": false,
      "decade": "1980s",
      "dzArtist": "EAV",
+     "title": "Märchenprinz",
+     "trackId": 13232054,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/bd2bca2483af1e9417d5edddddc222a2/500x500-000000-80-0-0.jpg",
+     "album": "100 Jahre EAV",
+     "year": 1986,
+     "eraAccurate": true,
+     "artistId": 69658,
+     "genre": "Austropop"
+    },
+    {
+     "artist": "Wolfgang Ambros",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Wolfgang Ambros",
+     "title": "Für immer jung",
+     "trackId": 1051728,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/7173c3e82554a4c3aae6e7e9f096fc0b/500x500-000000-80-0-0.jpg",
+     "album": "Verwahrlost aber LIVE",
+     "year": 1986,
+     "eraAccurate": true,
+     "artistId": 71859,
+     "genre": "Austropop"
+    },
+    {
+     "artist": "EAV",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "EAV",
      "title": "Küss die Hand schöne Frau",
      "trackId": 809793292,
      "cover": "https://cdn-images.dzcdn.net/images/cover/ed6e5689c94db0984b52841d8bb6090a/500x500-000000-80-0-0.jpg",
@@ -97597,6 +98633,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 69658,
      "genre": "austropop"
+    },
+    {
+     "artist": "EAV",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "EAV (Erste Allgemeine Verunsicherung)",
+     "title": "Küss' die Hand, schöne Frau",
+     "trackId": 1755695467,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/20ec1dcef730b95624a2ceedd3f7a5c7/500x500-000000-80-0-0.jpg",
+     "album": "Liebe, Tod und Teufel",
+     "year": 1987,
+     "eraAccurate": true,
+     "artistId": 362453,
+     "genre": "Austropop"
     },
     {
      "artist": "Rainhard Fendrich",
@@ -97615,6 +98665,20 @@ const COUNTRIES = {
    ],
    "1990s": [
     {
+     "artist": "Edelweiss",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Edelweiss",
+     "title": "Bring Me Edelweiss",
+     "trackId": 15318548,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/7e1020620aab4e71c2e79a30ff62535e/500x500-000000-80-0-0.jpg",
+     "album": "Wonderful World of Edelweiss",
+     "year": 1988,
+     "eraAccurate": true,
+     "artistId": 93101,
+     "genre": "Pop"
+    },
+    {
      "artist": "Rainhard Fendrich",
      "diaspora": false,
      "decade": "1990s",
@@ -97627,6 +98691,78 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 69930,
      "genre": "austropop"
+    },
+    {
+     "artist": "Rainhard Fendrich",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Rainhard Fendrich",
+     "title": "Weus'd a Herz hast wia a Bergwerk",
+     "trackId": 3115468881,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/cfbbbd2b2fcb6a4ca32d5d2c7260fba8/500x500-000000-80-0-0.jpg",
+     "album": "So ein Theater",
+     "year": 1991,
+     "eraAccurate": true,
+     "artistId": 69930,
+     "genre": "Austropop"
+    },
+    {
+     "artist": "Naked Lunch",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Naked Lunch",
+     "title": "This Atom Heart of Ours",
+     "trackId": 493701742,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/08802348ce93937559bb1d1f9e02766e/500x500-000000-80-0-0.jpg",
+     "album": "This Atom Heart of Ours",
+     "year": 1991,
+     "eraAccurate": true,
+     "artistId": 81120,
+     "genre": "Indie Rock"
+    },
+    {
+     "artist": "Hubert von Goisern",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Hubert von Goisern und die Alpinkatzen",
+     "title": "Koa Hiatamadl",
+     "trackId": 987461,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/345b8925cd9d5513ebaa6bae9ee71802/500x500-000000-80-0-0.jpg",
+     "album": "Eswaramoi 1992 - 1998",
+     "year": 1992,
+     "eraAccurate": true,
+     "artistId": 71330,
+     "genre": "Alpine Rock"
+    },
+    {
+     "artist": "Falco",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "T-MA a.k.a. Falco",
+     "title": "Mutter, der Mann mit dem Koks ist da (T-Matic Edit)",
+     "trackId": "it289513298",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/f8/72/2b/f8722b02-3ade-5f3b-112e-a85a4ec7330c/mzi.yxwhhgww.jpg/600x600bb.jpg",
+     "album": "Falco: Greatest Hits",
+     "year": 1992,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "Pop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/51/cf/b8/51cfb8d3-8681-bb1f-4400-eed15eb54cd8/mzaf_12013970758048260456.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Hansi Hinterseer",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Hansi Hinterseer",
+     "title": "Geh Hansi pack dei Bingei zam",
+     "trackId": 15013439,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/5513cc8bde1d2d65240667be89517102/500x500-000000-80-0-0.jpg",
+     "album": "Goldene Weihnacht'",
+     "year": 1994,
+     "eraAccurate": true,
+     "artistId": 16885,
+     "genre": "Volksmusik"
     },
     {
      "artist": "Kruder & Dorfmeister",
@@ -97643,6 +98779,20 @@ const COUNTRIES = {
      "genre": "electronic"
     },
     {
+     "artist": "Sofa Surfers",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Sofa Surfers",
+     "title": "Sofa Rockers",
+     "trackId": 492506932,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/f4e90249d30f8ef23e95169917c8de9a/500x500-000000-80-0-0.jpg",
+     "album": "Sofa Rockers",
+     "year": 1997,
+     "eraAccurate": true,
+     "artistId": 2609,
+     "genre": "Electronic"
+    },
+    {
      "artist": "Falco",
      "diaspora": false,
      "decade": "1990s",
@@ -97655,6 +98805,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 8803,
      "genre": "pop"
+    },
+    {
+     "artist": "Falco",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Falco",
+     "title": "Egoist",
+     "trackId": "it1668327680",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/49/7f/e6/497fe60e-7436-852e-8253-13a6f0559d19/23UMGIM02667.rgb.jpg/600x600bb.jpg",
+     "album": "Egoist - Single",
+     "year": 1998,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "Pop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/16/b4/75/16b47570-4d62-debf-c053-547007b6104b/mzaf_7855752602153876562.plus.aac.p.m4a"
     },
     {
      "artist": "DJ Ötzi",
@@ -97683,6 +98849,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 16885,
      "genre": "schlager"
+    },
+    {
+     "artist": "Christina Stürmer",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Christina Stürmer",
+     "title": "Ich Lebe",
+     "trackId": 2497910261,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/a0b5b1df5745be56a4f39c98858b42c6/500x500-000000-80-0-0.jpg",
+     "album": "Ich Lebe (MTV Unplugged)",
+     "year": 1999,
+     "eraAccurate": true,
+     "artistId": 4884,
+     "genre": "Pop Rock"
     }
    ],
    "2000s": [
@@ -97701,6 +98881,34 @@ const COUNTRIES = {
      "genre": "electronic"
     },
     {
+     "artist": "DJ Ötzi",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "DJ Ötzi",
+     "title": "Hey Baby (Radio Mix)",
+     "trackId": 15319250,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/3ca3d33867c9eb2529fc8e01fd68da9c/500x500-000000-80-0-0.jpg",
+     "album": "Hey Baby (Uh Ah)",
+     "year": 2000,
+     "eraAccurate": true,
+     "artistId": 1083,
+     "genre": "Schlager"
+    },
+    {
+     "artist": "Klee",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Klee",
+     "title": "Gold",
+     "trackId": 2134411,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/8b02c83b9d7f7f0ef12dc7e27da4d523/500x500-000000-80-0-0.jpg",
+     "album": "Gold",
+     "year": 2002,
+     "eraAccurate": true,
+     "artistId": 13735,
+     "genre": "Pop"
+    },
+    {
      "artist": "Christina Stürmer",
      "diaspora": false,
      "decade": "2000s",
@@ -97713,6 +98921,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 4884,
      "genre": "pop"
+    },
+    {
+     "artist": "Christina Stürmer",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Christina Stürmer",
+     "title": "Mama Ana Ahabak",
+     "trackId": 1263655812,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/35786502bffbbb1b4aa2c9ee4aa45426/500x500-000000-80-0-0.jpg",
+     "album": "Women To The Front: Female Empowerment",
+     "year": 2004,
+     "eraAccurate": true,
+     "artistId": 4884,
+     "genre": "Pop Rock"
     },
     {
      "artist": "Christina Stürmer",
@@ -97769,9 +98991,79 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 3452,
      "genre": "electronic"
+    },
+    {
+     "artist": "Parov Stelar",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Parov Stelar",
+     "title": "Catgroove",
+     "trackId": 3786542242,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/3424edfa3f4d3cc2a4f5476135fa3efb/500x500-000000-80-0-0.jpg",
+     "album": "Coco, Pt. 2",
+     "year": 2009,
+     "eraAccurate": true,
+     "artistId": 3452,
+     "genre": "Electro Swing"
+    },
+    {
+     "artist": "Camo & Krooked",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Camo & Krooked",
+     "title": "Time Is Ticking Away",
+     "trackId": 407678332,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/aeb26afeeaf200041bfda8763e644309/500x500-000000-80-0-0.jpg",
+     "album": "Edge of Mind EP",
+     "year": 2009,
+     "eraAccurate": true,
+     "artistId": 275668,
+     "genre": "Drum and Bass"
+    },
+    {
+     "artist": "Hubert von Goisern",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Hubert Von Goisern",
+     "title": "Brenna tuats guat",
+     "trackId": 1896020827,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/0348375ebfbcbb4724c84c3a035b121b/500x500-000000-80-0-0.jpg",
+     "album": "Oktoberfest 2022",
+     "year": 2011,
+     "eraAccurate": true,
+     "artistId": 338305881,
+     "genre": "Alpine Rock"
     }
    ],
    "2010s": [
+    {
+     "artist": "Money Boy",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Money Boy",
+     "title": "Dreh den Swag auf",
+     "trackId": 9809611,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/0f7b102f045592ebe20e32274112798a/500x500-000000-80-0-0.jpg",
+     "album": "Dreh den Swag auf",
+     "year": 2010,
+     "eraAccurate": true,
+     "artistId": 1041350,
+     "genre": "Hip-Hop"
+    },
+    {
+     "artist": "Der Nino aus Wien",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Der Nino Aus Wien",
+     "title": "Du Oasch",
+     "trackId": 15364548,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/18712fc41e53f9cadf7a1b6b73f0cbd0/500x500-000000-80-0-0.jpg",
+     "album": "Down in Albern",
+     "year": 2011,
+     "eraAccurate": true,
+     "artistId": 1050510,
+     "genre": "Austropop"
+    },
     {
      "artist": "Parov Stelar",
      "diaspora": false,
@@ -97857,6 +99149,50 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "Bilderbuch",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Bilderbuch",
+     "title": "OM",
+     "trackId": 439405962,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/4fee2962e4413772f1cc89d26d265383/500x500-000000-80-0-0.jpg",
+     "album": "SCHICK SCHOCK",
+     "year": 2015,
+     "eraAccurate": true,
+     "artistId": 870631,
+     "genre": "Indie Pop"
+    },
+    {
+     "artist": "Seiler und Speer",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "SEILER UND SPEER",
+     "title": "Ham kummst",
+     "trackId": 3130198181,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/50ae1791b1f7c7be5313ad095e64c87b/500x500-000000-80-0-0.jpg",
+     "album": "Ham kummst",
+     "year": 2015,
+     "eraAccurate": true,
+     "artistId": 7208196,
+     "genre": "Austropop"
+    },
+    {
+     "artist": "Bilderbuch",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Bilderbuch",
+     "title": "sneakers4free",
+     "trackId": "it1267310127",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/f3/a9/8f/f3a98f71-153d-f96c-ef13-7ecb94939644/cover_4050215285248.jpg/600x600bb.jpg",
+     "album": "Magic Life",
+     "year": 2015,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "Indie Pop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/d3/79/cb/d379cb37-9b7a-104b-5600-68b8aae32fb3/mzaf_4844290536285667893.plus.aac.p.m4a"
+    },
+    {
      "artist": "Yung Hurn",
      "diaspora": false,
      "decade": "2010s",
@@ -97869,6 +99205,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 10859478,
      "genre": "hip-hop"
+    },
+    {
+     "artist": "Voodoo Jürgens",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Voodoo Jürgens",
+     "title": "Heite grob ma Tote aus",
+     "trackId": 936439482,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/1fb243ccb6eb431e36540cf3f18c749d/500x500-000000-80-0-0.jpg",
+     "album": "Ansa Woar",
+     "year": 2016,
+     "eraAccurate": true,
+     "artistId": 10384022,
+     "genre": "Austropop"
     },
     {
      "artist": "RAF Camora",
@@ -97911,6 +99261,48 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 8927232,
      "genre": "austropop"
+    },
+    {
+     "artist": "Mavi Phoenix",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Mavi Phoenix",
+     "title": "Quiet",
+     "trackId": 1219943882,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/aa8b15755b819b8a35b0cf32e7abafa1/500x500-000000-80-0-0.jpg",
+     "album": "Young Prophet",
+     "year": 2017,
+     "eraAccurate": true,
+     "artistId": 9056170,
+     "genre": "Pop"
+    },
+    {
+     "artist": "RAF Camora",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "RAF Camora",
+     "title": "Primo",
+     "trackId": 1785482887,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/60381a03a1902832a399642db656a2f9/500x500-000000-80-0-0.jpg",
+     "album": "Primo",
+     "year": 2017,
+     "eraAccurate": true,
+     "artistId": 1419381,
+     "genre": "Hip-Hop"
+    },
+    {
+     "artist": "Cari Cari",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Cari Cari",
+     "title": "Summer Sun",
+     "trackId": 735353682,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/dea3322ade744c842382c3d09247ed40/500x500-000000-80-0-0.jpg",
+     "album": "Anaana",
+     "year": 2018,
+     "eraAccurate": true,
+     "artistId": 5617210,
+     "genre": "Indie Rock"
     },
     {
      "artist": "Mathea",
@@ -97971,6 +99363,64 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "Bilderbuch",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Bilderbuch",
+     "title": "Sweetlove",
+     "trackId": "it1267310118",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/f3/a9/8f/f3a98f71-153d-f96c-ef13-7ecb94939644/cover_4050215285248.jpg/600x600bb.jpg",
+     "album": "Magic Life",
+     "year": 2020,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "Indie Pop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview112/v4/f2/da/c4/f2dac438-2e2d-64eb-3c2d-3b2eaaf5bd8e/mzaf_9857204212066262975.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Voodoo Jürgens",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Voodoo Jürgens",
+     "title": "Gitti",
+     "trackId": 936439502,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/1fb243ccb6eb431e36540cf3f18c749d/500x500-000000-80-0-0.jpg",
+     "album": "Ansa Woar",
+     "year": 2020,
+     "eraAccurate": true,
+     "artistId": 10384022,
+     "genre": "Austropop"
+    },
+    {
+     "artist": "RAF Camora",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "RAF Camora",
+     "title": "Zenit",
+     "trackId": 1752666787,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/d58303e09d1a5166eb102f7b5de663ea/500x500-000000-80-0-0.jpg",
+     "album": "ZENIT",
+     "year": 2020,
+     "eraAccurate": true,
+     "artistId": 1419381,
+     "genre": "Hip-Hop"
+    },
+    {
+     "artist": "Mathea",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Mathea",
+     "title": "2x",
+     "trackId": 561131762,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/5fa4655032594f8931e890f072bd2316/500x500-000000-80-0-0.jpg",
+     "album": "2x",
+     "year": 2020,
+     "eraAccurate": true,
+     "artistId": 51961342,
+     "genre": "Pop"
+    },
+    {
      "artist": "Wanda",
      "diaspora": false,
      "decade": "2020s",
@@ -98011,6 +99461,50 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1473841,
      "genre": "pop"
+    },
+    {
+     "artist": "RAF Camora",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "RAF Camora",
+     "title": "Nummer",
+     "trackId": "it1821025983",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/fc/e8/cb/fce8cbd9-b1b8-ecef-9aa6-aa6a0573e8dc/4050538193473.jpg/600x600bb.jpg",
+     "album": "Ghøst (Deluxe Edition)",
+     "year": 2021,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "Hip-Hop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/96/cd/92/96cd92c9-3810-5065-ab91-83107f3862c6/mzaf_13681630461911465408.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Cari Cari",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Cari Cari",
+     "title": "Nothing's Older Than Yesterday",
+     "trackId": 735353722,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/dea3322ade744c842382c3d09247ed40/500x500-000000-80-0-0.jpg",
+     "album": "Anaana",
+     "year": 2021,
+     "eraAccurate": true,
+     "artistId": 5617210,
+     "genre": "Indie Rock"
+    },
+    {
+     "artist": "Mathea",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Mathea",
+     "title": "Chaos",
+     "trackId": 692696022,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/ead6f213cb39b0429517831484ace615/500x500-000000-80-0-0.jpg",
+     "album": "Chaos",
+     "year": 2022,
+     "eraAccurate": true,
+     "artistId": 51961342,
+     "genre": "Pop"
     }
    ]
   }
@@ -98352,6 +99846,20 @@ const COUNTRIES = {
      "genre": "zabavna"
     },
     {
+     "artist": "Gabi Novak",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Gabi Novak",
+     "title": "Vino I Gitare",
+     "trackId": 1998405327,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/7b885212735dfbfef24b79cfbcf89229/500x500-000000-80-0-0.jpg",
+     "album": "Dame, Cure I Tambure",
+     "year": 1964,
+     "eraAccurate": true,
+     "artistId": 321889,
+     "genre": "zabavna"
+    },
+    {
      "artist": "Tereza Kesovija",
      "diaspora": false,
      "decade": "1960s",
@@ -98392,6 +99900,66 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1420832,
      "genre": "zabavna"
+    },
+    {
+     "artist": "Lidija Percan",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Lidija Percan",
+     "title": "Bella Ciao",
+     "trackId": "it1770133299",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/99/36/f0/9936f079-063d-a9a2-9b29-e9004a9c25bc/3850126061976.jpg/600x600bb.jpg",
+     "album": "Canzoni D'Una Volta 6",
+     "year": 1968,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "dalmatian",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/23/8b/0e/238b0e8b-9639-2995-e13c-bfe927e818be/mzaf_18158205523028720638.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Dubrovački Trubaduri",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Dubrovacki Trubaduri",
+     "title": "Marijana",
+     "trackId": 2994231981,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/104bbf3236f1f21de1268b16f150bda9/500x500-000000-80-0-0.jpg",
+     "album": "Pusti Da Ti Leut Svira",
+     "year": 1968,
+     "eraAccurate": true,
+     "artistId": 296177,
+     "genre": "pop"
+    },
+    {
+     "artist": "Drago Mlinarec",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Drago Mlinarec",
+     "title": "Ne Brini Doktore (Sve Je U Redu)",
+     "trackId": 2995559751,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/1d1f08c2a5063fdb592d6cdcf0c77677/500x500-000000-80-0-0.jpg",
+     "album": "Sve Je U Redu",
+     "year": 1969,
+     "eraAccurate": true,
+     "artistId": 1512470,
+     "genre": "rock"
+    },
+    {
+     "artist": "Zdenka Kovačiček",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Zdenka Kovačiček",
+     "title": "Tvoje Usne (feat. Matija Cvek)",
+     "trackId": "it1552729568",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/0b/54/f0/0b54f08c-efba-882f-5590-f3b9a3e8d0db/3856008356420.jpg/600x600bb.jpg",
+     "album": "Konstatacija Jedne Mačke",
+     "year": 1969,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "pop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/38/2f/5d/382f5d4f-31fb-4827-4bc5-605db95e4fe3/mzaf_8603441727402444792.plus.aac.p.m4a"
     }
    ],
    "1970s": [
@@ -98442,6 +100010,50 @@ const COUNTRIES = {
      "diaspora": false,
      "decade": "1970s",
      "dzArtist": "Tereza Kesovija",
+     "title": "Nono, Moj Dobri Nono",
+     "trackId": 1014284512,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/763368f422cb3cc108c37ad037d490cf/500x500-000000-80-0-0.jpg",
+     "album": "Moja Splitska Ljeta",
+     "year": 1974,
+     "eraAccurate": true,
+     "artistId": 321892,
+     "genre": "chanson"
+    },
+    {
+     "artist": "Đani Maršan",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Đani Maršan",
+     "title": "Za Tvoju Ljubav",
+     "trackId": "it880136003",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music4/v4/22/14/87/2214870e-0112-b7de-4e76-075c682b6960/3850126055357.jpg/600x600bb.jpg",
+     "album": "17.Festival Zabavne Glazbe Zagreb 71",
+     "year": 1974,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "zabavna",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/ab/85/ce/ab85ce9c-0dd2-0b25-ad7b-52694484384a/mzaf_18036419835680243447.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Arsen Dedić",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Arsen Dedic",
+     "title": "Sve Je Bilo Muzika",
+     "trackId": 3017414661,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/a9d22c29450536454c855f685741029c/500x500-000000-80-0-0.jpg",
+     "album": "Sy Ploče - Hr 7",
+     "year": 1975,
+     "eraAccurate": true,
+     "artistId": 321893,
+     "genre": "chanson"
+    },
+    {
+     "artist": "Tereza Kesovija",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Tereza Kesovija",
      "title": "Sve Se Vraća, Sve Se Plaća",
      "trackId": 3020937421,
      "cover": "https://cdn-images.dzcdn.net/images/cover/e317bd83b0f03ff9ffad402d7abc58c6/500x500-000000-80-0-0.jpg",
@@ -98450,6 +100062,62 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 321892,
      "genre": "zabavna"
+    },
+    {
+     "artist": "Mišo Kovač",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Miso Kovac",
+     "title": "Više Se Nećeš Vratiti",
+     "trackId": 2995289281,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e22e3c0113f4ed30659c497c486fbc34/500x500-000000-80-0-0.jpg",
+     "album": "The Platinum Collection",
+     "year": 1976,
+     "eraAccurate": true,
+     "artistId": 321921,
+     "genre": "zabavna"
+    },
+    {
+     "artist": "Drago Mlinarec",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Drago Mlinarec",
+     "title": "Pjesma Povratnika",
+     "trackId": 100625404,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/319b9f03e93f36ded9f89946481a0f64/500x500-000000-80-0-0.jpg",
+     "album": "Izštekani, Vol. 1",
+     "year": 1976,
+     "eraAccurate": true,
+     "artistId": 1512470,
+     "genre": "rock"
+    },
+    {
+     "artist": "Novi Fosili",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Novi Fosili",
+     "title": "Diridonda",
+     "trackId": 2995147291,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/dbf7082c4160f55ba5b80aa7d1234553/500x500-000000-80-0-0.jpg",
+     "album": "Da te ne volim",
+     "year": 1977,
+     "eraAccurate": true,
+     "artistId": 321910,
+     "genre": "pop"
+    },
+    {
+     "artist": "Zdravko Čolić",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Zdravko Colic",
+     "title": "Glavo Luda",
+     "trackId": 2994406251,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/2ce64cdc6d369b5d48bf8053a43d365d/500x500-000000-80-0-0.jpg",
+     "album": "Ako priđeš bliže",
+     "year": 1977,
+     "eraAccurate": true,
+     "artistId": 321970,
+     "genre": "pop"
     },
     {
      "artist": "Klapa Trogir",
@@ -98478,6 +100146,34 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 321905,
      "genre": "zabavna"
+    },
+    {
+     "artist": "Meri Cetinić",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Meri Cetinic",
+     "title": "Zašto Te Volim",
+     "trackId": 3000003461,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/10f92d0a216f98b78df0d106d3627d08/500x500-000000-80-0-0.jpg",
+     "album": "Najljepše Ljubavne Pjesme",
+     "year": 1979,
+     "eraAccurate": true,
+     "artistId": 124698,
+     "genre": "pop"
+    },
+    {
+     "artist": "Mladen Grdović",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Mladen Grdovic",
+     "title": "Moja Lipa",
+     "trackId": 3018472011,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/0c5b590f3bbe61b41a8c1cf9118e8d63/500x500-000000-80-0-0.jpg",
+     "album": "Evo Mene Moji Ljudi",
+     "year": 1979,
+     "eraAccurate": true,
+     "artistId": 321804,
+     "genre": "dalmatian"
     }
    ],
    "1980s": [
@@ -98507,6 +100203,34 @@ const COUNTRIES = {
      "year": 1980,
      "eraAccurate": true,
      "artistId": 307227,
+     "genre": "rock"
+    },
+    {
+     "artist": "Mišo Kovač",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Miso Kovac",
+     "title": "Ostala Si Uvijek Ista",
+     "trackId": 705565812,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/4a466ddcacf166888bbeca0fe48d7691/500x500-000000-80-0-0.jpg",
+     "album": "Split Pjeva Mišu",
+     "year": 1980,
+     "eraAccurate": true,
+     "artistId": 321921,
+     "genre": "zabavna"
+    },
+    {
+     "artist": "Aerodrom",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Aerodrom",
+     "title": "Digni me visoko",
+     "trackId": 3687858732,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/f9014c2d4cc376e1fdfa92789628674c/500x500-000000-80-0-0.jpg",
+     "album": "Rock 'n' roll forever",
+     "year": 1980,
+     "eraAccurate": true,
+     "artistId": 321646,
      "genre": "rock"
     },
     {
@@ -98552,6 +100276,22 @@ const COUNTRIES = {
      "genre": "rock"
     },
     {
+     "artist": "Srebrna Krila",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Srebrna Krila & Novi Fosili",
+     "title": "Da te ne volim",
+     "trackId": "it1572743412",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/64/d4/2c/64d42cf1-1ad6-fa4a-9ef7-35ea150e0ef4/3830005830909.jpg/600x600bb.jpg",
+     "album": "Srebrna Krila + Novi Fosili",
+     "year": 1981,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "pop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5b/71/ce/5b71ceb6-4e56-e516-3312-020c450ab7f4/mzaf_11087381666483112770.plus.aac.p.m4a"
+    },
+    {
      "artist": "Oliver Dragojevic",
      "diaspora": false,
      "decade": "1980s",
@@ -98564,6 +100304,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 321900,
      "genre": "zabavna"
+    },
+    {
+     "artist": "Magazin",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Magazin",
+     "title": "Piši mi",
+     "trackId": 3016783691,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/3028717bf8a0c6ada61a9343f62a6e7f/500x500-000000-80-0-0.jpg",
+     "album": "The Best Of Collection",
+     "year": 1983,
+     "eraAccurate": true,
+     "artistId": 321805,
+     "genre": "pop"
     },
     {
      "artist": "Oliver Dragojevic",
@@ -98580,6 +100334,20 @@ const COUNTRIES = {
      "genre": "zabavna"
     },
     {
+     "artist": "Jasna Zlokić",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Jasna Zlokic",
+     "title": "Skitnica",
+     "trackId": 1014283022,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/5f90c06313f68c95a0641f3c68f00cde/500x500-000000-80-0-0.jpg",
+     "album": "50 Originalnih Pjesama",
+     "year": 1985,
+     "eraAccurate": true,
+     "artistId": 124709,
+     "genre": "pop"
+    },
+    {
      "artist": "Doris Dragovic",
      "diaspora": false,
      "decade": "1980s",
@@ -98591,6 +100359,20 @@ const COUNTRIES = {
      "year": 1986,
      "eraAccurate": true,
      "artistId": 321789,
+     "genre": "pop"
+    },
+    {
+     "artist": "Novi Fosili",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Novi Fosili",
+     "title": "Ja Sam Za Ples",
+     "trackId": 714874122,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/b4952ad09b711675c61ee10cbe4b66d4/500x500-000000-80-0-0.jpg",
+     "album": "50 Originalnih Pjesama",
+     "year": 1986,
+     "eraAccurate": true,
+     "artistId": 321910,
      "genre": "pop"
     },
     {
@@ -98606,6 +100388,36 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 307229,
      "genre": "rock"
+    },
+    {
+     "artist": "Psihomodo Pop",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "PSIHOMODO POP",
+     "title": "Ramona",
+     "trackId": 1021092552,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e6443d3e6775bc44a8ef1a7bce45d6c8/500x500-000000-80-0-0.jpg",
+     "album": "Greatest Hits Collection",
+     "year": 1988,
+     "eraAccurate": true,
+     "artistId": 996640,
+     "genre": "rock"
+    },
+    {
+     "artist": "Mladen Grdović",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Mladen Grdović",
+     "title": "Dalmatinac",
+     "trackId": "it382216728",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/90/1b/68/901b68d5-a730-6994-360e-0ecec514e1b6/mzi.hxibadrh.jpg/600x600bb.jpg",
+     "album": "Zlatna Kolekcija",
+     "year": 1988,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "dalmatian",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/98/6f/72/986f7251-c1c0-2c86-06b2-c713f0186e9d/mzaf_2369314143239098572.plus.aac.p.m4a"
     },
     {
      "artist": "Dino Dvornik",
@@ -98680,6 +100492,20 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "Daleka Obala",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Daleka Obala",
+     "title": "Ona Zbori",
+     "trackId": 2994551191,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/f40a146ea99b1a26f8c8ed5757ae4d0b/500x500-000000-80-0-0.jpg",
+     "album": "Mrlje",
+     "year": 1994,
+     "eraAccurate": true,
+     "artistId": 1512502,
+     "genre": "rock"
+    },
+    {
      "artist": "Magazin",
      "diaspora": false,
      "decade": "1990s",
@@ -98736,6 +100562,34 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "Let 3",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Let 3",
+     "title": "Riječke pičke",
+     "trackId": 1690768657,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/dc560ad810b0b938dc9e7c88ef0371ab/500x500-000000-80-0-0.jpg",
+     "album": "Bombardiranje srbije i čačka",
+     "year": 1997,
+     "eraAccurate": true,
+     "artistId": 397239,
+     "genre": "rock"
+    },
+    {
+     "artist": "Mladen Grdović",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Mladen Grdovic",
+     "title": "Sve Za Ljubav",
+     "trackId": 2994296731,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/548cdc5a69617683e50a481f432e4966/500x500-000000-80-0-0.jpg",
+     "album": "18 Zlatnih Hitova",
+     "year": 1997,
+     "eraAccurate": true,
+     "artistId": 321804,
+     "genre": "dalmatian"
+    },
+    {
      "artist": "Vanna",
      "diaspora": false,
      "decade": "1990s",
@@ -98764,6 +100618,20 @@ const COUNTRIES = {
      "genre": "dance"
     },
     {
+     "artist": "Miroslav Škoro",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Miroslav Škoro",
+     "title": "Ne Dirajte Mi Ravnicu",
+     "trackId": 2646539072,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/48cdb655c9904c99f5267b1eabc37397/500x500-000000-80-0-0.jpg",
+     "album": "Miroslav Škoro Uživo",
+     "year": 1998,
+     "eraAccurate": true,
+     "artistId": 302889,
+     "genre": "folk"
+    },
+    {
      "artist": "Doris Dragovic",
      "diaspora": false,
      "decade": "1990s",
@@ -98776,6 +100644,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 321789,
      "genre": "pop"
+    },
+    {
+     "artist": "Goran Karan",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Goran Karan",
+     "title": "Stay With Me",
+     "trackId": 2995158661,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/1278585b735cc87cd06c3f59ab3191cf/500x500-000000-80-0-0.jpg",
+     "album": "Zlatna Kolekcija",
+     "year": 1999,
+     "eraAccurate": true,
+     "artistId": 103228,
+     "genre": "dalmatian"
     }
    ],
    "2000s": [
@@ -98808,6 +100690,20 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "Dražen Zečić",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Drazen Zecic",
+     "title": "Nemoj Tražit Da Te Ne Volim",
+     "trackId": 979747632,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/9cfc703438fe087428b50d0ec9cc7a29/500x500-000000-80-0-0.jpg",
+     "album": "The Best Of Collection",
+     "year": 2002,
+     "eraAccurate": true,
+     "artistId": 321907,
+     "genre": "dalmatian"
+    },
+    {
      "artist": "Petar Graso",
      "diaspora": false,
      "decade": "2000s",
@@ -98822,6 +100718,20 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "Hladno Pivo",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Hladno Pivo",
+     "title": "Samo Za Taj Osjećaj",
+     "trackId": 1449039322,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/00ae2b43bdd8d0acde02afed022f518f/500x500-000000-80-0-0.jpg",
+     "album": "Šamar",
+     "year": 2003,
+     "eraAccurate": true,
+     "artistId": 113743,
+     "genre": "rock"
+    },
+    {
      "artist": "Magazin",
      "diaspora": false,
      "decade": "2000s",
@@ -98834,6 +100744,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 321805,
      "genre": "pop"
+    },
+    {
+     "artist": "TBF",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "TBF",
+     "title": "Genije",
+     "trackId": 1320883492,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/c043723a766989173b85c16d2dc99f1b/500x500-000000-80-0-0.jpg",
+     "album": "Perpetuum Fritule",
+     "year": 2004,
+     "eraAccurate": true,
+     "artistId": 112719,
+     "genre": "hip-hop"
     },
     {
      "artist": "Nina Badric",
@@ -98862,6 +100786,36 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 16142,
      "genre": "pop"
+    },
+    {
+     "artist": "Massimo",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Massimo",
+     "title": "Iz Jednog Pogleda",
+     "trackId": 65620463,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/336127299b793dbeef35f7297eca3e2f/500x500-000000-80-0-0.jpg",
+     "album": "DODIRNI ME SLUČAJNO",
+     "year": 2006,
+     "eraAccurate": true,
+     "artistId": 7203218,
+     "genre": "pop"
+    },
+    {
+     "artist": "Klapa Cambi",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Klapa Cambi",
+     "title": "Lipa moja",
+     "trackId": "it983771278",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music1/v4/c0/6b/76/c06b7660-a61a-d031-8d9d-d9b215de2b10/cover.jpg/600x600bb.jpg",
+     "album": "Vrime od nedije",
+     "year": 2008,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "klapa",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/4d/10/51/4d105185-98ca-b2a8-3783-a94fa1fb8229/mzaf_2303488726648092443.plus.aac.p.m4a"
     },
     {
      "artist": "Severina",
@@ -98908,6 +100862,20 @@ const COUNTRIES = {
      "genre": "klapa"
     },
     {
+     "artist": "Hladno Pivo",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Hladno Pivo",
+     "title": "Politika",
+     "trackId": 1014271242,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/2ed90a15858113f056fef34044c0f043/500x500-000000-80-0-0.jpg",
+     "album": "30 Godina - Greatest Hits",
+     "year": 2010,
+     "eraAccurate": true,
+     "artistId": 113743,
+     "genre": "rock"
+    },
+    {
      "artist": "2Cellos",
      "diaspora": false,
      "decade": "2010s",
@@ -98950,6 +100918,22 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "Dražen Zečić",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Dražen Zečić",
+     "title": "Sve Me Više Pjesme Diraju",
+     "trackId": "it661623591",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music2/v4/72/4e/31/724e313e-7650-acc9-ba56-a3a8abf02d35/3850126045860.jpg/600x600bb.jpg",
+     "album": "Tvoj Ću Ostati",
+     "year": 2012,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "dalmatian",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/d3/db/5ed3dbbb-5bcc-308b-09d8-6e672627040a/mzaf_17437931197090928836.plus.aac.p.m4a"
+    },
+    {
      "artist": "Petar Graso",
      "diaspora": false,
      "decade": "2010s",
@@ -98989,6 +100973,20 @@ const COUNTRIES = {
      "year": 2016,
      "eraAccurate": true,
      "artistId": 4275391,
+     "genre": "pop"
+    },
+    {
+     "artist": "Jacques Houdek",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Jacques Houdek",
+     "title": "MY FRIEND",
+     "trackId": 143324462,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/449488cdf7af1d353be40c02160011e3/500x500-000000-80-0-0.jpg",
+     "album": "My friend",
+     "year": 2017,
+     "eraAccurate": true,
+     "artistId": 335936,
      "genre": "pop"
     },
     {
@@ -99120,6 +101118,20 @@ const COUNTRIES = {
      "genre": "pop"
     },
     {
+     "artist": "Albina",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Albina",
+     "title": "Tick-Tock",
+     "trackId": 1235575162,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/339700c43372a750521fb14df5593051/500x500-000000-80-0-0.jpg",
+     "album": "Tick-Tock",
+     "year": 2021,
+     "eraAccurate": true,
+     "artistId": 3107451,
+     "genre": "pop"
+    },
+    {
      "artist": "Buntai",
      "diaspora": false,
      "decade": "2020s",
@@ -99173,6 +101185,62 @@ const COUNTRIES = {
      "year": 2022,
      "eraAccurate": true,
      "artistId": 251659,
+     "genre": "pop"
+    },
+    {
+     "artist": "Mia Dimšić",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Mia Dimšić",
+     "title": "Guilty Pleasure",
+     "trackId": 3020552391,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/45c3610800d9f9e2358010c5b4218248/500x500-000000-80-0-0.jpg",
+     "album": "Guilty Pleasure",
+     "year": 2022,
+     "eraAccurate": true,
+     "artistId": 9725418,
+     "genre": "pop"
+    },
+    {
+     "artist": "Let 3",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Let 3",
+     "title": "Mama Šč!",
+     "trackId": 2114884607,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/35602bd247e53ccf006bccddb11956f8/500x500-000000-80-0-0.jpg",
+     "album": "Mama Šč!",
+     "year": 2023,
+     "eraAccurate": true,
+     "artistId": 397239,
+     "genre": "rock"
+    },
+    {
+     "artist": "Baby Lasagna",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Baby Lasagna",
+     "title": "Rim Tim Tagi Dim",
+     "trackId": 2615453312,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/5f41ac2a0df9799db88384ec1cce8f26/500x500-000000-80-0-0.jpg",
+     "album": "Rim Tim Tagi Dim",
+     "year": 2024,
+     "eraAccurate": true,
+     "artistId": 237789251,
+     "genre": "rock"
+    },
+    {
+     "artist": "Marko Bošnjak",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Marko Bošnjak",
+     "title": "Poison Cake",
+     "trackId": 3161099261,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/18f60dfabfe4f7a3ae7425cb83f0e631/500x500-000000-80-0-0.jpg",
+     "album": "Poison Cake",
+     "year": 2024,
+     "eraAccurate": true,
+     "artistId": 13965211,
      "genre": "pop"
     }
    ]
@@ -100382,6 +102450,50 @@ const COUNTRIES = {
    ],
    "1960s": [
     {
+     "artist": "Cheikh El Hasnaoui",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Cheikh El Hasnaoui",
+     "title": "Maison Blanche",
+     "trackId": 122809924,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/2bdf9281dc54668b9cae594cc6087e96/500x500-000000-80-0-0.jpg",
+     "album": "Sani Sani",
+     "year": 1960,
+     "eraAccurate": true,
+     "artistId": 1233597,
+     "genre": "kabyle"
+    },
+    {
+     "artist": "Line Monty",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Line Monty",
+     "title": "Ya oummi ya oummi",
+     "trackId": 82139982,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/155f0e9cd749b1b06def0a498f525906/500x500-000000-80-0-0.jpg",
+     "album": "Trésors de la chanson judéo-arabe",
+     "year": 1961,
+     "eraAccurate": true,
+     "artistId": 1351265,
+     "genre": "andalusian"
+    },
+    {
+     "artist": "Salim Halali",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Salim Halali",
+     "title": "Mahani Ezzine",
+     "trackId": "it1287634312",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/b7/0f/7f/b70f7faa-42e1-f60e-0477-f71f33c634a3/3663729042668_cover.jpg/600x600bb.jpg",
+     "album": "Salim Halali en Algérie",
+     "year": 1962,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "andalusian",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/28/ef/f5/28eff533-dd1e-7ca1-ceb3-efc4640561fa/mzaf_9065020836903195102.plus.aac.p.m4a"
+    },
+    {
      "artist": "Nora",
      "diaspora": false,
      "decade": "1960s",
@@ -100438,6 +102550,34 @@ const COUNTRIES = {
      "genre": "kabyle"
     },
     {
+     "artist": "El Hadj M'Hamed El Anka",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "El Hadj M'hamed El Anka",
+     "title": "El h'mam",
+     "trackId": 110866692,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/6ddbeb7f42ab1aede03ca0b1c48cf18d/500x500-000000-80-0-0.jpg",
+     "album": "El h'mam",
+     "year": 1968,
+     "eraAccurate": true,
+     "artistId": 1270058,
+     "genre": "chaabi"
+    },
+    {
+     "artist": "Guerouabi",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "El Hachemi Guerouabi",
+     "title": "Allah yarhamou el harraz",
+     "trackId": 112378544,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/bcca28ecb29941bca144bc5e810451ab/500x500-000000-80-0-0.jpg",
+     "album": "Allah yarhamou el harraz",
+     "year": 1968,
+     "eraAccurate": true,
+     "artistId": 1178569,
+     "genre": "chaabi"
+    },
+    {
      "artist": "Dahmane El Harrachi",
      "diaspora": false,
      "decade": "1960s",
@@ -100449,6 +102589,20 @@ const COUNTRIES = {
      "year": 1969,
      "eraAccurate": true,
      "artistId": 12556,
+     "genre": "chaabi"
+    },
+    {
+     "artist": "Amar Ezzahi",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Amar Ezzahi",
+     "title": "Ya Hmama",
+     "trackId": 3369255701,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/60b569026c6795ca6bd4de37395b0d53/500x500-000000-80-0-0.jpg",
+     "album": "Ya Hmama",
+     "year": 1969,
+     "eraAccurate": true,
+     "artistId": 1243209,
      "genre": "chaabi"
     }
    ],
@@ -100468,6 +102622,20 @@ const COUNTRIES = {
      "genre": "kabyle"
     },
     {
+     "artist": "Slimane Azem",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Slimane Azem",
+     "title": "Algérie mon beau pays",
+     "trackId": 42927971,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/eb2579cae5aec0ed2189cbe4d6c771d3/500x500-000000-80-0-0.jpg",
+     "album": "Best of Slimane Azem (Double album remasterisé)",
+     "year": 1970,
+     "eraAccurate": true,
+     "artistId": 1233877,
+     "genre": "kabyle"
+    },
+    {
      "artist": "Djamel Allam",
      "diaspora": false,
      "decade": "1970s",
@@ -100480,6 +102648,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1351317,
      "genre": "kabyle"
+    },
+    {
+     "artist": "Cheikh El Khaldi",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Cheikh El Khaldi",
+     "title": "Goul l'bakhta goul",
+     "trackId": 3615417982,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/415a37a2cae6a3d6d8cacf52818e812f/500x500-000000-80-0-0.jpg",
+     "album": "Algérie les classiques",
+     "year": 1973,
+     "eraAccurate": true,
+     "artistId": 352231022,
+     "genre": "bedoui"
     },
     {
      "artist": "Ait Menguellet",
@@ -100550,6 +102732,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 71194,
      "genre": "kabyle"
+    },
+    {
+     "artist": "Cheb Khaled",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Khaled",
+     "title": "Trigue Lycee",
+     "trackId": "it1443897253",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music128/v4/8b/f3/fa/8bf3fa11-a216-8906-cf19-9e171755c5f6/00731454339728.rgb.jpg/600x600bb.jpg",
+     "album": "Kenza",
+     "year": 1979,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "rai",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/ab/d2/89/abd289ca-93eb-d171-c8ac-3b2e79457654/mzaf_15565441915246876549.plus.aac.p.m4a"
     }
    ],
    "1980s": [
@@ -100596,6 +102794,20 @@ const COUNTRIES = {
      "genre": "kabyle"
     },
     {
+     "artist": "Amar Ezzahi",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Amar Ezzahi",
+     "title": "Ya saqi",
+     "trackId": 2188677137,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/ac9fab474b042f5dd9b94400d88e8b0f/500x500-000000-80-0-0.jpg",
+     "album": "Ya saqi",
+     "year": 1982,
+     "eraAccurate": true,
+     "artistId": 1243209,
+     "genre": "chaabi"
+    },
+    {
      "artist": "Cheb Hamid",
      "diaspora": false,
      "decade": "1980s",
@@ -100608,6 +102820,66 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1215421,
      "genre": "rai"
+    },
+    {
+     "artist": "Chaba Fadela",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Chaba Fadela",
+     "title": "N'sel fik",
+     "trackId": 577654602,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/c4932e4b1a730f13ae992990ce6ffdcf/500x500-000000-80-0-0.jpg",
+     "album": "You Are Mine",
+     "year": 1983,
+     "eraAccurate": true,
+     "artistId": 457467,
+     "genre": "rai"
+    },
+    {
+     "artist": "Cheb Khaled",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Khaled",
+     "title": "La Camel",
+     "trackId": "it1444050123",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/16/72/6b/16726b64-b2bd-33a1-a54d-aa582748d87e/00731453988125.rgb.jpg/600x600bb.jpg",
+     "album": "Hafla (Live)",
+     "year": 1985,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "rai",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/fb/de/0f/fbde0f24-97d0-37b0-f534-9379f7185859/mzaf_7800235901455023563.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Lounis Aït Menguellet",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Lounis Aït Menguellet",
+     "title": "Acimi",
+     "trackId": "it1620887041",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/53/9e/ea/539eeaad-5cf5-a403-6c18-e3711b4af9c9/cover.jpg/600x600bb.jpg",
+     "album": "Acimi",
+     "year": 1985,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "kabyle",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/26/cb/98/26cb988f-e2ae-00ad-63a9-db1a8b80c167/mzaf_14523790767860175055.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Guerouabi",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Guerouabi",
+     "title": "El bareh",
+     "trackId": 1688617887,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/6546e0ff68e73ebff27ff0b81750d23a/500x500-000000-80-0-0.jpg",
+     "album": "El bareh",
+     "year": 1985,
+     "eraAccurate": true,
+     "artistId": 1351244,
+     "genre": "chaabi"
     },
     {
      "artist": "Cheb Mami",
@@ -100652,6 +102924,38 @@ const COUNTRIES = {
      "genre": "rai"
     },
     {
+     "artist": "Cheb Khaled",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Cheb Khaled",
+     "title": "Sidi boumedienne",
+     "trackId": "it6761863028",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/d6/1f/15/d61f1565-5e88-192a-a4bb-20cd34f55816/3661318055235.jpg/600x600bb.jpg",
+     "album": "Yamina",
+     "year": 1988,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "rai",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/b0/1c/20/b01c204b-e025-fb22-0155-97648154667b/mzaf_6793009015565060152.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Cheb Abdou",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Cheb Abdou",
+     "title": "Ya Galouli Raha Mrida",
+     "trackId": "it6767265990",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/dd/d8/a8/ddd8a8ed-110f-f1e3-e9ce-cd829db656c7/824296541036_cover.jpg/600x600bb.jpg",
+     "album": "Chandir Bel Fani",
+     "year": 1988,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "rai",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/06/3a/06/063a0696-ed4e-a85a-d7d1-f5736ed4b1b5/mzaf_3137696970435095468.plus.aac.p.m4a"
+    },
+    {
      "artist": "Cheb Hasni",
      "diaspora": false,
      "decade": "1980s",
@@ -100664,9 +102968,37 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 101645,
      "genre": "rai"
+    },
+    {
+     "artist": "Cheb Kader",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Cheb Kader",
+     "title": "M'hainek ya galbi",
+     "trackId": 102598842,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/af9e3c9d616731b4e09fcebea8ae98be/500x500-000000-80-0-0.jpg",
+     "album": "Il était une fois le raï",
+     "year": 1989,
+     "eraAccurate": true,
+     "artistId": 115821,
+     "genre": "rai"
     }
    ],
    "1990s": [
+    {
+     "artist": "Cheb Mami",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Cheb Mami",
+     "title": "Le Rai c'est chic",
+     "trackId": 3414223,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/f5c10fb33e3f533d9e182345c9d2ae3a/500x500-000000-80-0-0.jpg",
+     "album": "dellali",
+     "year": 1990,
+     "eraAccurate": true,
+     "artistId": 995,
+     "genre": "rai"
+    },
     {
      "artist": "Cheb Hasni",
      "diaspora": false,
@@ -100677,6 +103009,82 @@ const COUNTRIES = {
      "cover": "https://cdn-images.dzcdn.net/images/cover/8601d63e21ccfa9763ef348ed2315863/500x500-000000-80-0-0.jpg",
      "album": "Sbaart Ou Tal Adabi",
      "year": 1991,
+     "eraAccurate": true,
+     "artistId": 101645,
+     "genre": "rai"
+    },
+    {
+     "artist": "Cheb Hasni",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Cheb Hasni",
+     "title": "Tal ghyabek ya ghzali",
+     "trackId": 1109936712,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e2d91e6d061b2474abd73b1289e353b7/500x500-000000-80-0-0.jpg",
+     "album": "Cheb Hasni",
+     "year": 1991,
+     "eraAccurate": true,
+     "artistId": 101645,
+     "genre": "rai"
+    },
+    {
+     "artist": "Cheb Khaled",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Khaled",
+     "title": "Didi",
+     "trackId": "it1566382631",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/65/42/61/6542610d-1f3f-5e90-b075-10d28ffa6c86/21UMGIM40583.rgb.jpg/600x600bb.jpg",
+     "album": "Khaled",
+     "year": 1992,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "rai",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/80/d1/a3/80d1a3de-cd6c-f4fa-9d1d-760d491b07d5/mzaf_15868955820123773061.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Cheb Khaled",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Khaled",
+     "title": "El Arbi",
+     "trackId": "it1566382642",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/65/42/61/6542610d-1f3f-5e90-b075-10d28ffa6c86/21UMGIM40583.rgb.jpg/600x600bb.jpg",
+     "album": "Khaled",
+     "year": 1993,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "rai",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/d8/fa/ce/d8face18-5554-239e-a583-36b85d761c6c/mzaf_16711001566870735071.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Matoub Lounès",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Matoub Lounès",
+     "title": "Tighri idurar",
+     "trackId": "it1723403230",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/fa/94/db/fa94db81-ba17-6004-5348-5dd4dd2b1bdf/cover.jpg/600x600bb.jpg",
+     "album": "Ru Ayul",
+     "year": 1993,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "kabyle",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/ed/57/cb/ed57cb85-b748-93ae-3c5f-acbd0373616f/mzaf_4850085308502269335.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Cheb Hasni",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Cheb Hasni",
+     "title": "El Baraka",
+     "trackId": 2476964431,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/65f4aa5017825b173b21b0ec2ea7adac/500x500-000000-80-0-0.jpg",
+     "album": "El Baraka",
+     "year": 1994,
      "eraAccurate": true,
      "artistId": 101645,
      "genre": "rai"
@@ -100696,6 +103104,36 @@ const COUNTRIES = {
      "genre": "rai"
     },
     {
+     "artist": "Cheb Mami",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Cheb Mami",
+     "title": "Bledi",
+     "trackId": 3414325,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/69a41664109a64132dc3f7d637a0a752/500x500-000000-80-0-0.jpg",
+     "album": "Meli Meli",
+     "year": 1995,
+     "eraAccurate": true,
+     "artistId": 995,
+     "genre": "rai"
+    },
+    {
+     "artist": "Lounis Aït Menguellet",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Lounis Aït Menguellet",
+     "title": "Tiregwa (Inagan), Partie. 4",
+     "trackId": "it1548072385",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/af/25/af/af25af44-3064-c3af-0579-a454b13ae609/cover.jpg/600x600bb.jpg",
+     "album": "Inagan (Tiregwa)",
+     "year": 1995,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "kabyle",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/38/06/76/3806760d-582c-824c-0d82-1fb91e6790ac/mzaf_15611857729231153801.plus.aac.p.m4a"
+    },
+    {
      "artist": "Houari Dauphin",
      "diaspora": false,
      "decade": "1990s",
@@ -100707,6 +103145,36 @@ const COUNTRIES = {
      "year": 1996,
      "eraAccurate": true,
      "artistId": 362332,
+     "genre": "rai"
+    },
+    {
+     "artist": "Cheb Khaled",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Khaled",
+     "title": "Aicha",
+     "trackId": "it1444050114",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/16/72/6b/16726b64-b2bd-33a1-a54d-aa582748d87e/00731453988125.rgb.jpg/600x600bb.jpg",
+     "album": "Hafla (Live)",
+     "year": 1996,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "rai",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/e2/3e/b7/e23eb7b4-26ce-abb0-7be8-0b96841b6daf/mzaf_10549830553623019433.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Cheb Aziz",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Cheb Aziz",
+     "title": "Ki Telbouni Ndir Sada",
+     "trackId": 2736607501,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/bced2ac0c6307e4422fdd250b61f449c/500x500-000000-80-0-0.jpg",
+     "album": "Hbibi Foutni",
+     "year": 1996,
+     "eraAccurate": true,
+     "artistId": 360423,
      "genre": "rai"
     },
     {
@@ -100796,6 +103264,34 @@ const COUNTRIES = {
      "genre": "rai"
     },
     {
+     "artist": "Cheb Mami",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Cheb Mami",
+     "title": "Viens habibi",
+     "trackId": 3414225,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/f5c10fb33e3f533d9e182345c9d2ae3a/500x500-000000-80-0-0.jpg",
+     "album": "dellali",
+     "year": 2001,
+     "eraAccurate": true,
+     "artistId": 995,
+     "genre": "rai"
+    },
+    {
+     "artist": "Intik",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Intik",
+     "title": "La victoire",
+     "trackId": 896916,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/112b530e00d4408e490e625d1ccebb4d/500x500-000000-80-0-0.jpg",
+     "album": "La Victoire",
+     "year": 2001,
+     "eraAccurate": true,
+     "artistId": 5034,
+     "genre": "rap"
+    },
+    {
      "artist": "Rachid Taha",
      "diaspora": true,
      "decade": "2000s",
@@ -100808,6 +103304,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1012,
      "genre": "rock"
+    },
+    {
+     "artist": "MBS",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Mbs",
+     "title": "Ouled El Bahdja",
+     "trackId": 2329689995,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/858fc8c072be377c33844ef86744b09d/500x500-000000-80-0-0.jpg",
+     "album": "Ouled El Bahdja",
+     "year": 2002,
+     "eraAccurate": true,
+     "artistId": 226341185,
+     "genre": "rap"
     },
     {
      "artist": "Souad Massi",
@@ -100824,6 +103334,20 @@ const COUNTRIES = {
      "genre": "folk"
     },
     {
+     "artist": "Cheba Maria",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Cheba Maria",
+     "title": "Galbi",
+     "trackId": 2671977552,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/7810a0f50271f6b3b62828fb012002dd/500x500-000000-80-0-0.jpg",
+     "album": "Galbi",
+     "year": 2003,
+     "eraAccurate": true,
+     "artistId": 56048,
+     "genre": "rai"
+    },
+    {
      "artist": "Khaled",
      "diaspora": false,
      "decade": "2000s",
@@ -100835,6 +103359,52 @@ const COUNTRIES = {
      "year": 2004,
      "eraAccurate": true,
      "artistId": 75354,
+     "genre": "rai"
+    },
+    {
+     "artist": "Cheb Khaled",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Khaled",
+     "title": "Ya Rayi",
+     "trackId": "it268861047",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music/3a/0e/6f/mzi.jvfkbzbn.jpg/600x600bb.jpg",
+     "album": "Arabian 2000 & 1 Nights, Vol. 2",
+     "year": 2004,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "rai",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/c5/07/cb/c507cb36-f81e-8de3-f896-8b4adf0c89e7/mzaf_16913479132738420012.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Cheb Akil",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Cheb Akil & Samira L'oranaise",
+     "title": "MAZAL MAZAL",
+     "trackId": "it6763642887",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/d9/a4/c8/d9a4c8bb-b718-e849-85e1-25e581a22cf0/cover.jpg/600x600bb.jpg",
+     "album": "MAZAL MAZAL - Single",
+     "year": 2005,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "rai",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/45/4f/08/454f0808-039c-9e8a-2de2-dde116f2e18e/mzaf_8098131200374608994.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Cheb Mami",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Cheb Mami",
+     "title": "Halili (feat. Zaho)",
+     "trackId": 3110732,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e7697a13a3688b3322d38e030d6e5ea4/500x500-000000-80-0-0.jpg",
+     "album": "Layali",
+     "year": 2006,
+     "eraAccurate": true,
+     "artistId": 995,
      "genre": "rai"
     },
     {
@@ -100852,6 +103422,20 @@ const COUNTRIES = {
      "genre": "rap"
     },
     {
+     "artist": "Cheb Bilal",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Cheb Bilal",
+     "title": "bye bye ygouli rassi",
+     "trackId": 3024788881,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/0787751d150730cae101869216809b12/500x500-000000-80-0-0.jpg",
+     "album": "bye bye ygouli rassi",
+     "year": 2008,
+     "eraAccurate": true,
+     "artistId": 92782,
+     "genre": "rai"
+    },
+    {
      "artist": "Reda Taliani",
      "diaspora": true,
      "decade": "2000s",
@@ -100864,9 +103448,37 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 92785,
      "genre": "rai"
+    },
+    {
+     "artist": "Cheb Nadir",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Cheb Nadir",
+     "title": "Galbi Mrayedh",
+     "trackId": 2568167992,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/8ef4f363f22fd317e957149740c5691c/500x500-000000-80-0-0.jpg",
+     "album": "Galbi Mrayedh",
+     "year": 2009,
+     "eraAccurate": true,
+     "artistId": 362325,
+     "genre": "rai"
     }
    ],
    "2010s": [
+    {
+     "artist": "Zaho",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Zaho",
+     "title": "C'est chelou",
+     "trackId": 2243981367,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/b22c8631c2c39d4d3b7f70ef90ebafae/500x500-000000-80-0-0.jpg",
+     "album": "Dima (Edition Spéciale)",
+     "year": 2010,
+     "eraAccurate": true,
+     "artistId": 161909,
+     "genre": "rap"
+    },
     {
      "artist": "Reda Taliani",
      "diaspora": true,
@@ -100894,6 +103506,48 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 482758,
      "genre": "electronic"
+    },
+    {
+     "artist": "Cheb Bilal",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Cheb Bilal",
+     "title": "Wili wili",
+     "trackId": 3721921912,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/6583ed625ff1dd7163e10942ea145db8/500x500-000000-80-0-0.jpg",
+     "album": "Arouah ngoulek",
+     "year": 2013,
+     "eraAccurate": true,
+     "artistId": 92782,
+     "genre": "rai"
+    },
+    {
+     "artist": "Cheb Mami",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Cheb Mami",
+     "title": "Ahla Layali Omrina",
+     "trackId": 3110739,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e7697a13a3688b3322d38e030d6e5ea4/500x500-000000-80-0-0.jpg",
+     "album": "Layali",
+     "year": 2014,
+     "eraAccurate": true,
+     "artistId": 995,
+     "genre": "rai"
+    },
+    {
+     "artist": "Cheb Houssem",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Cheb Houssem sghir",
+     "title": "Nsa3Fek Ya Galbi",
+     "trackId": 1382387312,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/ab3021f064e1732539fe874c1fb46a33/500x500-000000-80-0-0.jpg",
+     "album": "Nsa3Fek Ya Galbi",
+     "year": 2015,
+     "eraAccurate": true,
+     "artistId": 97345162,
+     "genre": "rai"
     },
     {
      "artist": "L'Algerino",
@@ -100978,6 +103632,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 10189104,
      "genre": "rap"
+    },
+    {
+     "artist": "Zedk",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Zedk",
+     "title": "My Story",
+     "trackId": 3209515821,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/42ae032962fde07607b76706a4ade93d/500x500-000000-80-0-0.jpg",
+     "album": "My Story",
+     "year": 2019,
+     "eraAccurate": true,
+     "artistId": 13229785,
+     "genre": "rap"
     }
    ],
    "2020s": [
@@ -101052,6 +103720,34 @@ const COUNTRIES = {
      "genre": "rai"
     },
     {
+     "artist": "Raja Meziane",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Raja Meziane",
+     "title": "Toxic",
+     "trackId": 672331362,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/e01f8868d500b4d3f8c3256b5adcd3c0/500x500-000000-80-0-0.jpg",
+     "album": "Toxic",
+     "year": 2020,
+     "eraAccurate": true,
+     "artistId": 4914581,
+     "genre": "rap"
+    },
+    {
+     "artist": "RIM'K",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Rim'K",
+     "title": "Air Max",
+     "trackId": 2937703911,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/419974623c085aed168ead0c6bf0997a/500x500-000000-80-0-0.jpg",
+     "album": "Air Max",
+     "year": 2020,
+     "eraAccurate": true,
+     "artistId": 256080,
+     "genre": "rap"
+    },
+    {
      "artist": "Cheb Djalil",
      "diaspora": false,
      "decade": "2020s",
@@ -101105,6 +103801,48 @@ const COUNTRIES = {
      "year": 2021,
      "eraAccurate": true,
      "artistId": 89624,
+     "genre": "rap"
+    },
+    {
+     "artist": "Soolking",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Soolking",
+     "title": "Casanova",
+     "trackId": 2352206125,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/1e5e094f83b30af22336998863538268/500x500-000000-80-0-0.jpg",
+     "album": "Casanova",
+     "year": 2021,
+     "eraAccurate": true,
+     "artistId": 10189104,
+     "genre": "rap"
+    },
+    {
+     "artist": "Cheb Nadir",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Cheb Nadir 22",
+     "title": "Ana Brouhi Dayrek Amie",
+     "trackId": 2896002751,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/43104da5a019bc7f43d6e04e92c62ba7/500x500-000000-80-0-0.jpg",
+     "album": "Ana Brouhi Dayrek Amie",
+     "year": 2021,
+     "eraAccurate": true,
+     "artistId": 104510682,
+     "genre": "rai"
+    },
+    {
+     "artist": "Soso Maness",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Soso Maness",
+     "title": "Petrouchka (feat. PLK)",
+     "trackId": 1374440512,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/7e57ff7f3a3a47d9942e675722ef5076/500x500-000000-80-0-0.jpg",
+     "album": "Avec le temps",
+     "year": 2021,
+     "eraAccurate": true,
+     "artistId": 5594859,
      "genre": "rap"
     },
     {
@@ -101461,6 +104199,22 @@ const COUNTRIES = {
    ],
    "1960s": [
     {
+     "artist": "Houcine Slaoui",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Houcine Slaoui",
+     "title": "Lalla yelali",
+     "trackId": "it430912820",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music/d7/c1/3e/mzi.xsvixulf.jpg/600x600bb.jpg",
+     "album": "Best of Houcine Slaoui (20 années de succès)",
+     "year": 1962,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "chaabi",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/4e/0f/e3/4e0fe34c-f107-3d38-1962-67dfa4a5c37a/mzaf_11053137372363288228.plus.aac.p.m4a"
+    },
+    {
      "artist": "Bouchaib El Bidaoui",
      "diaspora": false,
      "decade": "1960s",
@@ -101515,6 +104269,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1351305,
      "genre": "pop"
+    },
+    {
+     "artist": "Mohamed El Hayani",
+     "diaspora": false,
+     "decade": "1960s",
+     "dzArtist": "Mohamed El Hayani",
+     "title": "Ya sidi ana hor",
+     "trackId": 60796531,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/082833402cacfbca3452372a36818e82/500x500-000000-80-0-0.jpg",
+     "album": "Ya sidi ana hor",
+     "year": 1968,
+     "eraAccurate": true,
+     "artistId": 1388357,
+     "genre": "tarab"
     },
     {
      "artist": "Abdelhadi Belkhayat",
@@ -101579,6 +104347,20 @@ const COUNTRIES = {
      "diaspora": false,
      "decade": "1970s",
      "dzArtist": "Abdelwahab Doukkali",
+     "title": "Kan Ya Makan",
+     "trackId": 4014612441,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/c6c53bf1e285554c6f1c380bedbf4f7f/500x500-000000-80-0-0.jpg",
+     "album": "The Golden Voice Of Morocco, Vol. 2",
+     "year": 1974,
+     "eraAccurate": true,
+     "artistId": 1351305,
+     "genre": "tarab"
+    },
+    {
+     "artist": "Abdelwahab Doukkali",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Abdelwahab Doukkali",
      "title": "Ma ana ila bachar",
      "trackId": 65760816,
      "cover": "https://cdn-images.dzcdn.net/images/cover/c9ff5cc9b182cda82bab7f665550cb9d/500x500-000000-80-0-0.jpg",
@@ -101631,6 +104413,34 @@ const COUNTRIES = {
      "genre": "chaabi"
     },
     {
+     "artist": "Mohamed Rouicha",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Mohamed Rouicha",
+     "title": "Inas Inas",
+     "trackId": 725011982,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/b444ed5f1cf47c4dd0f9bbe6c385bbc8/500x500-000000-80-0-0.jpg",
+     "album": "Amana",
+     "year": 1977,
+     "eraAccurate": true,
+     "artistId": 2301581,
+     "genre": "amazigh"
+    },
+    {
+     "artist": "Mohamed El Hayani",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Mohamed El Hayani",
+     "title": "Imta tghani y galbi",
+     "trackId": 4110217341,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/0fecf232535bc724e30de893f58cea8f/500x500-000000-80-0-0.jpg",
+     "album": "Rahila",
+     "year": 1977,
+     "eraAccurate": true,
+     "artistId": 1388357,
+     "genre": "tarab"
+    },
+    {
      "artist": "Lemchaheb",
      "diaspora": false,
      "decade": "1970s",
@@ -101643,6 +104453,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 456879,
      "genre": "chaabi"
+    },
+    {
+     "artist": "Mohamed Rouicha",
+     "diaspora": false,
+     "decade": "1970s",
+     "dzArtist": "Mohamed Rouicha",
+     "title": "Goulti mazal kathab",
+     "trackId": 1792109557,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/701d68a30a53a821c888a326ed750d65/500x500-000000-80-0-0.jpg",
+     "album": "Ellil ellil",
+     "year": 1979,
+     "eraAccurate": true,
+     "artistId": 2301581,
+     "genre": "amazigh"
     }
    ],
    "1980s": [
@@ -101717,6 +104541,20 @@ const COUNTRIES = {
      "genre": "chaabi"
     },
     {
+     "artist": "Senhaji",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Saïd Senhaji",
+     "title": "Ana kasda",
+     "trackId": 65510621,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/401056be8ab9d52a9c4e076cc7ebd89d/500x500-000000-80-0-0.jpg",
+     "album": "Saidi",
+     "year": 1986,
+     "eraAccurate": true,
+     "artistId": 1225717,
+     "genre": "chaabi"
+    },
+    {
      "artist": "Latifa Raafat",
      "diaspora": false,
      "decade": "1980s",
@@ -101729,6 +104567,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1059664,
      "genre": "pop"
+    },
+    {
+     "artist": "Najat Aatabou",
+     "diaspora": false,
+     "decade": "1980s",
+     "dzArtist": "Najat Aatabou",
+     "title": "J'en ai marre",
+     "trackId": "it692635526",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/80/69/ba/8069bac1-a6b4-c3ad-f029-f96aef0f51e6/cover.jpg/600x600bb.jpg",
+     "album": "Assatidate fane al Maghreb al Arabi, vol. 3",
+     "year": 1988,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "chaabi",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/9f/d4/71/9fd4716d-7e4e-c078-5937-403ec6077e8d/mzaf_17423658660922122228.plus.aac.p.m4a"
     },
     {
      "artist": "Latifa Raafat",
@@ -101775,6 +104629,22 @@ const COUNTRIES = {
      "genre": "chaabi"
     },
     {
+     "artist": "Maalem Mahmoud Guinia",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Maalem Mahmoud Guinia & Floating Points",
+     "title": "Mimoun Marhaba",
+     "trackId": "it981105791",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music1/v4/18/3d/ef/183def0e-54bd-df66-25ab-e17d60507159/cover.jpg/600x600bb.jpg",
+     "album": "Marhaba",
+     "year": 1995,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "gnawa",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/1e/ab/26/1eab26b1-af56-a541-e02e-156cc81a2df6/mzaf_11422470989006189836.plus.aac.p.m4a"
+    },
+    {
      "artist": "Latifa Raafat",
      "diaspora": false,
      "decade": "1990s",
@@ -101787,6 +104657,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1059664,
      "genre": "pop"
+    },
+    {
+     "artist": "Daoudi",
+     "diaspora": false,
+     "decade": "1990s",
+     "dzArtist": "Daoudi",
+     "title": "Moul Nouba Daba Ynoub",
+     "trackId": 2761594281,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/a68a795453ee6541a905b861187d6f5c/500x500-000000-80-0-0.jpg",
+     "album": "Khayfek Tenssayni",
+     "year": 1996,
+     "eraAccurate": true,
+     "artistId": 100322,
+     "genre": "chaabi"
     },
     {
      "artist": "Daoudi",
@@ -101875,12 +104759,56 @@ const COUNTRIES = {
      "genre": "rock"
     },
     {
+     "artist": "H-Kayne",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "H-Kayne",
+     "title": "Issawa Style",
+     "trackId": 78067958,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/a03b739c86f8d6d18a3adf8ce6db38b7/500x500-000000-80-0-0.jpg",
+     "album": "H-K 1426",
+     "year": 2005,
+     "eraAccurate": true,
+     "artistId": 1343557,
+     "genre": "rap"
+    },
+    {
      "artist": "Don Bigg",
      "diaspora": false,
      "decade": "2000s",
      "dzArtist": "Don Bigg",
      "title": "Marra Marra",
      "trackId": 70472897,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/99ccd344ad2af07b7b695f29ba3fe26c/500x500-000000-80-0-0.jpg",
+     "album": "Mgharba Tal Moute",
+     "year": 2006,
+     "eraAccurate": true,
+     "artistId": 342437,
+     "genre": "rap"
+    },
+    {
+     "artist": "Daoudi",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Abdellah Daoudi",
+     "title": "Waktach a Sahbi Tahcham",
+     "trackId": "it1248739061",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music117/v4/cb/7b/83/cb7b83e1-5cb5-1fd4-a0f2-09db6776ed46/644458.jpg/600x600bb.jpg",
+     "album": "Waktach a Sahbi Tahcham - Single",
+     "year": 2006,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "chaabi",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview127/v4/6f/96/43/6f9643b4-3786-8a5e-2b4d-473529b16895/mzaf_4962809909942692308.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Bigg",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Don Bigg",
+     "title": "Mgharba Tal Moute",
+     "trackId": 70472882,
      "cover": "https://cdn-images.dzcdn.net/images/cover/99ccd344ad2af07b7b695f29ba3fe26c/500x500-000000-80-0-0.jpg",
      "album": "Mgharba Tal Moute",
      "year": 2006,
@@ -101901,6 +104829,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 2469601,
      "genre": "rap"
+    },
+    {
+     "artist": "Fnaire",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Fnaïre",
+     "title": "Yed El Henna",
+     "trackId": "it366462435",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/64/84/cc/6484cc22-6991-f674-4df9-2423cb2f33a7/mzi.ldxxdyuj.jpg/600x600bb.jpg",
+     "album": "Yed El Henna",
+     "year": 2007,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "rap",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/34/1a/2f/341a2fed-9a0d-d9b5-e42c-a58c09f6367e/mzaf_6063029040893494726.plus.aac.p.m4a"
     },
     {
      "artist": "Hindi Zahra",
@@ -101929,6 +104873,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 5246621,
      "genre": "pop"
+    },
+    {
+     "artist": "Oum",
+     "diaspora": false,
+     "decade": "2000s",
+     "dzArtist": "Oum",
+     "title": "Lik",
+     "trackId": 2596033732,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/756853105ea961d3867be68bcf753f8c/500x500-000000-80-0-0.jpg",
+     "album": "Soul of Morocco",
+     "year": 2009,
+     "eraAccurate": true,
+     "artistId": 342453,
+     "genre": "jazz-fusion"
     }
    ],
    "2010s": [
@@ -101975,6 +104933,68 @@ const COUNTRIES = {
      "genre": "rap"
     },
     {
+     "artist": "Ahmed Chawki",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Chawki",
+     "title": "Habibi I Love You (feat. Pitbull & Kenza Farah)",
+     "trackId": "it1744014786",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/cb/e6/a2/cbe6a28c-a5f8-e2a6-a7ad-b25d9c868925/8718857000983_cover.jpg/600x600bb.jpg",
+     "album": "Habibi I Love You (feat. Pitbull & Kenza Farah) - Single",
+     "year": 2013,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "pop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/08/dc/a8/08dca8f2-ee81-00a4-aee5-261dce5fc9ca/mzaf_18183986026199403810.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Don Bigg",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Don Bigg",
+     "title": "1 - Byad Ou K7al",
+     "trackId": 70472863,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/c2aa6edf8ea75f2e90cd1e18807cb13c/500x500-000000-80-0-0.jpg",
+     "album": "Byad Ou K7al",
+     "year": 2014,
+     "eraAccurate": true,
+     "artistId": 342437,
+     "genre": "rap"
+    },
+    {
+     "artist": "Saad Lamjarred",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Saad Lamjarred",
+     "title": "Ghazali",
+     "trackId": "it1361097791",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/69/dd/e9/69dde989-3d0d-71d3-3edc-6933b1eb7654/839612.jpg/600x600bb.jpg",
+     "album": "Ghazali - Single",
+     "year": 2016,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "pop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/be/f8/bd/bef8bd2f-14c5-8771-22f9-9c78fbcdb39e/mzaf_4646260144124736500.plus.aac.p.m4a"
+    },
+    {
+     "artist": "Zina Daoudia",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Zina Daoudia",
+     "title": "Aji Daba Daba",
+     "trackId": "it1574322673",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/09/ee/76/09ee76de-9edb-30bf-8182-7301de0dc6be/655360672369_cover.jpg/600x600bb.jpg",
+     "album": "Jini Goud",
+     "year": 2016,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "chaabi",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/82/ee/2e/82ee2e79-8102-0417-9b6d-f5a67acb36d8/mzaf_11882948057626234453.plus.aac.p.m4a"
+    },
+    {
      "artist": "Shayfeen",
      "diaspora": false,
      "decade": "2010s",
@@ -102015,6 +105035,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 451940,
      "genre": "trap"
+    },
+    {
+     "artist": "Zakaria Ghafouli",
+     "diaspora": false,
+     "decade": "2010s",
+     "dzArtist": "Zakaria Ghafouli",
+     "title": "Ya Magalou (Soirée Chaabi)",
+     "trackId": 2607968702,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/108f4bc7b91abd77be53ffe70ddbf45e/500x500-000000-80-0-0.jpg",
+     "album": "Ya Magalou (Soirée Chaabi)",
+     "year": 2019,
+     "eraAccurate": true,
+     "artistId": 4849351,
+     "genre": "pop"
     }
    ],
    "2020s": [
@@ -102061,6 +105095,20 @@ const COUNTRIES = {
      "genre": "rap"
     },
     {
+     "artist": "Lbenj",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "lbenj",
+     "title": "Animal",
+     "trackId": 1809192727,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/980646a730633cb2865d0b5354235281/500x500-000000-80-0-0.jpg",
+     "album": "Animal",
+     "year": 2020,
+     "eraAccurate": true,
+     "artistId": 12853731,
+     "genre": "trap"
+    },
+    {
      "artist": "Manal",
      "diaspora": false,
      "decade": "2020s",
@@ -102087,6 +105135,22 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 1377470,
      "genre": "rai"
+    },
+    {
+     "artist": "Dystinct",
+     "diaspora": true,
+     "decade": "2020s",
+     "dzArtist": "DYSTINCT",
+     "title": "YA BABA (feat. French Montana)",
+     "trackId": "it1806668432",
+     "cover": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/0a/2b/96/0a2b96f5-37bd-0519-64e4-cffe28e10f80/196873060477.jpg/600x600bb.jpg",
+     "album": "YA BABA (feat. French Montana) - Single",
+     "year": 2022,
+     "eraAccurate": true,
+     "artistId": 0,
+     "genre": "afro-pop",
+     "src": "itunes",
+     "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/1e/29/5b/1e295ba0-8206-5dbd-a617-d8707c385340/mzaf_2280390601812568957.plus.aac.p.m4a"
     }
    ]
   }
