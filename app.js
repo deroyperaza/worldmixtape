@@ -518,9 +518,27 @@ let playSource = "preview";
 let lastPos = 0;
 
 function updateFullUI(){
-  const b = document.getElementById("p-full"); if (!b) return;
-  b.classList.toggle("on", fullMode);
-  b.title = fullMode ? "Full songs via Spotify — tap for 30s previews" : "Switch to full songs (needs Spotify Premium)";
+  const b = document.getElementById("p-full");
+  if (b){
+    b.classList.toggle("on", fullMode);
+    b.title = fullMode ? "Full songs via Spotify — tap for 30s previews" : "Switch to full songs (needs Spotify Premium)";
+  }
+  updateSpCta();
+}
+
+/* homepage "connect Spotify" CTA bar — shows until connected, then hides */
+const spCta = document.getElementById("sp-cta");
+function updateSpCta(){
+  if (!spCta) return;
+  const show = SPOT.hasClientId() && !SPOT.isConnected() && !fullMode
+    && sessionStorage.getItem("wmx_cta_x") !== "1";
+  spCta.hidden = !show;
+  document.body.classList.toggle("cta-on", show);
+}
+{
+  const go = document.getElementById("sp-cta-go"), x = document.getElementById("sp-cta-x");
+  if (go) go.onclick = () => toggleFull();                       // kicks off the Spotify connect flow
+  if (x)  x.onclick = e => { e.stopPropagation(); sessionStorage.setItem("wmx_cta_x", "1"); updateSpCta(); };
 }
 function flashPlayerNote(msg){
   const el = document.getElementById("p-artist"); if (!el) return;
