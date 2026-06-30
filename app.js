@@ -487,13 +487,14 @@ async function play(i){
   stopFullPoll();
   if (SPOT.isConnected()) SPOT.pause();
   playSource = "preview";
-  dzTrack(t.trackId, data => {
+  const onUrl = url => {
     if (queue[qIndex] !== t) return;
-    const url = data && data.preview;
     if (!url){ document.getElementById("p-artist").textContent = "preview unavailable — skipping…"; setTimeout(next, 900); return; }
     audio.src = url;
     audio.play().catch(()=>{ setPlayIcon(false); player.classList.remove("playing"); });
-  });
+  };
+  if (t.src === "itunes" && t.preview) onUrl(t.preview);            // iTunes-sourced backfill track → its stored preview
+  else dzTrack(t.trackId, data => onUrl(data && data.preview));    // Deezer track → fresh 30s JSONP preview
 }
 
 function setPlayIcon(playing){ document.getElementById("p-play").textContent = playing ? "❚❚" : "▶"; }
