@@ -169,7 +169,7 @@ const SPOT = (() => {
       const cr = await fetch("https://api.spotify.com/v1/users/" + uid + "/playlists", {
         method:"POST", headers:{ Authorization:"Bearer "+t, "Content-Type":"application/json" },
         body: JSON.stringify({ name, description:"My WORLD MIXTAPE favorites · worldmixtape.com", public:false }) });
-      if (cr.status === 401 || cr.status === 403) return { ok:false, error:"scope" };
+      if (cr.status === 401 || cr.status === 403){ console.warn("[WMX] create playlist HTTP", cr.status, "uid=" + uid, "scopes=" + tokScopes, await cr.text().catch(() => "")); return { ok:false, error:"scope" }; }
       if (!cr.ok) return { ok:false, error:"create" };
       const j = await cr.json().catch(() => ({})); id = j.id; url = j.external_urls && j.external_urls.spotify;
       if (!id) return { ok:false, error:"create" };
@@ -178,7 +178,7 @@ const SPOT = (() => {
     const put = await fetch("https://api.spotify.com/v1/playlists/" + id + "/tracks", {   // replace contents to match faves
       method:"PUT", headers:{ Authorization:"Bearer "+t, "Content-Type":"application/json" },
       body: JSON.stringify({ uris: uris.slice(0, 100) }) });
-    if (put.status === 401 || put.status === 403) return { ok:false, error:"scope" };
+    if (put.status === 401 || put.status === 403){ console.warn("[WMX] add tracks HTTP", put.status, "scopes=" + tokScopes, await put.text().catch(() => "")); return { ok:false, error:"scope" }; }
     if (!put.ok) return { ok:false, error:"tracks" };
     for (let i = 100; i < uris.length; i += 100){             // append the rest in 100-track chunks
       await fetch("https://api.spotify.com/v1/playlists/" + id + "/tracks", {

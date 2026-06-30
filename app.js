@@ -188,7 +188,7 @@ async function syncFavesToSpotify(auto){
     if (res.ok){
       flashFavSync("✓ " + res.count + (res.count === favs.length ? "" : " of " + favs.length) + " synced", res.url);
       const btn = document.getElementById("fav-sp-sync"); if (btn) btn.textContent = "♫ update playlist";
-    } else if (res.error === "scope"){ sessionStorage.setItem("wmx_resume_faves", "1"); SPOT.login(); }
+    } else if (res.error === "scope"){ localStorage.removeItem("wmx_sp_playlist"); flashFavSync("Spotify blocked the playlist (403) — see console: SPOT.scopes()"); }
     else if (res.error === "auth"){ flashFavSync("Spotify session expired — tap again"); }
     else flashFavSync("sync failed — try again");
   } finally { spSyncing = false; }
