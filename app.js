@@ -13,7 +13,7 @@ const flagImg = (code, cls) => `<img class="flag${cls ? " " + cls : ""}" src="ht
 /* ---------- ticker ---------- */
 (() => {
   const names = Object.entries(COUNTRIES).map(([code, c]) => `${flagImg(code)} ${c.name.toUpperCase()}`);
-  const msg = `★ NOW BROADCASTING ★ 28 COUNTRIES ★ A CENTURY OF SOUND ★ 1920s TO NOW ★ NO IMPORTS ★ ${names.join("  ·  ")}  ·  `;
+  const msg = `★ NOW BROADCASTING ★ ${names.length} COUNTRIES ★ A CENTURY OF SOUND ★ 1920s TO NOW ★ NO IMPORTS ★ ${names.join("  ·  ")}  ·  `;
   document.getElementById("ticker").innerHTML = msg + msg;
 })();
 
@@ -163,7 +163,7 @@ function openEmpty(name){
   activeCode = null; queue = []; qIndex = -1;
   inner.innerHTML = `<div class="jhead"><div class="jhead__top"><div class="jhead__flag">📻</div>
     <h2 class="jhead__name" style="--accent:var(--yellow)">${name}</h2></div></div>
-    <div class="empty">no mixtape here… <em>yet</em><small>this prototype carries 28 countries. ${name} is on deck.</small></div>`;
+    <div class="empty">no mixtape here… <em>yet</em><small>this prototype carries ${Object.keys(COUNTRIES).length} countries. ${name} is on deck.</small></div>`;
   setShuf("");
 }
 
@@ -530,10 +530,17 @@ function updateFullUI(){
 const spCta = document.getElementById("sp-cta");
 function updateSpCta(){
   if (!spCta) return;
-  const show = SPOT.hasClientId() && !SPOT.isConnected() && !fullMode
-    && sessionStorage.getItem("wmx_cta_x") !== "1";
-  spCta.hidden = !show;
-  document.body.classList.toggle("cta-on", show);
+  const go = document.getElementById("sp-cta-go");
+  if (!SPOT.hasClientId() || sessionStorage.getItem("wmx_cta_x") === "1"){
+    spCta.hidden = true; document.body.classList.remove("cta-on"); return;
+  }
+  spCta.hidden = false; document.body.classList.add("cta-on");
+  const connected = SPOT.isConnected();
+  spCta.classList.toggle("on", connected);                       // green bar once connected
+  if (go) go.innerHTML = !connected
+    ? "▸ Connect Spotify to play full songs <b>· Premium</b>"
+    : (fullMode ? "✓ Spotify connected — full songs on"
+                : "✓ Spotify connected — <b>tap for full songs</b>");
 }
 {
   const go = document.getElementById("sp-cta-go"), x = document.getElementById("sp-cta-x");

@@ -41,6 +41,8 @@ body{
 .sp-cta{position:fixed;top:26px;left:0;right:0;z-index:43;height:30px;display:flex;align-items:center;justify-content:center;
   background:#ff5a1f;border-bottom:3px solid #0a0916;box-shadow:0 3px 0 rgba(0,0,0,.22);overflow:hidden}
 .sp-cta[hidden]{display:none}
+.sp-cta.on{background:#1DB954}                       /* Spotify green once connected */
+.sp-cta.on .sp-cta__go{animation:none}
 .sp-cta__go{font-family:"Space Mono",monospace;font-weight:700;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;
   white-space:nowrap;color:#0a0916;background:none;border:0;cursor:pointer;padding:0 30px;height:100%;line-height:1;animation:cta-pulse 2.4s ease-in-out infinite}
 .sp-cta__go b{font-weight:700;opacity:.55}
