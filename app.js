@@ -604,7 +604,7 @@ function buildCountryList(){
     .filter(f => +f.id !== 10 && !isoToCode[+f.id] && f.properties && f.properties.name)
     .map(f => f.properties.name))].sort((a, b) => a.localeCompare(b));
   clist.innerHTML =
-    '<div class="clist__head"><img class="clist__logo" src="logo.png" alt=""><div><div class="clist__title">WORLD<br>MIXTAPE</div><div class="clist__sub">The world&#39;s local music, decade by decade.</div></div></div>' +
+    '<div class="clist__head"><div class="brand__tape"><img class="brand__logo" src="logo.png" alt="World Mixtape"><div class="brand__title">WORLD<br><span>MIXTAPE</span></div></div><p class="brand__sub">The world&#39;s local music,<br>decade by decade.</p></div>' +
     '<div class="clist__sec">' +
     have.map(c => '<button class="clist__item" data-code="' + c.code + '" style="--accent:' + c.color + '">'
       + flagImg(c.code) + '<span class="clist__name">' + esc(c.name) + '</span></button>').join("") +
