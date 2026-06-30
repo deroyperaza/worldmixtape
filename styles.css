@@ -284,9 +284,6 @@ body{
 @media (max-width:680px){
   .brand{top:32px;left:11px}
   .brand__sub{font-size:11px;max-width:210px;margin-top:10px}
-  .clist{padding-top:172px;
-    -webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 140px,#000 172px);
-    mask-image:linear-gradient(to bottom,transparent 0,transparent 140px,#000 172px)}
   .topctrls{top:30px;right:9px;gap:6px}
   .faves-btn{font-size:11px;padding:5px 8px;gap:4px}
   .faves-btn__h{font-size:13px}
@@ -342,6 +339,10 @@ body.list-view #map{display:none}
   .clist__name{font-size:30px}
   .clist__soon-item{font-size:15px}
   .view-toggle{bottom:88px;font-size:14px;padding:7px 15px}
+  /* smaller mobile brand → less top padding so the list sits just under the tagline */
+  .clist{padding-top:185px;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 150px,#000 185px);
+    mask-image:linear-gradient(to bottom,transparent 0,transparent 150px,#000 185px)}
 }
 
 
