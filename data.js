@@ -73568,6 +73568,20 @@ const COUNTRIES = {
      "eraAccurate": true,
      "artistId": 5242214,
      "genre": "afrobeats"
+    },
+    {
+     "artist": "Kuami Eugene",
+     "diaspora": false,
+     "decade": "2020s",
+     "dzArtist": "Kuami Eugene",
+     "title": "Stranger",
+     "trackId": 3967624111,
+     "cover": "https://cdn-images.dzcdn.net/images/cover/b279fdd17cc82da7e11f49c9d9e1d18e/500x500-000000-80-0-0.jpg",
+     "album": "Sweet Boy",
+     "year": 2024,
+     "eraAccurate": true,
+     "artistId": 12379688,
+     "genre": "afrobeats"
     }
    ]
   }
