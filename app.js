@@ -5,6 +5,9 @@ const ATLAS = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 const isoToCode = {};
 Object.entries(COUNTRIES).forEach(([code, c]) => { isoToCode[+c.iso] = code; });
 
+// teams that played the 2026 FIFA World Cup (⚽ sticker on their country label)
+const WC2026 = new Set(["AR","AU","BR","CA","CO","EG","ES","FR","GB","JP","KR","MX","PA","SN","TR","US","ZA","DE","CD","CV","PT","TN","CI","NO","SE","EC","BE","BA","AT","HR","CH","DZ","MA","PY"]);
+
 // alpha-2 code -> flag emoji
 const flag = code => code.replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt()));
 // flat SVG flags (match the riso aesthetic better than wavy emoji)
@@ -195,7 +198,7 @@ function openCountry(code){
     <div class="jhead">
       <div class="jhead__top">
         <div class="jhead__flag">${flagImg(code)}</div>
-        <h2 class="jhead__name" style="--accent:${c.color}">${c.name}</h2>
+        <h2 class="jhead__name" style="--accent:${c.color}">${c.name}${WC2026.has(code) ? '<span class="wc-ball" title="2026 World Cup team" aria-label="2026 World Cup team">⚽</span>' : ''}</h2>
       </div>
       <div class="jhead__meta" id="jmeta">NATIVES + DIÁSPORA · ${c.name.toUpperCase()}</div>
     </div>
