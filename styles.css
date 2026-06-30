@@ -135,9 +135,9 @@ body{
 .brand__logo{width:262px;height:auto;display:block;margin-left:-46px}
 @media (max-width:680px){ .brand__logo{width:168px;margin-left:-28px} }
 .brand__title{margin:0;line-height:0}
-.brand__sub{margin:12px 0 0;font-size:14px;max-width:300px;color:var(--paper);
-  display:inline-block;font-weight:700;text-shadow:1px 1px 0 #0a0916}
-.brand__sub b{color:var(--pink)}
+.brand__sub{position:absolute;left:0;top:0;width:300px;height:300px;overflow:visible;pointer-events:none}
+.brand__sub-tx{font-family:"Space Mono",monospace;font-weight:700;font-size:13px;letter-spacing:.01em;
+  fill:var(--paper);paint-order:stroke;stroke:#0a0916;stroke-width:2.6px;stroke-linejoin:round}
 
 /* map */
 .map-wrap{position:fixed;inset:26px 0 0 0;display:block}
@@ -282,8 +282,7 @@ body{
 /* mobile */
 @media (max-width:680px){
   .brand{top:32px;left:11px}
-  .brand__title{font-size:30px}
-  .brand__sub{font-size:10px;max-width:150px;margin-top:8px}
+  .brand__sub{transform:scale(.64);transform-origin:left top}
   .topctrls{top:30px;right:9px;gap:6px}
   .faves-btn{font-size:11px;padding:5px 8px;gap:4px}
   .faves-btn__h{font-size:13px}
