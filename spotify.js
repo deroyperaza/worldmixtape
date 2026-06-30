@@ -12,8 +12,8 @@
 const SPOT = (() => {
   const CLIENT_ID = "e43e8316d97949939f556e053cf20299";  // Spotify app Client ID (worldmixtape.com)
   // streaming = desktop Web Playback SDK; user-*-playback-state = mobile Spotify Connect (remote-control the app)
-  const SCOPES = "streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state playlist-modify-public playlist-modify-private";
-  const SCOPE_VER = 3;   // bump whenever SCOPES change → forces users to re-authorize (Connect + playlist sync)
+  const SCOPES = "streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state";
+  const SCOPE_VER = 3;   // bump whenever SCOPES change → forces users to re-authorize (mobile Connect)
   // Spotify's Web Playback SDK is DESKTOP-ONLY; on phones/tablets we drive the user's Spotify app via Connect.
   const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent)
     || (navigator.maxTouchPoints > 1 && /Mac/i.test(navigator.platform || ""));   // iPadOS masquerades as a Mac

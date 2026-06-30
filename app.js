@@ -124,8 +124,6 @@ function openFavorites(){
   setShuf("__favs");   // shuffle pre-filtered to favorites
   renderFavorites("order");
   openPanel();
-  // if the Spotify playlist already exists, re-sync it to the current faves every time this view opens
-  if (SPOT.isConnected() && SPOT.playlistReady() && SPOT.hasPlaylist()) syncFavesToSpotify(true);
 }
 
 function renderFavorites(mode){
@@ -137,61 +135,19 @@ function renderFavorites(mode){
   qIndex = curId != null ? list.findIndex(t => t.trackId === curId) : -1;
   const ctrls = inner.querySelector("#fav-ctrls");
   if (ctrls){
-    const shufBtn = shuffled
+    ctrls.innerHTML = shuffled
       ? '<button class="fav-mode on" id="fav-shuf-toggle" title="exit shuffle">🔀 shuffled <span aria-hidden="true">✕</span></button>'
       : '<button class="fav-mode" id="fav-shuf-toggle">🔀 shuffle</button>';
-    const spBtn = SPOT.hasClientId()
-      ? '<button class="fav-mode fav-sp" id="fav-sp-sync">♫ ' + (SPOT.hasPlaylist() ? 'update playlist' : 'Spotify playlist') + '</button><span class="fav-sp-status" id="fav-sp-status"></span>'
-      : '';
-    ctrls.innerHTML = shufBtn + spBtn;
     inner.querySelector("#fav-shuf-toggle").onclick = () => {
       if (shuffled) renderFavorites("order");
       else { renderFavorites("shuffle"); if (queue.length) play(0); }
     };
-    const sp = inner.querySelector("#fav-sp-sync");
-    if (sp) sp.onclick = () => syncFavesToSpotify(false);
   }
   const meta = inner.querySelector("#fav-meta");
   if (meta) meta.textContent = shuffled
     ? ("🔀 SHUFFLED · " + list.length + " TRACKS · ✕ TO EXIT")
     : (favs.length + " SAVED · TAP ♥ TO REMOVE");
   renderTracks(list);
-}
-
-/* ---- Favorites → a real Spotify playlist (mirrors faves; re-syncs on open + button) ---- */
-let spSyncing = false;
-function flashFavSync(msg, url){
-  const el = document.getElementById("fav-sp-status"); if (!el) return;
-  el.innerHTML = url ? esc(msg) + ' · <a href="' + url + '" target="_blank" rel="noopener">open in Spotify ↗</a>' : esc(msg);
-}
-async function syncFavesToSpotify(auto){
-  if (!SPOT.hasClientId() || !favs.length) return;
-  if (!SPOT.isConnected() || !SPOT.playlistReady()){
-    if (auto) return;                                   // auto-sync never redirects
-    sessionStorage.setItem("wmx_resume_faves", "1");    // after auth, reopen Favorites + finish the sync
-    flashFavSync("connecting Spotify…"); SPOT.login(); return;   // first-time / re-auth for the playlist scope
-  }
-  if (spSyncing) return;
-  spSyncing = true;
-  flashFavSync(SPOT.hasPlaylist() ? "syncing…" : "building playlist…");
-  try {
-    const uriMap = JSON.parse(localStorage.getItem("wmx_sp_uri") || "{}");   // cache Deezer→Spotify matches
-    const uris = [];
-    for (const f of favs){
-      let u = uriMap[f.trackId];
-      if (u === undefined){ u = await SPOT.search(f.artist, f.title) || null; uriMap[f.trackId] = u; }
-      if (u) uris.push(u);
-    }
-    localStorage.setItem("wmx_sp_uri", JSON.stringify(uriMap));
-    if (!uris.length){ flashFavSync("no matches found on Spotify"); return; }
-    const res = await SPOT.syncPlaylist("WORLD MIXTAPE ♥ Faves", uris);
-    if (res.ok){
-      flashFavSync("✓ " + res.count + (res.count === favs.length ? "" : " of " + favs.length) + " synced", res.url);
-      const btn = document.getElementById("fav-sp-sync"); if (btn) btn.textContent = "♫ update playlist";
-    } else if (res.error === "scope"){ localStorage.removeItem("wmx_sp_playlist"); flashFavSync("Spotify blocked the playlist (403) — see console: SPOT.scopes()"); }
-    else if (res.error === "auth"){ flashFavSync("Spotify session expired — tap again"); }
-    else flashFavSync("sync failed — try again");
-  } finally { spSyncing = false; }
 }
 
 function onCountry(e, d) {
@@ -645,16 +601,9 @@ if (pFull) pFull.onclick = toggleFull;
 
 (async () => {                                               // complete OAuth handoff / restore session
   const cameBack = await SPOT.handleRedirect();
-  const resumeFaves = cameBack && sessionStorage.getItem("wmx_resume_faves") === "1";
-  if (cameBack && !resumeFaves){ fullMode = true; localStorage.setItem("wmx_fullmode", "1"); }   // a full-song connect
+  if (cameBack){ fullMode = true; localStorage.setItem("wmx_fullmode", "1"); }
   if (SPOT.isConnected()) SPOT.initSDK(); else fullMode = false;
   updateFullUI();
-  if (resumeFaves){                                          // came back from the playlist auth → finish + confirm
-    sessionStorage.removeItem("wmx_resume_faves");           // clear FIRST so nothing can re-loop the redirect
-    openFavorites();
-    if (SPOT.isConnected() && SPOT.playlistReady()) syncFavesToSpotify(false);   // have the scope → build + confirm
-    else flashFavSync("Spotify didn't grant playlist access — tap the button to retry");   // never auto-redirect again
-  }
 })();
 
 audio.addEventListener("timeupdate", () => {
