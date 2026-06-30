@@ -292,10 +292,10 @@ body{
 .clist{display:none;position:absolute;inset:0;overflow-y:auto;padding:24px 16px 160px}
 body.list-view .clist{display:block}
 body.list-view #map,body.list-view #map-hint,body.list-view .brand{display:none}
-.clist__sec{display:flex;flex-direction:column;gap:11px}
+.clist__sec{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
 .clist__item{display:flex;align-items:center;gap:12px;background:none;border:none;cursor:pointer;padding:0;text-align:left;width:max-content;max-width:100%}
 .clist__item .flag{height:26px;width:auto;border-radius:3px;box-shadow:0 0 0 1.5px #0a0916;flex:0 0 auto}
-.clist__name{font-family:"Anton",sans-serif;font-size:27px;text-transform:uppercase;color:#0a0916;
+.clist__name{font-family:"Anton",sans-serif;font-size:33px;text-transform:uppercase;color:#0a0916;
   background:var(--accent,var(--pink));padding:3px 12px 5px;border-radius:2px;transform:rotate(-1deg);
   box-shadow:3px 3px 0 #0a0916;letter-spacing:.01em;line-height:.95}
 .clist__item:hover .clist__name{transform:rotate(-1deg) scale(1.03)}
@@ -303,7 +303,7 @@ body.list-view #map,body.list-view #map-hint,body.list-view .brand{display:none}
 .clist__soon{display:flex;flex-wrap:wrap;gap:7px 16px}
 .clist__soon-item{font-family:"Anton",sans-serif;font-size:18px;text-transform:uppercase;color:#4a4470;letter-spacing:.02em}
 @media (max-width:680px){
-  .clist__name{font-size:22px}
+  .clist__name{font-size:30px}
   .clist__soon-item{font-size:15px}
   .view-toggle{bottom:88px;font-size:14px;padding:7px 15px}
 }
