@@ -535,6 +535,7 @@ function updateSpCta(){
   const connected = SPOT.isConnected();
   spCta.classList.toggle("on", connected);                       // green once connected
   if (lbl) lbl.textContent = !connected ? "Connect Spotify — full songs"
+    : SPOT.isFree() ? "Connected · 30s previews (Premium needed for full songs)"
     : (fullMode ? "Connected — full songs on" : "Connected — tap for full songs");
 }
 {
@@ -579,12 +580,23 @@ function spotFailNote(reason){
     flashPlayerNote("Spotify couldn't play that one — playing preview", 4200);   // restricted / fail
   }
 }
+// After connecting, confirm the account type; if it's not Premium, tell the user up front they'll get previews.
+async function verifyAccount(){
+  const p = await SPOT.accountProduct();          // "premium" | "free" | ""
+  updateSpCta(); updateFullUI();
+  if (p === "free" && !sessionStorage.getItem("wmx_freeseen")){
+    sessionStorage.setItem("wmx_freeseen", "1");
+    player.classList.add("show"); player.setAttribute("aria-hidden", "false");   // reveal player so the note is visible
+    flashPlayerNote("Heads up — this Spotify account isn't Premium, so you'll hear 30-second previews. Full songs need Spotify Premium.", 9000);
+  }
+}
 async function toggleFull(){
   if (!fullMode){
     if (!SPOT.hasClientId()){ flashPlayerNote("connect Spotify: add your Client ID in spotify.js"); return; }
     if (!SPOT.isConnected() || SPOT.needsReauth()){ SPOT.login(); return; }   // mobile Connect needs extra scopes → re-auth
     fullMode = true; localStorage.setItem("wmx_fullmode", "1"); SPOT.initSDK();
     flashPlayerNote(SPOT.isMobile ? "full songs on · plays through your Spotify app" : "full songs on · connecting Spotify…");
+    verifyAccount();                                 // free account → correct the message to previews-only
   } else {
     fullMode = false; localStorage.removeItem("wmx_fullmode"); SPOT.pause(); stopFullPoll(); stopDeskProgress(); playSource = "preview";
   }
@@ -644,6 +656,7 @@ if (pFull) pFull.onclick = toggleFull;
   if (cameBack){ fullMode = true; localStorage.setItem("wmx_fullmode", "1"); }
   if (SPOT.isConnected()) SPOT.initSDK(); else fullMode = false;
   updateFullUI();
+  if (SPOT.isConnected()) verifyAccount();          // check Premium vs free → notice if free
 })();
 
 audio.addEventListener("timeupdate", () => {
