@@ -6,7 +6,7 @@ const isoToCode = {};
 Object.entries(COUNTRIES).forEach(([code, c]) => { isoToCode[+c.iso] = code; });
 
 // teams that played the 2026 FIFA World Cup (⚽ sticker on their country label)
-const WC2026 = new Set(["AR","AU","BR","CA","CO","EG","ES","FR","GB","GH","JP","KR","MX","PA","SN","TR","US","ZA","DE","CD","CV","PT","TN","CI","NO","SE","EC","BE","BA","AT","HR","CH","DZ","MA","PY"]);
+const WC2026 = new Set(["AR","AU","BR","CA","CO","EG","ES","FR","GB","GH","JP","KR","MX","PA","SN","TR","US","ZA","DE","CD","CV","PT","TN","CI","NO","SE","EC","BE","BA","AT","HR","CH","DZ","MA","PY","NL","UY","IR"]);
 
 // alpha-2 code -> flag emoji
 const flag = code => code.replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt()));
