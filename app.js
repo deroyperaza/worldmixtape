@@ -449,6 +449,7 @@ async function play(i){
   const cc = t._cc || activeCode;
   player.classList.add("show"); player.setAttribute("aria-hidden","false");
   document.getElementById("p-art").src = t.cover || "";
+  currentNote = null;   // new track → drop any pending Spotify-note restore
   setMeta(document.getElementById("p-title"), esc(t.title));
   setMeta(document.getElementById("p-artist"), esc(t.artist)
     + (cc ? " · " + flagImg(cc) + " " + esc(COUNTRIES[cc].name) : "")
@@ -541,10 +542,21 @@ function updateSpCta(){
   if (go) go.onclick = () => toggleFull();                       // kicks off the Spotify connect flow
   if (x)  x.onclick = e => { e.stopPropagation(); sessionStorage.setItem("wmx_cta_x", "1"); updateSpCta(); };
 }
+let currentNote = null;
 function flashPlayerNote(msg, ms){
   const el = document.getElementById("p-artist"); if (!el) return;
-  const prev = el.innerHTML; el.textContent = msg;
-  setTimeout(() => { if (el.textContent === msg) el.innerHTML = prev; }, ms || 2400);
+  const prevHTML = el.innerHTML, prevCls = el.className;
+  currentNote = msg;
+  setMeta(el, esc(msg));                              // marquees the line when it overflows → long notes scroll on mobile
+  let dur = ms || 2400;
+  if (el.classList.contains("mq")){                  // it's scrolling → keep it up long enough to read a full loop
+    const mq = parseFloat(el.style.getPropertyValue("--mq-dur")) || 0;
+    if (mq) dur = Math.max(dur, mq * 1000 + 1500);
+  }
+  setTimeout(() => {
+    if (currentNote !== msg) return;                 // a newer note or a track change replaced it → leave it
+    currentNote = null; el.className = prevCls; el.innerHTML = prevHTML;
+  }, dur);
 }
 // Shown when full-song mode is on but Spotify has no active device: explain how to make it work.
 // Once per page load so it guides without nagging on every track; playback still falls back to the preview.
