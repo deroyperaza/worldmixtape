@@ -122,16 +122,32 @@ const SPOT = (() => {
     const j = await r.json().catch(() => ({}));
     return j.devices || [];
   }
+  // Spotify's playback-control API is Premium-only; free accounts authenticate fine but every play is 403.
+  let acctProduct = "";
+  async function accountProduct(){
+    if (acctProduct) return acctProduct;
+    const t = await validToken(); if (!t) return "";
+    const r = await fetch("https://api.spotify.com/v1/me", { headers: { Authorization: "Bearer " + t } });
+    if (!r.ok) return "";
+    const j = await r.json().catch(() => ({}));
+    acctProduct = j.product || "";
+    return acctProduct;
+  }
   async function playConnect(uri){
     const t = await validToken(); if (!t) return "needs-auth";
+    if ((await accountProduct()) === "free") return "not-premium";   // playback control needs Premium
     const devs = await listDevices();
     if (devs === "auth" || devs === "scope") return "needs-auth";
-    if (!devs.length) return "no-device";                          // Spotify app not open anywhere
+    if (!devs.length) return "no-device";                          // Spotify app not open/active anywhere
     const dev = devs.find(d => d.is_active) || devs[0];
     const r = await fetch("https://api.spotify.com/v1/me/player/play?" + new URLSearchParams({ device_id: dev.id }),
       { method: "PUT", headers: { Authorization: "Bearer " + t, "Content-Type": "application/json" }, body: JSON.stringify({ uris: [uri] }) });
-    if (r.status === 401 || r.status === 403) return "needs-auth";
-    return r.ok ? "ok" : "fail";
+    if (r.ok) return "ok";
+    console.warn("[WMX spotify] play", r.status, "product=" + acctProduct, "device=" + (dev && dev.name), "devices=" + devs.length, "scopes=" + tokScopes);
+    if (r.status === 401) return "needs-auth";
+    if (r.status === 403) return (await accountProduct()) === "premium" ? "restricted" : "not-premium";
+    if (r.status === 404) return "no-device";                      // targeted device went away
+    return "fail";
   }
   async function getPlayback(){
     const t = await validToken(); if (!t) return null;
@@ -198,6 +214,7 @@ const SPOT = (() => {
     playlistReady: () => !!token && /playlist-modify/.test(tokScopes),                          // token actually has playlist-modify scope
     hasPlaylist: () => !!localStorage.getItem("wmx_sp_playlist"),
     scopes: () => tokScopes,                                                                     // diagnostics: SPOT.scopes()
+    accountProduct,                                                                              // diagnostics: await SPOT.accountProduct() → "premium"|"free"
     premiumOK: () => premiumOK,
     login, handleRedirect, initSDK, search, playUri, playFull, getPlayback, me, syncPlaylist,
     toggle: () => { isMobile ? toggleConnect() : (player && player.togglePlay()); },

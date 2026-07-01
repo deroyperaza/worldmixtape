@@ -473,7 +473,7 @@ async function play(i){
     if (uri){
       const r = await SPOT.playFull(uri);
       if (r === "ok"){ playSource = "full"; lastPos = 0; startFullPoll(); startDeskProgress(); return; }
-      flashFullHint();   // auth/scope, no active device, or failed → guide, then fall back (never auto-redirect mid-play)
+      spotFailNote(r);   // reason-specific note, then fall back to preview (never auto-redirect mid-play)
     }
     // Spotify couldn't play this → fall through to the 30s preview so audio never goes silent after connecting
   }
@@ -565,6 +565,19 @@ function flashFullHint(){
   if (fullHintShown) return;
   fullHintShown = true;
   flashPlayerNote("For full songs: open your Spotify app and press play once · preview for now", 5200);
+}
+// Spotify Connect couldn't play — say exactly why, then fall back to the preview.
+function spotFailNote(reason){
+  if (reason === "not-premium"){
+    flashPlayerNote("Spotify full songs need a Premium account — playing previews instead", 7000);
+    fullMode = false; localStorage.removeItem("wmx_fullmode"); updateFullUI();   // free account → stop retrying, previews only
+  } else if (reason === "no-device"){
+    flashFullHint();                                                             // open the Spotify app & press play once
+  } else if (reason === "needs-auth"){
+    flashPlayerNote("Reconnect Spotify for full songs — playing preview for now", 7000);
+  } else {
+    flashPlayerNote("Spotify couldn't play that one — playing preview", 4200);   // restricted / fail
+  }
 }
 async function toggleFull(){
   if (!fullMode){
