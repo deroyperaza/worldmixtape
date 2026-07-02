@@ -359,32 +359,74 @@ Object.entries(REGIONS).forEach(([r, codes]) => codes.forEach(code => { CODE_REG
 
 let shuf = { country: "", region: "", era: "", genre: "" };
 
+// tagged track pool + full option lists — powers the faceted (cascading) shuffle filters
+const SHUF_INDEX = [];
+const _gset = new Set();
+Object.entries(COUNTRIES).forEach(([code, c]) => {
+  const region = CODE_REGION[code];
+  Object.entries(c.eras).forEach(([era, list]) => {
+    list.forEach(t => { SHUF_INDEX.push({ code, region, era, genre: t.genre }); if (t.genre) _gset.add(t.genre); });
+  });
+});
+const SHUF_COUNTRIES = Object.entries(COUNTRIES).map(([code, c]) => [code, c.name]).sort((a, b) => a[1].localeCompare(b[1]));
+const SHUF_GENRES = [..._gset].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+const SHUF_REGIONS = Object.keys(REGIONS);   // grouped insertion order
+
+function shufOptionsHTML(kind, valid){
+  if (kind === "region") return '<option value="">🌐 any region</option>' + SHUF_REGIONS.filter(r => valid.has(r)).map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join("");
+  if (kind === "country") return '<option value="">🌍 everywhere</option>' + (favs.length ? '<option value="__favs">♥ my favorites</option>' : '') + SHUF_COUNTRIES.filter(([code]) => valid.has(code)).map(([code, n]) => `<option value="${code}">${esc(n)}</option>`).join("");
+  if (kind === "era") return '<option value="">all eras</option>' + ERAS.filter(([k]) => valid.has(k)).map(([k, l]) => `<option value="${k}">${l}</option>`).join("");
+  return '<option value="">all genres</option>' + SHUF_GENRES.filter(g => valid.has(g)).map(g => `<option value="${esc(g)}">${esc(cap(g))}</option>`).join("");
+}
+
+// after any pick, rebuild every menu to only the values that still have matches given the OTHER picks
+function applyShufFacets(){
+  const rs = document.getElementById("f-region"), cs = document.getElementById("f-country"), es = document.getElementById("f-era"), gs = document.getElementById("f-genre");
+  if (!rs) return;
+  const sel = { region: rs.value, country: cs.value, era: es.value, genre: gs.value };
+  let R, C, E, G;
+  if (sel.country === "__favs"){   // favorites is a personal set — don't cascade-limit the other menus
+    R = new Set(SHUF_REGIONS); C = new Set(SHUF_COUNTRIES.map(x => x[0])); E = new Set(ERAS.map(x => x[0])); G = new Set(SHUF_GENRES);
+  } else {
+    const ok = (t, skip) =>
+      (skip === "region" || !sel.region || t.region === sel.region) &&
+      (skip === "country" || !sel.country || t.code === sel.country) &&
+      (skip === "era" || !sel.era || t.era === sel.era) &&
+      (skip === "genre" || !sel.genre || t.genre === sel.genre);
+    R = new Set(); C = new Set(); E = new Set(); G = new Set();
+    for (const t of SHUF_INDEX){
+      if (ok(t, "region")) R.add(t.region);
+      if (ok(t, "country")) C.add(t.code);
+      if (ok(t, "era")) E.add(t.era);
+      if (ok(t, "genre") && t.genre) G.add(t.genre);
+    }
+  }
+  rs.innerHTML = shufOptionsHTML("region", R);  rs.value = sel.region;
+  cs.innerHTML = shufOptionsHTML("country", C); cs.value = sel.country;
+  es.innerHTML = shufOptionsHTML("era", E);     es.value = sel.era;
+  gs.innerHTML = shufOptionsHTML("genre", G);   gs.value = sel.genre;
+  shuf = { region: rs.value, country: cs.value, era: es.value, genre: gs.value };   // re-read (a dropped value falls back to "all")
+  updateScope();
+  const empty = document.getElementById("f-empty"); if (empty) empty.hidden = true;
+}
+
 (function initShufflePop(){
   const pop = document.getElementById("shuffle-pop");
   if (!pop) return;
-  const countries = Object.entries(COUNTRIES).map(([code, c]) => [code, c.name]).sort((a, b) => a[1].localeCompare(b[1]));
-  const gset = new Set();
-  Object.values(COUNTRIES).forEach(c => Object.values(c.eras).forEach(l => l.forEach(t => t.genre && gset.add(t.genre))));
-  const genres = [...gset].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
-  const regions = Object.keys(REGIONS);   // keep the grouped insertion order
   pop.innerHTML = `
     <h4>shuffle…</h4>
-    <div><label>region</label><select id="f-region"><option value="">🌐 any region</option>${regions.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join("")}</select></div>
-    <div><label>country</label><select id="f-country"><option value="">🌍 everywhere</option><option value="__favs">♥ my favorites</option>${countries.map(([code, n]) => `<option value="${code}">${esc(n)}</option>`).join("")}</select></div>
-    <div><label>when</label><select id="f-era"><option value="">all eras</option>${ERAS.map(([k, l]) => `<option value="${k}">${l}</option>`).join("")}</select></div>
-    <div><label>what</label><select id="f-genre"><option value="">all genres</option>${genres.map(g => `<option value="${esc(g)}">${esc(cap(g))}</option>`).join("")}</select></div>
+    <div><label>region</label><select id="f-region"></select></div>
+    <div><label>country</label><select id="f-country"></select></div>
+    <div><label>when</label><select id="f-era"></select></div>
+    <div><label>what</label><select id="f-genre"></select></div>
     <button class="shuffle-go" id="f-go">▶ shuffle these</button>
     <button class="shuffle-reset" id="f-reset">reset filters</button>
     <div class="shuffle-empty" id="f-empty" hidden>no tracks for that combo</div>`;
-
   const rs = document.getElementById("f-region"), cs = document.getElementById("f-country"), es = document.getElementById("f-era"), gs = document.getElementById("f-genre");
-  const sync = () => { shuf = { country: cs.value, region: rs.value, era: es.value, genre: gs.value }; document.getElementById("f-empty").hidden = true; updateScope(); };
-  // region & country are mutually-exclusive scopes — picking one clears the other
-  rs.onchange = () => { if (rs.value) cs.value = ""; sync(); };
-  cs.onchange = () => { if (cs.value) rs.value = ""; sync(); };
-  es.onchange = gs.onchange = sync;
+  rs.onchange = cs.onchange = es.onchange = gs.onchange = applyShufFacets;
   document.getElementById("f-go").onclick = () => doShuffle();
-  document.getElementById("f-reset").onclick = () => { rs.value = cs.value = es.value = gs.value = ""; sync(); };
+  document.getElementById("f-reset").onclick = () => { rs.value = cs.value = es.value = gs.value = ""; applyShufFacets(); };
+  applyShufFacets();   // initial populate (everything valid)
 })();
 
 function updateScope(){
@@ -398,12 +440,12 @@ function updateScope(){
   document.getElementById("shuffle-filt").classList.toggle("on", parts.length > 0);
 }
 
-// pre-filter the shuffle scope to what's on screen (country / favorites / world)
+// pre-filter the shuffle scope to what's on screen (country / favorites / world) — resets other facets
 function setShuf(country){
-  shuf.country = country || ""; shuf.region = "";   // a country scope clears any region
-  const cs = document.getElementById("f-country"); if (cs) cs.value = shuf.country;
-  const rs = document.getElementById("f-region"); if (rs) rs.value = "";
-  updateScope();
+  const rs = document.getElementById("f-region"), cs = document.getElementById("f-country"),
+        es = document.getElementById("f-era"), gs = document.getElementById("f-genre");
+  if (cs){ rs.value = ""; cs.value = country || ""; es.value = ""; gs.value = ""; applyShufFacets(); }
+  else { shuf = { country: country || "", region: "", era: "", genre: "" }; updateScope(); }
 }
 
 function doShuffle(){
