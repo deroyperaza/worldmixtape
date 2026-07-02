@@ -324,6 +324,7 @@ body{
 .track.playing .track__30s{background:#0a0916;color:#FEEAE0}
 .track__new{display:inline-block;font-size:9px;background:var(--pink);color:#0a0916;padding:0 5px;margin-left:6px;border-radius:3px;vertical-align:middle;font-weight:700;letter-spacing:.02em}
 .track.playing .track__new{background:#0a0916;color:var(--pink)}
+.track__new-star{font-size:14px;line-height:0;vertical-align:-1px}
 .mix-hint{margin-top:7px;font-family:"Space Mono",monospace;font-size:10.5px;line-height:1.3;color:var(--cyan);opacity:.9}
 .track__yr{display:inline-block;font-size:11px;background:var(--accent,var(--pink));color:#0a0916;padding:2px 5px;border-radius:3px;font-weight:700;letter-spacing:.02em}
 .track.playing .track__yr{background:#0a0916;color:var(--paper)}

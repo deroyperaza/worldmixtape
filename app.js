@@ -690,7 +690,7 @@ function renderTracks(list){
       <div class="track__rank">${i+1}${t.year?`<span class="track__yr">${t.year}</span>`:''}</div>
       <img class="track__art" loading="lazy" src="${t.cover||''}" alt="">
       <div class="track__txt">
-        <div class="track__title">${esc(t.title)}${t.__rec?'<span class="track__new" title="A discovery pick matched to your taste — heart it to save">✦ new</span>':''}${(!t.ytId)?'<span class="track__30s" title="Preview only — full song not available; 30-second clip">30s</span>':''}</div>
+        <div class="track__title">${esc(t.title)}${t.__rec?'<span class="track__new" title="A discovery pick matched to your taste — heart it to save"><span class="track__new-star">✦</span> new</span>':''}${(!t.ytId)?'<span class="track__30s" title="Preview only — full song not available; 30-second clip">30s</span>':''}</div>
         <div class="track__artist">${esc(t.artist)}${t.diaspora?'<span class="track__nf">diáspora</span>':''}</div>
       </div>
       <span class="track__ct" data-i="${i}" title="times hearted" hidden></span>
