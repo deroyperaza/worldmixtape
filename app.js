@@ -223,7 +223,7 @@ function renderTracks(list){
       <div class="track__rank">${i+1}${t.year?`<span class="track__yr">${t.year}</span>`:''}</div>
       <img class="track__art" loading="lazy" src="${t.cover||''}" alt="">
       <div class="track__txt">
-        <div class="track__title">${esc(t.title)}</div>
+        <div class="track__title">${esc(t.title)}${(!t.ytId && !fullMode)?'<span class="track__30s" title="Preview only — full song not available; 30-second clip">30s</span>':''}</div>
         <div class="track__artist">${esc(t.artist)}${t.diaspora?'<span class="track__nf">diáspora</span>':''}</div>
       </div>
       <button class="track__fav${isFav(t.trackId)?" on":""}" data-i="${i}" data-id="${t.trackId}" aria-label="Save to favorites">♥</button>
@@ -585,6 +585,8 @@ function updateFullUI(){
     b.title = fullMode ? "Full songs via Spotify — tap for 30s previews" : "Switch to full songs (needs Spotify Premium)";
   }
   updateSpCta();
+  // full-mode changes what "30s" means (Spotify plays everything full) → refresh the badges on any open list
+  if (typeof renderedList !== "undefined" && renderedList && inner && inner.querySelector("#tracklist")) renderTracks(renderedList);
 }
 
 /* homepage "connect Spotify" CTA bar — shows until connected, then hides */

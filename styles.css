@@ -239,6 +239,8 @@ body{
 .track__artist{font-size:12px;opacity:.78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .track__play{font-size:15px;border:none;background:transparent;color:inherit;cursor:pointer}
 .track__nf{display:inline-block;font-size:9px;background:var(--cyan);color:#0a0916;padding:0 4px;margin-left:6px;border-radius:3px;vertical-align:middle;font-weight:700}
+.track__30s{display:inline-block;font-size:9px;background:#FEEAE0;color:#a0410c;padding:0 4px;margin-left:6px;border-radius:3px;vertical-align:middle;font-weight:700;letter-spacing:.02em}
+.track.playing .track__30s{background:#0a0916;color:#FEEAE0}
 .track__yr{display:inline-block;font-size:11px;background:var(--accent,var(--pink));color:#0a0916;padding:2px 5px;border-radius:3px;font-weight:700;letter-spacing:.02em}
 .track.playing .track__yr{background:#0a0916;color:var(--paper)}
 /* slide-in only — never animate opacity, so rows are visible even if animation is paused */
