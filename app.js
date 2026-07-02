@@ -363,7 +363,7 @@ function openCountry(code){
       <div class="jhead__top${hasInfo ? " jhead__top--info" : ""}"${hasInfo ? ` id="jhead-info" role="button" tabindex="0" title="Country info" aria-label="Open ${esc(c.name)} country info"` : ""}>
         <div class="jhead__flag">${flagImg(code)}</div>
         <h2 class="jhead__name" style="--accent:${c.color}">${c.name}${WC2026.has(code) ? '<span class="wc-ball" title="2026 World Cup team" aria-label="2026 World Cup team">⚽</span>' : ''}</h2>
-        ${hasInfo ? '<span class="jhead__info" aria-hidden="true">i</span>' : ''}
+        ${hasInfo ? '<span class="jhead__info" aria-hidden="true">ⓘ</span>' : ''}
       </div>
       <div class="jhead__meta" id="jmeta"></div>
     </div>

@@ -427,14 +427,10 @@ body.list-view #map{display:none}
 /* affordance on the open-country header — flag + name become a tappable info trigger */
 .jhead__top--info{cursor:pointer;border-radius:12px;transition:transform .12s}
 .jhead__top--info:hover{transform:translateX(2px)}
-/* info button = a little sticker slapped onto the right edge of the country-name block */
-.jhead__info{flex:0 0 auto;align-self:center;width:32px;height:32px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-family:"Space Mono",monospace;font-weight:700;font-size:17px;line-height:1;
-  background:var(--cyan);color:#0a0916;border:2.5px solid #0a0916;box-shadow:2.5px 2.5px 0 #0a0916;
-  transform:rotate(8deg);margin-left:-14px;position:relative;z-index:4;cursor:pointer;transition:transform .14s,background .14s}
-.jhead__top--info:hover .jhead__info{transform:rotate(8deg) scale(1.1);background:var(--lime)}
-.jhead__top--info:active .jhead__info{transform:rotate(8deg) translate(1px,1px);box-shadow:1px 1px 0 #0a0916}
+.jhead__info{font-size:20px;color:var(--cyan);align-self:center;line-height:1;
+  filter:drop-shadow(1px 1px 0 #0a0916);animation:infopulse 2.4s ease-in-out infinite}
+@keyframes infopulse{0%,100%{opacity:.6}50%{opacity:1}}
+.jhead__top--info:hover .jhead__info{color:var(--lime)}
 
 .info{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:24px}
 .info[hidden]{display:none}
