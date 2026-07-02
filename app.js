@@ -88,6 +88,16 @@ let activeCode = null, queue = [], qIndex = -1, currentEra = "now", currentGenre
 /* ---------- favorites (persisted to localStorage) ---------- */
 const FAV_KEY = "wmx_favs_v1";
 let favs = (() => { try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch { return []; } })();
+// live-catalog index → re-hydrate favorites saved before ytIds existed (they lacked ytId → showed "30s")
+const CATALOG_BY_ID = {};
+(() => { for (const c of Object.values(COUNTRIES)) for (const e of Object.values(c.eras)) for (const t of e){ if (t.trackId != null) CATALOG_BY_ID[String(t.trackId)] = t; } })();
+function hydrateFav(f){
+  if (!f || f.ytId) return f;
+  const cat = CATALOG_BY_ID[String(f.trackId)];   // same trackId now carries a ytId → full song
+  if (cat && cat.ytId){ f.ytId = cat.ytId; if (cat.cover) f.cover = cat.cover; }
+  return f;
+}
+function hydrateFavs(){ if (Array.isArray(favs)) favs.forEach(hydrateFav); }
 // match trackIds type-agnostically — Deezer ids are numbers, iTunes ids are "it123" strings,
 // and localStorage/DOM datasets stringify them; comparing as strings makes un-hearting reliable
 const isFav = id => favs.some(f => String(f.trackId) === String(id));
@@ -119,17 +129,7 @@ function refreshFavHearts(){
   const fm = document.getElementById("fav-meta"); if (fm && !/SHUFFLED/.test(fm.textContent)) fm.textContent = favs.length + " SAVED · TAP ♥ TO REMOVE";
   updateFavCount();
 }
-/* ---------- cross-device favorites: encode the list into a shareable link ---------- */
-function favsLink(){
-  try { return location.origin + location.pathname + "#favs=" + btoa(unescape(encodeURIComponent(JSON.stringify(favs)))); }
-  catch { return location.origin + location.pathname; }
-}
-async function shareFavs(){
-  if (!favs.length){ flashToast("no favorites to sync yet"); return; }
-  const link = favsLink();
-  try { await navigator.clipboard.writeText(link); flashToast("link copied — open it on your other device"); }
-  catch { window.prompt("Copy this link, then open it on your other device to sync your favorites:", link); }
-}
+/* ---------- import an old #favs= share link if present (superseded by account sync, kept harmless) ---------- */
 function importFavsFromHash(){
   const m = /[#&]favs=([^&]+)/.exec(location.hash || "");
   if (!m) return;
@@ -300,15 +300,13 @@ function renderFavorites(mode){
   qIndex = curId != null ? list.findIndex(t => t.trackId === curId) : -1;
   const ctrls = inner.querySelector("#fav-ctrls");
   if (ctrls){
-    ctrls.innerHTML = (shuffled
+    ctrls.innerHTML = shuffled
       ? '<button class="fav-mode on" id="fav-shuf-toggle" title="exit shuffle">🔀 shuffled <span aria-hidden="true">✕</span></button>'
-      : '<button class="fav-mode" id="fav-shuf-toggle">🔀 shuffle</button>')
-      + '<button class="fav-mode fav-sync" id="fav-sync" title="See these on your other device">📲 sync devices</button>';
+      : '<button class="fav-mode" id="fav-shuf-toggle">🔀 shuffle</button>';
     inner.querySelector("#fav-shuf-toggle").onclick = () => {
       if (shuffled) renderFavorites("order");
       else { renderFavorites("shuffle"); if (queue.length) play(0); }
     };
-    inner.querySelector("#fav-sync").onclick = shareFavs;
   }
   const meta = inner.querySelector("#fav-meta");
   if (meta) meta.textContent = shuffled
