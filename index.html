@@ -110,7 +110,24 @@
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
   <script src="data.js?v=95"></script>
-  <script src="app.js?v=108"></script>
+  <!-- Firebase: Google sign-in + cloud-synced favorites + fave counts (loads before app.js) -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script>
+    try {
+      firebase.initializeApp({
+        apiKey: "AIzaSyBbWFFtd5t9XtW0ksNdcw4Z65NuxYuYpoU",
+        authDomain: "world-mix-tape.firebaseapp.com",
+        projectId: "world-mix-tape",
+        storageBucket: "world-mix-tape.firebasestorage.app",
+        messagingSenderId: "162520484749",
+        appId: "1:162520484749:web:01633111371f1fd1f0cbc4",
+        measurementId: "G-M3RPZPB9ZN"
+      });
+    } catch (e) { console.warn("Firebase init failed (app still works offline):", e); }
+  </script>
+  <script src="app.js?v=109"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

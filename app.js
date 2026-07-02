@@ -91,12 +91,19 @@ let favs = (() => { try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []
 // match trackIds type-agnostically — Deezer ids are numbers, iTunes ids are "it123" strings,
 // and localStorage/DOM datasets stringify them; comparing as strings makes un-hearting reliable
 const isFav = id => favs.some(f => String(f.trackId) === String(id));
-function saveFavs(){ try { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); } catch {} updateFavCount(); }
+function saveFavs(){ if (!(authUser && FB)){ try { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); } catch {} } updateFavCount(); }
 function toggleFav(t, cc){
-  if (isFav(t.trackId)) favs = favs.filter(f => String(f.trackId) !== String(t.trackId));
-  else favs.unshift({ trackId:t.trackId, artist:t.artist, title:t.title, cover:t.cover, year:t.year,
-    genre:t.genre, album:t.album, artistId:t.artistId, decade:t.decade, diaspora:t.diaspora, _cc: t._cc || cc || null });
-  saveFavs();
+  if (authUser && FB){   // signed in → write to the cloud (live snapshot reconciles; optimistic update for snappiness)
+    const col = FB.firestore().collection("users").doc(authUser.uid).collection("favorites");
+    const id = String(t.trackId);
+    if (isFav(t.trackId)){ favs = favs.filter(f => String(f.trackId) !== id); col.doc(id).delete().catch(e => console.warn(e)); }
+    else { favs.unshift(favRecord(t, cc)); col.doc(id).set(Object.assign(favRecord(t, cc), { addedAt: FB.firestore.FieldValue.serverTimestamp() })).catch(e => console.warn(e)); }
+    updateFavCount();
+  } else {               // anonymous → localStorage
+    if (isFav(t.trackId)) favs = favs.filter(f => String(f.trackId) !== String(t.trackId));
+    else favs.unshift(favRecord(t, cc));
+    saveFavs();
+  }
 }
 function updateFavCount(){
   const el = document.getElementById("fav-count");
@@ -141,6 +148,111 @@ function flashToast(msg){
   if (!el){ el = document.createElement("div"); el.id = "wmx-toast"; el.className = "toast"; document.body.appendChild(el); }
   el.textContent = msg; void el.offsetWidth; el.classList.add("show");
   clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("show"), 3400);
+}
+
+/* ---------- accounts + cloud sync (Firebase Auth + Firestore) ---------- */
+const FB = (window.firebase && firebase.apps && firebase.apps.length) ? firebase : null;
+let authUser = null, favUnsub = null, globalFaves = 0;
+const trackFaveCounts = {};   // trackId -> fave count (cached from trackStats reads)
+
+// undefined values break Firestore writes, so default every field
+function favRecord(t, cc){
+  return { trackId: t.trackId, artist: t.artist || "", title: t.title || "", cover: t.cover || "",
+    year: t.year || null, genre: t.genre || "", album: t.album || "", artistId: t.artistId || null,
+    decade: t.decade || "", diaspora: !!t.diaspora, _cc: t._cc || cc || null };
+}
+function loadLocalFavs(){ try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch { return []; } }
+function favoritesIsOpen(){ const h = inner.querySelector(".jhead__name"); return panel.classList.contains("show") && !!h && h.textContent.trim().toLowerCase() === "favorites"; }
+function refreshFavoritesView(){ if (favoritesIsOpen()) openFavorites(); }
+
+if (FB){
+  const auth = FB.auth(), db = FB.firestore();
+  const userFavs = uid => db.collection("users").doc(uid).collection("favorites");
+
+  window.signInGoogle = () => auth.signInWithPopup(new FB.auth.GoogleAuthProvider())
+    .catch(e => { console.warn("sign-in", e); flashToast("sign-in didn't complete"); });
+  window.signOutUser = () => auth.signOut();
+
+  auth.onAuthStateChanged(async u => {
+    authUser = u || null;
+    if (favUnsub){ favUnsub(); favUnsub = null; }
+    if (u){
+      await migrateLocalToCloud(u.uid).catch(e => console.warn("migrate", e));
+      favUnsub = userFavs(u.uid).orderBy("addedAt", "desc").onSnapshot(snap => {
+        favs = snap.docs.map(d => d.data());
+        updateFavCount(); refreshFavHearts(); refreshFavoritesView();
+      }, err => console.warn("favorites sync", err));
+    } else {
+      favs = loadLocalFavs();
+      updateFavCount(); refreshFavHearts();
+    }
+    refreshFavoritesView();
+  });
+
+  async function migrateLocalToCloud(uid){
+    const local = loadLocalFavs();
+    if (!local.length) return;
+    const col = userFavs(uid);
+    const snap = await col.get();
+    const have = new Set(snap.docs.map(d => d.id));
+    const batch = db.batch(); let n = 0;
+    local.forEach(t => { const id = String(t.trackId); if (t.trackId != null && !have.has(id)){ batch.set(col.doc(id), Object.assign(favRecord(t), { addedAt: FB.firestore.FieldValue.serverTimestamp() })); n++; } });
+    if (n) await batch.commit();
+    try { localStorage.removeItem(FAV_KEY); } catch {}   // cloud is the source of truth once signed in
+    if (n) flashToast(n + " saved track" + (n > 1 ? "s" : "") + " synced to your account");
+  }
+
+  // live global counter
+  db.collection("stats").doc("global").onSnapshot(d => { globalFaves = (d.exists && d.data().totalFaves) || 0; renderGlobalCount(); }, () => {});
+}
+
+// account row shown in the Favorites panel
+function accountRowHTML(){
+  let inner = "";
+  if (FB){
+    if (authUser){
+      const name = (authUser.displayName || authUser.email || "you").split(" ")[0];
+      inner = `<span class="acct__who">✓ signed in as ${esc(name)}</span><button class="acct__btn" id="acct-out">sign out</button>`;
+    } else {
+      inner = `<button class="acct__btn acct__in" id="acct-in"><span class="acct__g" aria-hidden="true">G</span> Sign in with Google</button><small class="acct__note">save across devices + see counts</small>`;
+    }
+  }
+  return `<div class="acct">${inner}<div class="acct__global" hidden></div></div>`;
+}
+function wireAccountButtons(){
+  const i = inner.querySelector("#acct-in"); if (i) i.onclick = () => window.signInGoogle && window.signInGoogle();
+  const o = inner.querySelector("#acct-out"); if (o) o.onclick = () => window.signOutUser && window.signOutUser();
+  renderGlobalCount();
+}
+function renderGlobalCount(){
+  const el = inner.querySelector(".acct__global"); if (!el) return;
+  if (globalFaves > 0){ el.textContent = "🌍 " + globalFaves.toLocaleString() + " tracks hearted worldwide"; el.hidden = false; }
+  else el.hidden = true;
+}
+
+// fetch per-track fave counts for a rendered list (batched, cached) and paint them
+async function fillTrackCounts(list, tl){
+  if (!FB) return;
+  const db = FB.firestore();
+  const need = [...new Set(list.map(t => String(t.trackId)))].filter(id => trackFaveCounts[id] === undefined);
+  for (let i = 0; i < need.length; i += 30){
+    const chunk = need.slice(i, i + 30);
+    try {
+      const snap = await db.collection("trackStats").where(FB.firestore.FieldPath.documentId(), "in", chunk).get();
+      const found = new Set();
+      snap.forEach(d => { trackFaveCounts[d.id] = d.data().count || 0; found.add(d.id); });
+      chunk.forEach(id => { if (!found.has(id)) trackFaveCounts[id] = 0; });
+    } catch (e){ console.warn("counts", e); return; }
+  }
+  paintTrackCounts(list, tl);
+}
+function paintTrackCounts(list, tl){
+  if (!tl) return;
+  tl.querySelectorAll(".track__ct").forEach(s => {
+    const t = list[+s.dataset.i]; if (!t) return;
+    const ct = trackFaveCounts[String(t.trackId)] || 0;
+    if (ct > 0){ s.textContent = "♥ " + ct; s.hidden = false; } else { s.textContent = ""; s.hidden = true; }
+  });
 }
 
 function openFavorites(){
