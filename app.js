@@ -1165,14 +1165,21 @@ function drawCountryOutline(code, svgEl){
   const gp = d3.geoPath(proj);
   const color = COUNTRIES[code].color;
   const cities = (COUNTRY_INFO[code] && COUNTRY_INFO[code].cities) || [];
+  // 5-pointed star marker for the capital (outer radius R), so it reads as more important than a city dot
+  const starPts = (cx, cy, R) => Array.from({length:10}, (_, i) => {
+    const rad = i % 2 ? R * 0.42 : R, a = -Math.PI/2 + i * Math.PI/5;
+    return `${(cx + rad*Math.cos(a)).toFixed(2)},${(cy + rad*Math.sin(a)).toFixed(2)}`;
+  }).join(" ");
   const dots = cities.map(ci => {
     const p = proj([ci.lng, ci.lat]); if (!p) return "";
-    const r = ci.capital ? 5 : 3.2;
-    const star = ci.capital ? `<circle cx="${p[0]}" cy="${p[1]}" r="8.5" fill="none" stroke="${color}" stroke-width="1.4" opacity=".55"/>` : "";
-    return `${star}<circle cx="${p[0]}" cy="${p[1]}" r="${r}" fill="#0a0916" stroke="${color}" stroke-width="2"/>
-      <text x="${p[0] + (p[0] > W*0.72 ? -7 : 7)}" y="${p[1] + 3}" text-anchor="${p[0] > W*0.72 ? "end" : "start"}"
+    const off = ci.capital ? 10 : 7;   // capital's star is larger → nudge its label out a touch more
+    const marker = ci.capital
+      ? `<polygon points="${starPts(p[0], p[1], 8)}" fill="${color}" stroke="#0a0916" stroke-width="1.4" stroke-linejoin="round"/>`
+      : `<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="#0a0916" stroke="${color}" stroke-width="2"/>`;
+    return `${marker}
+      <text x="${p[0] + (p[0] > W*0.72 ? -off : off)}" y="${p[1] + 3}" text-anchor="${p[0] > W*0.72 ? "end" : "start"}"
         fill="#fff7e6" font-family="Space Mono,monospace" font-size="9" font-weight="700"
-        style="paint-order:stroke;stroke:#0a0916;stroke-width:2.4px">${esc(ci.name)}${ci.capital ? " ★" : ""}</text>`;
+        style="paint-order:stroke;stroke:#0a0916;stroke-width:2.4px">${esc(ci.name)}</text>`;
   }).join("");
   svgEl.innerHTML =
     `<path d="${gp(feat)}" fill="${color}" fill-opacity=".22" stroke="${color}" stroke-width="2" stroke-linejoin="round"/>` + dots;
