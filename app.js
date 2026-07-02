@@ -102,8 +102,11 @@ function updateFavCount(){
 }
 function refreshFavHearts(){
   document.querySelectorAll(".track__fav").forEach(el => el.classList.toggle("on", isFav(+el.dataset.id)));
+  const cur = !!(qIndex >= 0 && queue[qIndex] && isFav(queue[qIndex].trackId));
   const pf = document.getElementById("p-fav");
-  if (pf) pf.classList.toggle("on", !!(qIndex >= 0 && queue[qIndex] && isFav(queue[qIndex].trackId)));
+  if (pf) pf.classList.toggle("on", cur);
+  const af = document.getElementById("art-fav");
+  if (af) af.classList.toggle("on", cur);
   const fm = document.getElementById("fav-meta"); if (fm && !/SHUFFLED/.test(fm.textContent)) fm.textContent = favs.length + " SAVED · TAP ♥ TO REMOVE";
   updateFavCount();
 }
@@ -442,6 +445,14 @@ function setMeta(el, html){
   }
 }
 
+// shared "artist · 🏳 country · year · Genre" line — used by the play bar and the expanded art view
+function trackMetaHtml(t, cc){
+  return esc(t.artist)
+    + (cc ? " · " + flagImg(cc) + " " + esc(COUNTRIES[cc].name) : "")
+    + (t.year ? " · " + t.year : "")
+    + (t.genre ? " · " + esc(t.genre.replace(/(^|[^\p{L}])(\p{L})/gu, (m, a, b) => a + b.toUpperCase())) : "");
+}
+
 async function play(i){
   if (!queue.length) return;
   qIndex = (i + queue.length) % queue.length;
@@ -451,9 +462,7 @@ async function play(i){
   document.getElementById("p-art").src = t.cover || "";
   currentNote = null;   // new track → drop any pending Spotify-note restore
   setMeta(document.getElementById("p-title"), esc(t.title));
-  setMeta(document.getElementById("p-artist"), esc(t.artist)
-    + (cc ? " · " + flagImg(cc) + " " + esc(COUNTRIES[cc].name) : "")
-    + (t.year ? " · " + t.year : "") + (t.genre ? " · " + esc(t.genre.replace(/(^|[^\p{L}])(\p{L})/gu, (m, a, b) => a + b.toUpperCase())) : ""));
+  setMeta(document.getElementById("p-artist"), trackMetaHtml(t, cc));
   document.getElementById("p-progress").style.width = "0%";
   setPlayIcon(true); player.classList.add("playing");
   // world-shuffle: light up the track's country on the map as it plays
@@ -463,6 +472,7 @@ async function play(i){
   }
   highlightRow();
   refreshFavHearts();
+  if (artModal && !artModal.hidden) renderArtModal();   // keep the expanded card in sync as tracks change
 
   // YouTube pilot (e.g. Cuba): tracks carrying a ytId play full-length in-browser, no login, for everyone.
   // Primary when available; on embed error it falls through to Spotify/preview (see onYtError). Other
@@ -505,7 +515,10 @@ async function play(i){
   else dzTrack(t.trackId, data => onUrl(data && data.preview));    // Deezer track → fresh 30s JSONP preview
 }
 
-function setPlayIcon(playing){ document.getElementById("p-play").textContent = playing ? "❚❚" : "▶"; }
+function setPlayIcon(playing){
+  document.getElementById("p-play").textContent = playing ? "❚❚" : "▶";
+  const ap = document.getElementById("art-play"); if (ap) ap.textContent = playing ? "❚❚" : "▶";
+}
 
 function togglePlay(){
   if (qIndex < 0){ if (queue.length) play(0); return; }
@@ -799,14 +812,32 @@ document.getElementById("view-toggle").onclick = () => setView(!document.body.cl
 if (window.matchMedia && window.matchMedia("(max-width:680px)").matches) setView(true);  // mobile = list only
 
 
-/* ---------- album art lightbox ---------- */
+/* ---------- album art lightbox / expanded now-playing card ---------- */
 const artModal = document.getElementById("art-modal");
+function renderArtModal(){
+  const t = queue[qIndex]; if (!t) return;
+  const cc = t._cc || activeCode;
+  if (t.cover) document.getElementById("art-modal-img").src = t.cover;
+  document.getElementById("art-title").innerHTML = esc(t.title);
+  document.getElementById("art-meta").innerHTML = trackMetaHtml(t, cc);
+  document.getElementById("art-play").textContent = player.classList.contains("playing") ? "❚❚" : "▶";
+  document.getElementById("art-fav").classList.toggle("on", isFav(t.trackId));
+}
 function openArt(){
   const t = queue[qIndex]; if (!t || !t.cover) return;
-  document.getElementById("art-modal-img").src = t.cover;
+  renderArtModal();
   artModal.hidden = false;
 }
-function closeArt(){ artModal.hidden = true; document.getElementById("art-modal-img").src = ""; }
+function closeArt(){ artModal.hidden = true; }
 document.getElementById("p-art").addEventListener("click", openArt);
 document.getElementById("art-x").addEventListener("click", closeArt);
 artModal.addEventListener("click", e => { if (e.target === artModal) closeArt(); });
+// big transport controls inside the expanded card drive the same queue as the play bar
+document.getElementById("art-prev").addEventListener("click", prev);
+document.getElementById("art-play").addEventListener("click", togglePlay);
+document.getElementById("art-next").addEventListener("click", next);
+document.getElementById("art-fav").addEventListener("click", () => {
+  const t = queue[qIndex]; if (!t) return;
+  toggleFav(t, t._cc || activeCode);
+  refreshFavHearts();
+});

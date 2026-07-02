@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Anton&family=Permanent+Marker&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=91" />
+<link rel="stylesheet" href="styles.css?v=92" />
 <link rel="icon" type="image/svg+xml" href="WMT-Icon.svg" />
 <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 <meta name="theme-color" content="#c6ff00" />
@@ -95,10 +95,20 @@
     </div>
   </footer>
 
-  <!-- album art lightbox -->
+  <!-- album art lightbox / expanded now-playing card -->
   <div class="art-modal" id="art-modal" hidden>
     <button class="art-modal__x" id="art-x" aria-label="Close">✕</button>
-    <img class="art-modal__img" id="art-modal-img" alt="Album art" />
+    <div class="art-modal__card">
+      <img class="art-modal__img" id="art-modal-img" alt="Album art" />
+      <div class="art-modal__title" id="art-title">—</div>
+      <div class="art-modal__meta" id="art-meta"></div>
+      <div class="art-modal__ctrls">
+        <button id="art-prev" aria-label="Previous">⏮</button>
+        <button id="art-play" class="is-big" aria-label="Play/Pause">▶</button>
+        <button id="art-next" aria-label="Next">⏭</button>
+      </div>
+      <button id="art-fav" class="art-modal__fav" aria-label="Save to favorites">♥ <span>save</span></button>
+    </div>
   </div>
   <audio id="audio" preload="none"></audio>
   <!-- hidden audio-only YouTube player (full-length playback for tracks that carry a ytId, e.g. Cuba pilot) -->
@@ -106,9 +116,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
-  <script src="data.js?v=94"></script>
+  <script src="data.js?v=95"></script>
   <script src="spotify.js?v=11"></script>
-  <script src="app.js?v=97"></script>
+  <script src="app.js?v=98"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
