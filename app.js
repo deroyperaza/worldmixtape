@@ -228,7 +228,7 @@ function renderTracks(list){
       <div class="track__rank">${i+1}${t.year?`<span class="track__yr">${t.year}</span>`:''}</div>
       <img class="track__art" loading="lazy" src="${t.cover||''}" alt="">
       <div class="track__txt">
-        <div class="track__title">${esc(t.title)}${(!t.ytId && !fullMode)?'<span class="track__30s" title="Preview only — full song not available; 30-second clip">30s</span>':''}</div>
+        <div class="track__title">${esc(t.title)}${(!t.ytId)?'<span class="track__30s" title="Preview only — full song not available; 30-second clip">30s</span>':''}</div>
         <div class="track__artist">${esc(t.artist)}${t.diaspora?'<span class="track__nf">diáspora</span>':''}</div>
       </div>
       <button class="track__fav${isFav(t.trackId)?" on":""}" data-i="${i}" data-id="${t.trackId}" aria-label="Save to favorites">♥</button>
@@ -488,13 +488,11 @@ async function play(i){
   refreshFavHearts();
   if (artModal && !artModal.hidden) renderArtModal();   // keep the expanded card in sync as tracks change
 
-  // YouTube pilot (e.g. Cuba): tracks carrying a ytId play full-length in-browser, no login, for everyone.
-  // Primary when available; on embed error it falls through to Spotify/preview (see onYtError). Other
-  // countries carry no ytId, so this branch never fires for them.
+  // Tracks carrying a ytId play full-length in-browser via YouTube, no login, for everyone.
+  // On embed error they fall through to the 30s preview (see onYtError). Tracks with no ytId
+  // (no full version found) play the 30s Deezer/iTunes preview below.
   if (t.ytId && ytReady && !ytFailed.has(t.ytId)){
     audio.pause();
-    if (SPOT.isConnected()) SPOT.pause();
-    stopFullPoll(); stopDeskProgress();
     playSource = "youtube"; ytExpected = t.ytId; curDuration = 0;
     yt.loadVideoById(t.ytId);
     if (yt.playVideo) yt.playVideo();
@@ -502,22 +500,7 @@ async function play(i){
     return;
   }
 
-  // full-song mode: desktop streams in-browser (SDK); mobile remote-controls the Spotify app (Connect)
-  if (fullMode && SPOT.fullReady()){
-    stopYt(); audio.pause();
-    let uri = t._spUri;
-    if (uri === undefined){ uri = await SPOT.search(t.artist, t.title); t._spUri = uri || null; }
-    if (queue[qIndex] !== t) return;                 // user skipped while we were resolving
-    if (uri){
-      const r = await SPOT.playFull(uri);
-      if (r === "ok"){ playSource = "full"; lastPos = 0; startFullPoll(); startDeskProgress(); return; }
-      spotFailNote(r);   // reason-specific note, then fall back to preview (never auto-redirect mid-play)
-    }
-    // Spotify couldn't play this → fall through to the 30s preview so audio never goes silent after connecting
-  }
   stopYt();
-  stopFullPoll(); stopDeskProgress();
-  if (SPOT.isConnected()) SPOT.pause();
   playSource = "preview";
   const onUrl = url => {
     if (queue[qIndex] !== t) return;
@@ -541,7 +524,6 @@ function togglePlay(){
     if (yt.getPlayerState() === YT.PlayerState.PLAYING) yt.pauseVideo(); else yt.playVideo();
     return;
   }
-  if (playSource === "full"){ SPOT.toggle(); return; }
   if (audio.paused){ audio.play(); setPlayIcon(true); player.classList.add("playing"); }
   else { audio.pause(); setPlayIcon(false); player.classList.remove("playing"); }
 }
@@ -600,40 +582,9 @@ function onYtError(){                                                // embed di
   play(qIndex);                                                     // re-run; ytFailed now skips the YT branch
 }
 
-/* ---------- full-song mode (Spotify Web Playback SDK) ---------- */
-let fullMode = localStorage.getItem("wmx_fullmode") === "1";
+/* ---------- playback source + player notes ---------- */
 let playSource = "preview";
-let lastPos = 0;
 
-function updateFullUI(){
-  const b = document.getElementById("p-full");
-  if (b){
-    b.classList.toggle("on", fullMode);
-    b.title = fullMode ? "Full songs via Spotify — tap for 30s previews" : "Switch to full songs (needs Spotify Premium)";
-  }
-  updateSpCta();
-  // full-mode changes what "30s" means (Spotify plays everything full) → refresh the badges on any open list
-  if (typeof renderedList !== "undefined" && renderedList && inner && inner.querySelector("#tracklist")) renderTracks(renderedList);
-}
-
-/* homepage "connect Spotify" CTA bar — shows until connected, then hides */
-const spCta = document.getElementById("sp-cta");
-function updateSpCta(){
-  if (!spCta) return;
-  const lbl = document.getElementById("sp-cta-lbl");
-  if (!SPOT.hasClientId() || sessionStorage.getItem("wmx_cta_x") === "1"){ spCta.hidden = true; return; }
-  spCta.hidden = false;
-  const connected = SPOT.isConnected();
-  spCta.classList.toggle("on", connected);                       // green once connected
-  if (lbl) lbl.textContent = !connected ? "Connect Spotify — full songs"
-    : SPOT.isFree() ? "Connected · 30s previews (Premium needed for full songs)"
-    : (fullMode ? "Connected — full songs on" : "Connected — tap for full songs");
-}
-{
-  const go = document.getElementById("sp-cta-go"), x = document.getElementById("sp-cta-x");
-  if (go) go.onclick = () => toggleFull();                       // kicks off the Spotify connect flow
-  if (x)  x.onclick = e => { e.stopPropagation(); sessionStorage.setItem("wmx_cta_x", "1"); updateSpCta(); };
-}
 let currentNote = null;
 function flashPlayerNote(msg, ms){
   const el = document.getElementById("p-artist"); if (!el) return;
@@ -650,106 +601,6 @@ function flashPlayerNote(msg, ms){
     currentNote = null; el.className = prevCls; el.innerHTML = prevHTML;
   }, dur);
 }
-// Shown when full-song mode is on but Spotify has no active device: explain how to make it work.
-// Once per page load so it guides without nagging on every track; playback still falls back to the preview.
-let fullHintShown = false;
-function flashFullHint(){
-  if (fullHintShown) return;
-  fullHintShown = true;
-  flashPlayerNote("For full songs: open your Spotify app and press play once · preview for now", 5200);
-}
-// Spotify Connect couldn't play — say exactly why, then fall back to the preview.
-function spotFailNote(reason){
-  if (reason === "not-premium"){
-    flashPlayerNote("Spotify full songs need a Premium account — playing previews instead", 7000);
-    fullMode = false; localStorage.removeItem("wmx_fullmode"); updateFullUI();   // free account → stop retrying, previews only
-  } else if (reason === "no-device"){
-    flashFullHint();                                                             // open the Spotify app & press play once
-  } else if (reason === "needs-auth"){
-    flashPlayerNote("Reconnect Spotify for full songs — playing preview for now", 7000);
-  } else {
-    flashPlayerNote("Spotify couldn't play that one — playing preview", 4200);   // restricted / fail
-  }
-}
-// After connecting, confirm the account type; if it's not Premium, tell the user up front they'll get previews.
-async function verifyAccount(){
-  const p = await SPOT.accountProduct();          // "premium" | "free" | ""
-  updateSpCta(); updateFullUI();
-  if (p === "free" && !sessionStorage.getItem("wmx_freeseen")){
-    sessionStorage.setItem("wmx_freeseen", "1");
-    player.classList.add("show"); player.setAttribute("aria-hidden", "false");   // reveal player so the note is visible
-    flashPlayerNote("Heads up — this Spotify account isn't Premium, so you'll hear 30-second previews. Full songs need Spotify Premium.", 9000);
-  }
-}
-async function toggleFull(){
-  if (!fullMode){
-    if (!SPOT.hasClientId()){ flashPlayerNote("connect Spotify: add your Client ID in spotify.js"); return; }
-    if (!SPOT.isConnected() || SPOT.needsReauth()){ SPOT.login(); return; }   // mobile Connect needs extra scopes → re-auth
-    fullMode = true; localStorage.setItem("wmx_fullmode", "1"); SPOT.initSDK();
-    flashPlayerNote(SPOT.isMobile ? "full songs on · plays through your Spotify app" : "full songs on · connecting Spotify…");
-    verifyAccount();                                 // free account → correct the message to previews-only
-  } else {
-    fullMode = false; localStorage.removeItem("wmx_fullmode"); SPOT.pause(); stopFullPoll(); stopDeskProgress(); playSource = "preview";
-  }
-  updateFullUI();
-  if (qIndex >= 0) play(qIndex);
-}
-
-// desktop SDK only fires on state CHANGES (play/pause/seek/track), not every tick — so we snapshot
-// position+time on each event and interpolate between them for a smooth playhead.
-let spotBase = 0, spotBaseTs = 0, spotPlaying = false, deskTimer = null;
-function startDeskProgress(){
-  if (SPOT.isMobile || deskTimer) return;
-  deskTimer = setInterval(() => {
-    if (playSource !== "full" || !spotPlaying || scrubbing || !curDuration) return;
-    const pos = Math.min(curDuration, spotBase + (performance.now() - spotBaseTs));
-    setProg((pos / curDuration * 100) + "%");
-  }, 250);
-}
-function stopDeskProgress(){ if (deskTimer){ clearInterval(deskTimer); deskTimer = null; } }
-
-SPOT.onState(s => {                                          // desktop SDK: drive the bar + auto-advance
-  if (!fullMode || !s) return;
-  const dur = s.duration || 0, pos = s.position || 0;
-  curDuration = dur;
-  spotBase = pos; spotBaseTs = performance.now(); spotPlaying = !s.paused;   // snapshot for smooth interpolation
-  if (!scrubbing && dur) setProg((pos / dur * 100) + "%");
-  setPlayIcon(!s.paused); player.classList.toggle("playing", !s.paused);
-  if (s.paused && pos === 0 && lastPos > 2000){ lastPos = 0; next(); return; }   // track finished
-  lastPos = pos;
-});
-
-/* mobile Connect: no SDK state events, so poll the Spotify app's playback to drive the bar + auto-advance */
-let fullPoll = null;
-function stopFullPoll(){ if (fullPoll){ clearInterval(fullPoll); fullPoll = null; } }
-function startFullPoll(){
-  if (!SPOT.isMobile) return;                                // desktop is driven by the SDK's onState
-  stopFullPoll();
-  fullPoll = setInterval(async () => {
-    if (playSource !== "full"){ stopFullPoll(); return; }
-    const s = await SPOT.getPlayback(); if (!s) return;
-    curDuration = s.duration || 0;
-    if (!scrubbing && s.duration) setProg((s.position / s.duration * 100) + "%");
-    setPlayIcon(!s.paused); player.classList.toggle("playing", !s.paused);
-    if (s.duration){
-      const ended = (!s.paused && s.position >= s.duration - 1200) || (s.paused && lastPos > 3000 && s.position <= 2000);
-      if (ended){ lastPos = 0; next(); return; }
-    }
-    if (!s.paused) lastPos = s.position;
-  }, 1000);
-}
-
-const pFull = document.getElementById("p-full");
-if (pFull) pFull.onclick = toggleFull;
-
-(async () => {                                               // complete OAuth handoff / restore session
-  const cameBack = await SPOT.handleRedirect();
-  if (cameBack){ fullMode = true; localStorage.setItem("wmx_fullmode", "1"); }
-  if (SPOT.isConnected()) SPOT.initSDK(); else fullMode = false;
-  updateFullUI();
-  if (SPOT.isConnected()) verifyAccount();          // check Premium vs free → notice if free
-})();
-
 audio.addEventListener("timeupdate", () => {
   if (!scrubbing && audio.duration) setProg((audio.currentTime/audio.duration*100) + "%");
 });
@@ -772,7 +623,6 @@ function barFrac(e, bar){
 const setFill = f => setProg((f * 100) + "%");
 function seekTo(f){
   if (playSource === "youtube"){ if (curDuration && yt && yt.seekTo) yt.seekTo(f * curDuration, true); }
-  else if (playSource === "full"){ if (curDuration) SPOT.seek(Math.round(f * curDuration)); }
   else if (audio.duration){ audio.currentTime = f * audio.duration; }
   setFill(f);
 }
@@ -841,7 +691,15 @@ function renderArtModal(){
   const cc = t._cc || activeCode;
   if (t.cover) document.getElementById("art-modal-img").src = t.cover;
   document.getElementById("art-title").innerHTML = esc(t.title);
-  document.getElementById("art-meta").innerHTML = trackMetaHtml(t, cc);
+  // art card: artist on line 1, then flag · country · year · genre on line 2
+  const capG = g => g ? g.replace(/(^|[^\p{L}])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()) : "";
+  const sub = [];
+  if (cc) sub.push(flagImg(cc) + " " + esc(COUNTRIES[cc].name));
+  if (t.year) sub.push(String(t.year));
+  if (t.genre) sub.push(esc(capG(t.genre)));
+  document.getElementById("art-meta").innerHTML =
+    `<div class="art-meta__artist">${esc(t.artist)}${t.diaspora ? '<span class="art-meta__dia">diáspora</span>' : ''}</div>` +
+    (sub.length ? `<div class="art-meta__sub">${sub.join(" · ")}</div>` : "");
   document.getElementById("art-play").textContent = player.classList.contains("playing") ? "❚❚" : "▶";
   document.getElementById("art-fav").classList.toggle("on", isFav(t.trackId));
   const pp = document.getElementById("p-progress"), ap = document.getElementById("art-progress");

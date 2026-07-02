@@ -38,24 +38,6 @@ body{
 .ticker__track{white-space:nowrap;will-change:transform;animation:slide 80s linear infinite;padding-left:100%}
 @keyframes slide{to{transform:translateX(-50%)}}
 
-/* Spotify status — fixed section pinned to the LEFT of the ticker row (one row, not two) */
-.sp-cta{flex:0 0 auto;display:flex;align-items:stretch;background:#ff5a1f;border-right:3px solid #0a0916}
-.sp-cta[hidden]{display:none}
-.sp-cta.on{background:#1DB954}                       /* Spotify green once connected */
-.sp-cta__go{display:flex;align-items:center;gap:7px;height:100%;padding:0 11px;border:0;cursor:pointer;
-  background:none;color:#0a0916;font:inherit;white-space:nowrap;animation:cta-pulse 2.4s ease-in-out infinite}
-.sp-cta.on .sp-cta__go{animation:none}
-.sp-cta__go:hover .sp-cta__lbl{text-decoration:underline}
-.sp-cta__ic{width:15px;height:15px;flex:0 0 auto}
-.sp-cta__ic svg{width:100%;height:100%;display:block}
-@keyframes cta-pulse{0%,100%{opacity:1}50%{opacity:.6}}
-.sp-cta__x{background:none;border:0;color:#0a0916;cursor:pointer;padding:0 8px 0 1px;opacity:.55;font-size:12px}
-.sp-cta__x:hover{opacity:1}
-@media(max-width:680px){
-  .sp-cta__lbl{display:none}                         /* mobile: Spotify icon only — shorter */
-  .sp-cta__go{padding:0 9px;gap:0}
-  .sp-cta__x{padding:0 6px}
-}
 
 /* brand lockup */
 .brand{position:fixed;top:42px;left:18px;z-index:45;pointer-events:none;transition:transform .35s cubic-bezier(.2,.9,.25,1)}
@@ -107,11 +89,6 @@ body{
   color:#3a3460;padding:4px 6px;transition:transform .12s,color .15s}
 .track__fav:hover{transform:scale(1.22)}
 .track__fav.on{color:var(--pink)}
-.player__full{flex:0 0 auto;cursor:pointer;background:none;border:none;padding:2px;display:flex;align-items:center;
-  color:#6b6486;transition:transform .12s,color .15s}
-.player__full.on{color:#1DB954}
-.player__full:hover{transform:scale(1.12)}
-.player__full svg{width:25px;height:25px;display:block}
 .player__fav{flex:0 0 auto;background:none;border:none;cursor:pointer;font-size:21px;line-height:1;
   color:#4a4470;padding:0 4px;transition:transform .12s,color .15s}
 .player__fav:hover{transform:scale(1.15)}
@@ -369,9 +346,13 @@ body.list-view #map{display:none}
 .art-modal__bar{width:100%;margin:0}
 .art-modal__title{font-family:"Anton",sans-serif;font-size:clamp(22px,6vw,34px);line-height:1.02;
   color:var(--paper);letter-spacing:.01em;max-width:100%;overflow-wrap:anywhere}
-.art-modal__meta{font-family:"Space Mono",monospace;font-size:14px;color:var(--paper);opacity:.82;
-  display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 8px;line-height:1.3}
-.art-modal__meta .flag{width:20px;height:auto;border-radius:2px;vertical-align:middle}
+.art-modal__meta{font-family:"Space Mono",monospace;color:var(--paper);
+  display:flex;flex-direction:column;align-items:center;gap:9px;line-height:1.3}
+.art-meta__artist{font-size:17px;font-weight:700}
+.art-meta__dia{font-size:10px;text-transform:uppercase;letter-spacing:.07em;background:var(--pink);color:#0a0916;
+  padding:1px 6px;border-radius:8px;margin-left:8px;vertical-align:middle}
+.art-meta__sub{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 9px;font-size:14px;opacity:.82}
+.art-modal__meta .flag{height:28px;width:auto;border-radius:4px;box-shadow:0 0 0 1.5px #0a0916;vertical-align:middle}
 .art-modal__ctrls{display:flex;align-items:center;justify-content:center;gap:26px;margin-top:6px}
 .art-modal__ctrls button{background:transparent;border:none;color:var(--paper);font-size:32px;cursor:pointer;
   padding:4px;line-height:1;transition:transform .12s}
