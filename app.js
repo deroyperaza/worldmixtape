@@ -88,10 +88,12 @@ let activeCode = null, queue = [], qIndex = -1, currentEra = "now", currentGenre
 /* ---------- favorites (persisted to localStorage) ---------- */
 const FAV_KEY = "wmx_favs_v1";
 let favs = (() => { try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch { return []; } })();
-const isFav = id => favs.some(f => f.trackId === id);
+// match trackIds type-agnostically — Deezer ids are numbers, iTunes ids are "it123" strings,
+// and localStorage/DOM datasets stringify them; comparing as strings makes un-hearting reliable
+const isFav = id => favs.some(f => String(f.trackId) === String(id));
 function saveFavs(){ try { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); } catch {} updateFavCount(); }
 function toggleFav(t, cc){
-  if (isFav(t.trackId)) favs = favs.filter(f => f.trackId !== t.trackId);
+  if (isFav(t.trackId)) favs = favs.filter(f => String(f.trackId) !== String(t.trackId));
   else favs.unshift({ trackId:t.trackId, artist:t.artist, title:t.title, cover:t.cover, year:t.year,
     genre:t.genre, album:t.album, artistId:t.artistId, decade:t.decade, diaspora:t.diaspora, _cc: t._cc || cc || null });
   saveFavs();
@@ -101,7 +103,7 @@ function updateFavCount(){
   if (el){ el.textContent = favs.length; el.closest(".faves-btn").classList.toggle("has", favs.length > 0); }
 }
 function refreshFavHearts(){
-  document.querySelectorAll(".track__fav").forEach(el => el.classList.toggle("on", isFav(+el.dataset.id)));
+  document.querySelectorAll(".track__fav").forEach(el => el.classList.toggle("on", isFav(el.dataset.id)));
   const cur = !!(qIndex >= 0 && queue[qIndex] && isFav(queue[qIndex].trackId));
   const pf = document.getElementById("p-fav");
   if (pf) pf.classList.toggle("on", cur);
