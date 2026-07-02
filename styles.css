@@ -58,7 +58,7 @@ body{
 }
 
 /* brand lockup */
-.brand{position:fixed;top:42px;left:18px;z-index:45;pointer-events:none}
+.brand{position:fixed;top:42px;left:18px;z-index:45;pointer-events:none;transition:transform .35s cubic-bezier(.2,.9,.25,1)}
 
 /* top-right controls: favorites + shuffle */
 .topctrls{position:fixed;top:36px;right:14px;z-index:48;display:flex;align-items:flex-start;gap:10px}
@@ -105,7 +105,7 @@ body{
 /* favorites — hearts on rows, player, and the favorites header */
 .track__fav{flex:0 0 auto;background:none;border:none;cursor:pointer;font-size:18px;line-height:1;
   color:#3a3460;padding:4px 6px;transition:transform .12s,color .15s}
-.track__fav:hover{transform:scale(1.22);color:var(--pink)}
+.track__fav:hover{transform:scale(1.22)}
 .track__fav.on{color:var(--pink)}
 .player__full{flex:0 0 auto;cursor:pointer;background:none;border:none;padding:2px;display:flex;align-items:center;
   color:#6b6486;transition:transform .12s,color .15s}
@@ -114,7 +114,9 @@ body{
 .player__full svg{width:25px;height:25px;display:block}
 .player__fav{flex:0 0 auto;background:none;border:none;cursor:pointer;font-size:21px;line-height:1;
   color:#4a4470;padding:0 4px;transition:transform .12s,color .15s}
-.player__fav:hover{transform:scale(1.15);color:var(--pink)}
+.player__fav:hover{transform:scale(1.15)}
+/* pink only on real (mouse) hover — iOS keeps :hover "stuck" after a tap, which made un-hearted hearts look still-red */
+@media (hover:hover){ .track__fav:hover,.player__fav:hover,.art-modal__fav:hover{color:var(--pink)} }
 .player__fav.on{color:var(--pink)}
 .jhead__flag--ico{font-size:34px;color:var(--pink);line-height:1}
 /* favorites playlist: shuffle / shuffled-exit toggle */
@@ -287,6 +289,8 @@ body{
 /* mobile */
 @media (max-width:680px){
   .brand{top:32px;left:11px}
+  /* country open → slide the logo up so WORLD MIXTAPE clears the panel; slides back on close */
+  body.panel-open .brand{transform:translateY(-72px)}
   .brand__sub{font-size:11px;max-width:210px;margin-top:10px}
   .topctrls{top:30px;right:9px;gap:6px}
   .faves-btn{font-size:11px;padding:5px 8px;gap:4px}
@@ -378,7 +382,7 @@ body.list-view #map{display:none}
 .art-modal__ctrls .is-big:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--pink)}
 .art-modal__fav{background:none;border:none;cursor:pointer;color:var(--paper);opacity:.6;font-size:56px;
   line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:2px 8px;transition:transform .12s,color .12s,opacity .12s}
-.art-modal__fav:hover{opacity:1;color:var(--pink)}
+.art-modal__fav:hover{opacity:1}
 .art-modal__fav.on{color:var(--pink);opacity:1}
 .art-modal__x{position:fixed;top:16px;right:16px;width:46px;height:46px;border-radius:50%;cursor:pointer;
   background:var(--lime);color:#0a0916;border:3px solid #0a0916;font-size:20px;font-weight:700;z-index:2;
