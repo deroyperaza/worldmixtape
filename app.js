@@ -1216,7 +1216,7 @@ const COUNTRY_INFO = {
    sports:{n:"David Beckham",r:"football icon — free-kick maestro turned global star",img:"David_Beckham_UNICEF_(cropped2).jpg"},
    sources:[{label:"Photos",detail:"Wikimedia Commons — CC-licensed, individual contributors",url:"https://commons.wikimedia.org/wiki/Category:United_Kingdom"},{label:"Facts & figures",detail:"Wikipedia — \"United Kingdom\" & related articles",url:"https://en.wikipedia.org/wiki/United_Kingdom"},{label:"Travel film",detail:"YouTube — \"THINGS TO KNOW BEFORE YOU GO TO THE UK\" · Creative Travel Guide",url:"https://www.youtube.com/watch?v=rd1K1sBf1Ug"},{label:"Map outline",detail:"Natural Earth via world-atlas — public domain",url:"https://www.naturalearthdata.com/"},{label:"Location",detail:"Google Maps",url:"https://www.google.com/maps/place/United+Kingdom/@54,-2,5z"}] },
   US: { tagline:"Sea to shining sea · fifty states, one restless dream",
-   photos:[{f:"View_of_Empire_State_Building_from_Rockefeller_Center_New_York_City_dllu_(cropped).jpg",cap:"Manhattan skyline · New York City"},{f:"Canyon_River_Tree_(165872763).jpeg",cap:"The Grand Canyon · Arizona"},{f:"Golden_Gate_Bridge_as_seen_from_Battery_East.jpg",cap:"Golden Gate Bridge · San Francisco"},{f:"Statue_of_Liberty_frontal_2.jpg",cap:"Statue of Liberty · New York Harbor"},{f:"Grand_Canyon_of_yellowstone.jpg",cap:"Grand Canyon of the Yellowstone · Wyoming"},{f:"Las_Vegas_Strip_09_2017_4897.jpg",cap:"The Strip after dark · Las Vegas"},{f:"Capitol_Building_Full_View.jpg",cap:"The U.S. Capitol · Washington, D.C."},{f:"French_Quarter,_looking_north_with_Mississippi_River_to_the_right_2011.jpg",cap:"The French Quarter · New Orleans"},{f:"Monument_Valley,_Utah,_USA_(23611451292).jpg",cap:"Monument Valley · Utah–Arizona border"},{f:"Central_Californian_Coastline,_Big_Sur_-_May_2013.jpg",cap:"The Big Sur coast · California"}],
+   photos:[{f:"View_of_Empire_State_Building_from_Rockefeller_Center_New_York_City_dllu_(cropped).jpg",cap:"Manhattan skyline · New York City"},{f:"Canyon_River_Tree_(165872763).jpeg",cap:"The Grand Canyon · Arizona"},{f:"Golden_Gate_Bridge_as_seen_from_Battery_East.jpg",cap:"Golden Gate Bridge · San Francisco"},{f:"Statue_of_liberty_and_nyc_skyline.jpg",cap:"Statue of Liberty · New York Harbor"},{f:"Grand_Canyon_of_yellowstone.jpg",cap:"Grand Canyon of the Yellowstone · Wyoming"},{f:"Las_Vegas_Strip_09_2017_4897.jpg",cap:"The Strip after dark · Las Vegas"},{f:"Capitol_Building_Full_View.jpg",cap:"The U.S. Capitol · Washington, D.C."},{f:"French_Quarter,_looking_north_with_Mississippi_River_to_the_right_2011.jpg",cap:"The French Quarter · New Orleans"},{f:"Monument_Valley,_Utah,_USA_(23611451292).jpg",cap:"Monument Valley · Utah–Arizona border"},{f:"Central_Californian_Coastline,_Big_Sur_-_May_2013.jpg",cap:"The Big Sur coast · California"}],
    video:{id:"Yaw22v_lG80",title:"10 DAY USA ROAD TRIP — Yosemite, Sequoia, Death Valley, Zion, Bryce, Vegas",by:"Karl Watson: Travel Documentaries"},
    cities:[{name:"Washington, D.C.",lng:-77.04,lat:38.91,capital:true},{name:"New York",lng:-74.01,lat:40.71},{name:"Los Angeles",lng:-118.24,lat:34.05},{name:"Chicago",lng:-87.63,lat:41.88},{name:"Houston",lng:-95.37,lat:29.76},{name:"San Francisco",lng:-122.42,lat:37.77},{name:"Honolulu",lng:-157.86,lat:21.31},{name:"Anchorage",lng:-149.90,lat:61.22}],
    maps:"https://www.google.com/maps/place/United+States/@39.8,-98.6,4z",
@@ -1425,18 +1425,34 @@ function renderMap(svgEl, feat, color, cityList, bounds){
    the cluster, so an inset shows the WHOLE nearby territory (all of Alaska, all of Hawaii), not just the city */
 function localBounds(feat, cities){
   const cx = cities.reduce((a,c)=>a+c.lng,0)/cities.length, cy = cities.reduce((a,c)=>a+c.lat,0)/cities.length;
-  const geom = feat.geometry, polys = geom.type === "MultiPolygon" ? geom.coordinates : [geom.coordinates];
-  let w = Infinity, s = Infinity, e = -Infinity, n = -Infinity;
-  polys.forEach(poly => poly.forEach(ring => ring.forEach(pt => {
-    const lng = pt[0], lat = pt[1];
-    let dl = Math.abs(lng - cx); if (dl > 180) dl = 360 - dl;   // antimeridian-aware longitude gap
-    if (dl < 28 && Math.abs(lat - cy) < 20){
-      if (lng < w) w = lng; if (lng > e) e = lng; if (lat < s) s = lat; if (lat > n) n = lat;
-    }
-  })));
-  cities.forEach(c => { if (c.lng < w) w = c.lng; if (c.lng > e) e = c.lng; if (c.lat < s) s = c.lat; if (c.lat > n) n = c.lat; });
-  if (!isFinite(w)){ const p = 3; return [[cx-p, cy-p], [cx+p, cy+p]]; }
-  const pad = Math.max(e-w, n-s, 2) * 0.1 + 0.8;
+  const geom = feat.geometry;
+  const rings = (geom.type==="MultiPolygon" ? geom.coordinates : [geom.coordinates]).map(poly => poly[0]);   // outer rings
+  // wrap-aware bounds of a ring, ignoring vertices >35° from the far city (drops dateline specks like the Aleutians)
+  const ringBounds = ring => {
+    let w=Infinity,s=Infinity,e=-Infinity,n=-Infinity,cnt=0;
+    ring.forEach(pt => { let dl=Math.abs(pt[0]-cx); if(dl>180) dl=360-dl;
+      if(dl<35){ cnt++; if(pt[0]<w)w=pt[0]; if(pt[0]>e)e=pt[0]; if(pt[1]<s)s=pt[1]; if(pt[1]>n)n=pt[1]; } });
+    return cnt ? [w,s,e,n] : null;
+  };
+  const inPoly = (px,py,ring) => { let inside=false;
+    for(let i=0,j=ring.length-1;i<ring.length;j=i++){ const xi=ring[i][0],yi=ring[i][1],xj=ring[j][0],yj=ring[j][1];
+      if(((yi>py)!==(yj>py)) && (px < (xj-xi)*(py-yi)/(yj-yi)+xi)) inside=!inside; }
+    return inside; };
+  const host = rings.find(r => cities.some(c => inPoly(c.lng,c.lat,r)));   // the landmass the far city sits on
+  const boxes = [];
+  if (host){
+    const hb = ringBounds(host);
+    rings.forEach(r => { const b=ringBounds(r); if(!b) return;
+      // keep the host + neighbours within 3° (e.g. the rest of the Hawaiian chain); drop the far mainland
+      if(r===host || (b[0]<hb[2]+3 && b[2]>hb[0]-3 && b[1]<hb[3]+3 && b[3]>hb[1]-3)) boxes.push(b); });
+  } else {
+    rings.forEach(r => { const b=ringBounds(r); if(b){ let dl=Math.abs((b[0]+b[2])/2 - cx); if(dl>180)dl=360-dl; if(dl<15) boxes.push(b); } });
+  }
+  let w=Infinity,s=Infinity,e=-Infinity,n=-Infinity;
+  boxes.forEach(b=>{ if(b[0]<w)w=b[0]; if(b[1]<s)s=b[1]; if(b[2]>e)e=b[2]; if(b[3]>n)n=b[3]; });
+  cities.forEach(c=>{ if(c.lng<w)w=c.lng; if(c.lng>e)e=c.lng; if(c.lat<s)s=c.lat; if(c.lat>n)n=c.lat; });
+  if(!isFinite(w)){ const p=3; return [[cx-p,cy-p],[cx+p,cy+p]]; }
+  const pad = Math.max(e-w, n-s, 2)*0.06 + 0.5;
   return [[w-pad, s-pad], [e+pad, n+pad]];
 }
 

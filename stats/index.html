@@ -136,9 +136,11 @@ const ERA_LABELS = ["pre-40s","40s","50s","60s","70s","80s","90s","00s","10s","2
 
 function fmt(n){ return (n||0).toLocaleString(); }
 function countUp(el, to){
+  to = +to || 0;
   const dur=900, t0=performance.now(), from=+(el.dataset.from||0);
   function step(now){ const p=Math.min(1,(now-t0)/dur); el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-p,3))).toLocaleString(); if(p<1)requestAnimationFrame(step); else el.dataset.from=to; }
   requestAnimationFrame(step);
+  setTimeout(()=>{ el.textContent = to.toLocaleString(); el.dataset.from = to; }, dur+150);  // guarantee final value even if rAF is throttled (hidden tab)
 }
 function kpi(label, color, rot){ return `<div class="kpi" style="--kc:${color};--r:${rot}deg"><b>0</b><span>${label}</span></div>`; }
 document.getElementById("kpis").innerHTML =
@@ -153,7 +155,7 @@ function renderBars(el, rows){
   const max = Math.max(1, ...rows.map(r=>r[1]));
   el.innerHTML = rows.map(([lab,v]) =>
     `<div class="bar"><div class="bar__lab">${lab}</div><div class="bar__track"><div class="bar__fill" style="width:0"></div></div><div class="bar__v">${fmt(v)}</div></div>`).join("");
-  requestAnimationFrame(()=>{ el.querySelectorAll(".bar").forEach((b,i)=>{ b.querySelector(".bar__fill").style.width = (rows[i][1]/max*100)+"%"; }); });
+  setTimeout(()=>{ el.querySelectorAll(".bar").forEach((b,i)=>{ b.querySelector(".bar__fill").style.width = (rows[i][1]/max*100)+"%"; }); }, 60);  // setTimeout (not rAF) so fills apply even in a hidden tab
 }
 renderBars(document.getElementById("bars-decade"), WMT_STATS.byDecade.map((v,i)=>[ERA_LABELS[i], v]));
 renderBars(document.getElementById("bars-country"), WMT_STATS.topCountries);
