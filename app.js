@@ -206,7 +206,7 @@ function openCountry(code){
         <div class="jhead__flag">${flagImg(code)}</div>
         <h2 class="jhead__name" style="--accent:${c.color}">${c.name}${WC2026.has(code) ? '<span class="wc-ball" title="2026 World Cup team" aria-label="2026 World Cup team">⚽</span>' : ''}</h2>
       </div>
-      <div class="jhead__meta" id="jmeta">NATIVES + DIÁSPORA · ${c.name.toUpperCase()}</div>
+      <div class="jhead__meta" id="jmeta"></div>
     </div>
     ${eraBar}
     ${genreBar}
@@ -259,7 +259,7 @@ function renderEra(key){
   inner.querySelectorAll(".era").forEach(b => b.classList.toggle("active", b.dataset.era === key));
   inner.querySelectorAll(".genre").forEach(b => b.classList.remove("active"));
   const meta = inner.querySelector("#jmeta");
-  if (meta) meta.textContent = (key === "now" ? "RIGHT NOW" : key === "pre1940s" ? "PRE-1940s" : key.toUpperCase()) + " · NATIVES + DIÁSPORA";
+  if (meta) meta.textContent = "";   // era/natives line removed for a cleaner header (era is already shown by the active tag)
 
   if (!list.length){
     inner.querySelector("#tracklist").innerHTML = `<div class="empty">no crate for<br>${c.name} · ${ERA_LABEL[key]}… <em>yet</em>
@@ -278,7 +278,7 @@ function renderGenre(g){
   inner.querySelectorAll(".era").forEach(b => b.classList.remove("active"));
   inner.querySelectorAll(".genre").forEach(b => b.classList.toggle("active", b.dataset.genre === g));
   const meta = inner.querySelector("#jmeta");
-  if (meta) meta.textContent = g.toUpperCase() + " · " + list.length + " TRACKS · ALL ERAS";
+  if (meta) meta.textContent = "";   // genre count already shown on the genre tag badge
   renderTracks(list);
 }
 

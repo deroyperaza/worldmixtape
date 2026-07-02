@@ -165,6 +165,7 @@ body{
   transform:rotate(9deg);z-index:3;pointer-events:none;filter:drop-shadow(1px 1px 0 rgba(0,0,0,.45))}
 @media(max-width:680px){.wc-ball{font-size:20px;top:-11px;right:-9px}}
 .jhead__meta{font-size:12px;color:var(--paper);opacity:.8;margin-top:12px;text-transform:uppercase;letter-spacing:.08em}
+.jhead__meta:empty{display:none;margin:0}
 
 /* era / decade selector — cassette tabs */
 .eras{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 14px;margin:2px 0 4px;
@@ -281,8 +282,9 @@ body{
   .shuffle-pop{top:70px;right:9px}
   .panel{top:26px;width:100vw;border-left:none;border-top:5px solid var(--lime)}
   /* close sits top-right on the flag's line (not its own row) → tighter header, more logo shows */
-  .panel__close{position:absolute;top:20px;right:14px;margin:0;align-self:auto;z-index:6}
-  .jhead{margin-top:12px;padding-right:74px}
+  .panel__close{position:absolute;top:26px;right:14px;margin:0;align-self:auto;z-index:6}
+  /* meta line removed → drop the country name into that space with breathing room above + below */
+  .jhead{margin:30px 0 22px;padding-right:74px}
   .map-hint{bottom:144px;font-size:11px}
   .player{height:72px;gap:7px;padding:0 7px}
   .player__art{width:40px;height:40px;margin-right:12px}
