@@ -148,7 +148,11 @@ body{
   font-weight:900;font-size:22px;line-height:1;background:var(--lime);color:#0a0916;border:3px solid #0a0916;
   padding:0;cursor:pointer;box-shadow:3px 3px 0 var(--pink);-webkit-text-stroke:1.6px #0a0916;transition:transform .12s}
 .panel__close:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--pink)}
-.panel__inner{overflow-y:auto;padding:0 16px 110px;flex:1;-webkit-overflow-scrolling:touch}
+/* header (name + decades + genres) stays fixed; only the tracklist scrolls */
+.panel__inner{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;padding:0 16px}
+#tracklist{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:120px;
+  scrollbar-width:none;margin-top:2px}
+#tracklist::-webkit-scrollbar{display:none}
 
 .jhead{position:relative;margin:18px 0 12px}
 .jhead__top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
