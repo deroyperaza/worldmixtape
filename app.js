@@ -112,6 +112,37 @@ function refreshFavHearts(){
   const fm = document.getElementById("fav-meta"); if (fm && !/SHUFFLED/.test(fm.textContent)) fm.textContent = favs.length + " SAVED · TAP ♥ TO REMOVE";
   updateFavCount();
 }
+/* ---------- cross-device favorites: encode the list into a shareable link ---------- */
+function favsLink(){
+  try { return location.origin + location.pathname + "#favs=" + btoa(unescape(encodeURIComponent(JSON.stringify(favs)))); }
+  catch { return location.origin + location.pathname; }
+}
+async function shareFavs(){
+  if (!favs.length){ flashToast("no favorites to sync yet"); return; }
+  const link = favsLink();
+  try { await navigator.clipboard.writeText(link); flashToast("link copied — open it on your other device"); }
+  catch { window.prompt("Copy this link, then open it on your other device to sync your favorites:", link); }
+}
+function importFavsFromHash(){
+  const m = /[#&]favs=([^&]+)/.exec(location.hash || "");
+  if (!m) return;
+  let incoming;
+  try { incoming = JSON.parse(decodeURIComponent(escape(atob(m[1])))); } catch { history.replaceState(null, "", location.pathname + location.search); return; }
+  history.replaceState(null, "", location.pathname + location.search);   // strip the long hash from the URL
+  if (!Array.isArray(incoming)) return;
+  const have = new Set(favs.map(f => String(f.trackId)));
+  let added = 0;
+  incoming.forEach(f => { if (f && f.trackId != null && !have.has(String(f.trackId))){ favs.push(f); have.add(String(f.trackId)); added++; } });
+  if (added){ saveFavs(); flashToast(added + " favorite" + (added > 1 ? "s" : "") + " added from your other device"); }
+  else flashToast("favorites already in sync");
+}
+function flashToast(msg){
+  let el = document.getElementById("wmx-toast");
+  if (!el){ el = document.createElement("div"); el.id = "wmx-toast"; el.className = "toast"; document.body.appendChild(el); }
+  el.textContent = msg; void el.offsetWidth; el.classList.add("show");
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove("show"), 3400);
+}
+
 function openFavorites(){
   activeCode = null; currentEra = null; currentGenre = null;
   if (!favs.length){
@@ -139,13 +170,15 @@ function renderFavorites(mode){
   qIndex = curId != null ? list.findIndex(t => t.trackId === curId) : -1;
   const ctrls = inner.querySelector("#fav-ctrls");
   if (ctrls){
-    ctrls.innerHTML = shuffled
+    ctrls.innerHTML = (shuffled
       ? '<button class="fav-mode on" id="fav-shuf-toggle" title="exit shuffle">🔀 shuffled <span aria-hidden="true">✕</span></button>'
-      : '<button class="fav-mode" id="fav-shuf-toggle">🔀 shuffle</button>';
+      : '<button class="fav-mode" id="fav-shuf-toggle">🔀 shuffle</button>')
+      + '<button class="fav-mode fav-sync" id="fav-sync" title="See these on your other device">📲 sync devices</button>';
     inner.querySelector("#fav-shuf-toggle").onclick = () => {
       if (shuffled) renderFavorites("order");
       else { renderFavorites("shuffle"); if (queue.length) play(0); }
     };
+    inner.querySelector("#fav-sync").onclick = shareFavs;
   }
   const meta = inner.querySelector("#fav-meta");
   if (meta) meta.textContent = shuffled
@@ -543,6 +576,7 @@ document.getElementById("p-fav").onclick = () => {
 };
 document.getElementById("faves-btn").onclick = openFavorites;
 updateFavCount();
+importFavsFromHash();   // if opened via a "sync devices" link, merge those favorites in
 
 /* ---------- YouTube full-song playback (per-track ytId; Cuba pilot) ---------- */
 // A hidden audio-only IFrame player. Tracks with a ytId play here full-length, no login, for everyone.
