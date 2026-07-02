@@ -122,6 +122,12 @@ body{
 .acct__in{background:#fff;color:#3c4043;border:2px solid #0a0916;box-shadow:3px 3px 0 var(--pink)}
 .acct__in:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--pink)}
 .acct__g{font-family:"Anton",sans-serif;font-size:15px;font-weight:900;color:#4285F4;line-height:1}
+/* signed-in: Google profile photo in a circle, left-tucked into the sign-out button */
+.acct__signed{padding-left:5px}
+.acct__pic{width:24px;height:24px;border-radius:50%;object-fit:cover;flex:0 0 auto;
+  border:2px solid #0a0916;box-shadow:0 0 0 1.5px var(--paper);background:var(--cyan)}
+.acct__pic--txt{display:inline-flex;align-items:center;justify-content:center;color:#0a0916;
+  font-family:"Space Mono",monospace;font-weight:700;font-size:12px;line-height:1}
 .acct__who{opacity:.85}
 .acct__note{opacity:.55;font-size:10px;letter-spacing:.02em}
 .acct__global{width:100%;opacity:.82;font-size:11px;letter-spacing:.03em;margin-top:1px}

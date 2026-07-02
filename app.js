@@ -227,8 +227,12 @@ function accountRowHTML(){
   let body = "";
   if (FB){
     if (authUser){
-      const name = (authUser.displayName || authUser.email || "you").split(" ")[0];
-      body = `<span class="acct__who">✓ signed in as ${esc(name)}</span><button class="acct__btn" id="acct-out">sign out</button>`;
+      const name = (authUser.displayName || authUser.email || "you");
+      const initial = esc((name || "?").trim().charAt(0).toUpperCase() || "?");
+      const pic = authUser.photoURL
+        ? `<img class="acct__pic" src="${esc(authUser.photoURL)}" alt="" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'acct__pic acct__pic--txt',textContent:'${initial}'}))">`
+        : `<span class="acct__pic acct__pic--txt">${initial}</span>`;
+      body = `<button class="acct__btn acct__signed" id="acct-out" title="Signed in as ${esc(name)} — sign out">${pic}<span>sign out</span></button>`;
     } else {
       body = `<button class="acct__btn acct__in" id="acct-in"><span class="acct__g" aria-hidden="true">G</span> Sign in with Google</button><small class="acct__note">save across devices + see counts</small>`;
     }
