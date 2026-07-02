@@ -463,7 +463,7 @@ async function play(i){
   currentNote = null;   // new track → drop any pending Spotify-note restore
   setMeta(document.getElementById("p-title"), esc(t.title));
   setMeta(document.getElementById("p-artist"), trackMetaHtml(t, cc));
-  document.getElementById("p-progress").style.width = "0%";
+  setProg("0%");
   setPlayIcon(true); player.classList.add("playing");
   // world-shuffle: light up the track's country on the map as it plays
   if (t._cc){
@@ -567,7 +567,7 @@ function startYtPoll(){                                    // drive the progress
     if (playSource !== "youtube" || !yt || scrubbing) return;
     const d = yt.getDuration ? yt.getDuration() : 0;
     const p = yt.getCurrentTime ? yt.getCurrentTime() : 0;
-    if (d){ curDuration = d; document.getElementById("p-progress").style.width = (p / d * 100) + "%"; }
+    if (d){ curDuration = d; setProg((p / d * 100) + "%"); }
   }, 250);
 }
 function stopYt(){ if (yt){ try { yt.pauseVideo(); } catch(_){} } stopYtPoll(); }
@@ -689,7 +689,7 @@ function startDeskProgress(){
   deskTimer = setInterval(() => {
     if (playSource !== "full" || !spotPlaying || scrubbing || !curDuration) return;
     const pos = Math.min(curDuration, spotBase + (performance.now() - spotBaseTs));
-    document.getElementById("p-progress").style.width = (pos / curDuration * 100) + "%";
+    setProg((pos / curDuration * 100) + "%");
   }, 250);
 }
 function stopDeskProgress(){ if (deskTimer){ clearInterval(deskTimer); deskTimer = null; } }
@@ -699,7 +699,7 @@ SPOT.onState(s => {                                          // desktop SDK: dri
   const dur = s.duration || 0, pos = s.position || 0;
   curDuration = dur;
   spotBase = pos; spotBaseTs = performance.now(); spotPlaying = !s.paused;   // snapshot for smooth interpolation
-  if (!scrubbing && dur) document.getElementById("p-progress").style.width = (pos / dur * 100) + "%";
+  if (!scrubbing && dur) setProg((pos / dur * 100) + "%");
   setPlayIcon(!s.paused); player.classList.toggle("playing", !s.paused);
   if (s.paused && pos === 0 && lastPos > 2000){ lastPos = 0; next(); return; }   // track finished
   lastPos = pos;
@@ -715,7 +715,7 @@ function startFullPoll(){
     if (playSource !== "full"){ stopFullPoll(); return; }
     const s = await SPOT.getPlayback(); if (!s) return;
     curDuration = s.duration || 0;
-    if (!scrubbing && s.duration) document.getElementById("p-progress").style.width = (s.position / s.duration * 100) + "%";
+    if (!scrubbing && s.duration) setProg((s.position / s.duration * 100) + "%");
     setPlayIcon(!s.paused); player.classList.toggle("playing", !s.paused);
     if (s.duration){
       const ended = (!s.paused && s.position >= s.duration - 1200) || (s.paused && lastPos > 3000 && s.position <= 2000);
@@ -737,7 +737,7 @@ if (pFull) pFull.onclick = toggleFull;
 })();
 
 audio.addEventListener("timeupdate", () => {
-  if (!scrubbing && audio.duration) document.getElementById("p-progress").style.width = (audio.currentTime/audio.duration*100) + "%";
+  if (!scrubbing && audio.duration) setProg((audio.currentTime/audio.duration*100) + "%");
 });
 audio.addEventListener("ended", next);
 audio.addEventListener("pause", () => { setPlayIcon(false); player.classList.remove("playing"); });
@@ -745,30 +745,38 @@ audio.addEventListener("play",  () => { setPlayIcon(true);  player.classList.add
 
 /* ---------- seek: click or drag the progress bar (works for preview + Spotify) ---------- */
 let curDuration = 0, scrubbing = false;
-const seekBar = document.querySelector(".player__bar");
-function barFrac(e){
-  const r = seekBar.getBoundingClientRect();
+// drive BOTH the play-bar and the expanded-card progress fills from one call
+function setProg(w){
+  const a = document.getElementById("p-progress"); if (a) a.style.width = w;
+  const b = document.getElementById("art-progress"); if (b) b.style.width = w;
+}
+function barFrac(e, bar){
+  const r = bar.getBoundingClientRect();
   const x = (e.clientX != null ? e.clientX : 0) - r.left;
   return Math.max(0, Math.min(1, r.width ? x / r.width : 0));
 }
-const setFill = f => { document.getElementById("p-progress").style.width = (f * 100) + "%"; };
+const setFill = f => setProg((f * 100) + "%");
 function seekTo(f){
   if (playSource === "youtube"){ if (curDuration && yt && yt.seekTo) yt.seekTo(f * curDuration, true); }
   else if (playSource === "full"){ if (curDuration) SPOT.seek(Math.round(f * curDuration)); }
   else if (audio.duration){ audio.currentTime = f * audio.duration; }
   setFill(f);
 }
-if (seekBar){
-  seekBar.addEventListener("pointerdown", e => {
+// same click/drag-to-seek behaviour on the play bar and the card's bar
+function bindSeek(bar){
+  if (!bar) return;
+  bar.addEventListener("pointerdown", e => {
     if (qIndex < 0) return;
-    scrubbing = true; seekBar.classList.add("scrub");
-    try { seekBar.setPointerCapture(e.pointerId); } catch {}
-    setFill(barFrac(e)); e.preventDefault();
+    scrubbing = true; bar.classList.add("scrub");
+    try { bar.setPointerCapture(e.pointerId); } catch {}
+    setFill(barFrac(e, bar)); e.preventDefault();
   });
-  seekBar.addEventListener("pointermove", e => { if (scrubbing) setFill(barFrac(e)); });
-  seekBar.addEventListener("pointerup", e => { if (!scrubbing) return; scrubbing = false; seekBar.classList.remove("scrub"); seekTo(barFrac(e)); });
-  seekBar.addEventListener("pointercancel", () => { scrubbing = false; seekBar.classList.remove("scrub"); });
+  bar.addEventListener("pointermove", e => { if (scrubbing) setFill(barFrac(e, bar)); });
+  bar.addEventListener("pointerup", e => { if (!scrubbing) return; scrubbing = false; bar.classList.remove("scrub"); seekTo(barFrac(e, bar)); });
+  bar.addEventListener("pointercancel", () => { scrubbing = false; bar.classList.remove("scrub"); });
 }
+bindSeek(document.querySelector(".player__bar"));
+bindSeek(document.querySelector(".art-modal__bar"));
 
 function highlightRow(){
   const live = renderedList === queue;   // only highlight when the visible list is what's playing
@@ -822,6 +830,8 @@ function renderArtModal(){
   document.getElementById("art-meta").innerHTML = trackMetaHtml(t, cc);
   document.getElementById("art-play").textContent = player.classList.contains("playing") ? "❚❚" : "▶";
   document.getElementById("art-fav").classList.toggle("on", isFav(t.trackId));
+  const pp = document.getElementById("p-progress"), ap = document.getElementById("art-progress");
+  if (pp && ap) ap.style.width = pp.style.width;   // sync fill on open (poll loop keeps it live after)
 }
 function openArt(){
   const t = queue[qIndex]; if (!t || !t.cover) return;

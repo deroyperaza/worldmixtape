@@ -355,8 +355,9 @@ body.list-view #map{display:none}
 .art-modal[hidden]{display:none}
 .art-modal__card{display:flex;flex-direction:column;align-items:center;gap:15px;text-align:center;
   max-width:min(90vw,440px);margin:auto}
-.art-modal__img{width:min(74vw,44vh,380px);height:auto;aspect-ratio:1;object-fit:cover;border-radius:10px;
-  border:3px solid #0a0916;box-shadow:8px 8px 0 var(--pink);background:#000;cursor:default}
+.art-modal__img{width:min(74vw,42vh,380px);height:auto;aspect-ratio:1;object-fit:cover;border-radius:10px;
+  border:3px solid #0a0916;box-shadow:8px 8px 0 var(--pink);background:#000;cursor:default;margin-bottom:16px}
+.art-modal__bar{width:100%;margin:0}
 .art-modal__title{font-family:"Anton",sans-serif;font-size:clamp(22px,6vw,34px);line-height:1.02;
   color:var(--paper);letter-spacing:.01em;max-width:100%;overflow-wrap:anywhere}
 .art-modal__meta{font-family:"Space Mono",monospace;font-size:14px;color:var(--paper);opacity:.82;
