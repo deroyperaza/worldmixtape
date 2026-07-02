@@ -414,7 +414,7 @@ function mixAccent(m){
   if (m.kind==="country" && COUNTRIES[m.key]) return COUNTRIES[m.key].color;
   const VC = {latenight:"#8B77F8",slowroast:"#2AABCC",dancefloor:"#FF4D00",windowsdown:"#c8e64f",cypher:"#ff2e92",carnival:"#12a58c",folkroots:"#f4a08a"};
   if (m.kind==="vibe" && VC[m.key]) return VC[m.key];
-  return ({passport:"#2AABCC",diaspora:"#8B77F8",decade:"#FF4D00",crosscut:"#ff2e92",artist:"#c8e64f"})[m.kind] || "#ff2e92";
+  return ({passport:"#2AABCC",region:"#12a58c",diaspora:"#8B77F8",decade:"#FF4D00",crosscut:"#ff2e92",artist:"#c8e64f"})[m.kind] || "#ff2e92";
 }
 const MIN_SEEDS = 3, MAX_SEEDS = 6, REC_RATIO = 3;   // per mixtape: detect ≥3 saved seeds, fill 3 recs per seed
 
@@ -474,6 +474,11 @@ function buildMixtapes(src){
   const ccKeys = Object.keys(byCC);
   ccKeys.forEach(cc => { const n=COUNTRIES[cc].name;
     add("country", cc, "📍", mixPick([`One Night in ${n}`,`${n} After Dark`,`Deep in ${n}`,`${n} on Repeat`], cc+byCC[cc].length), `all roads lead to ${n}`, byCC[cc], t => t._cc===cc); });
+  // musical region — a broader geo-cultural sweep across the shuffle REGIONS map (>=2 countries to qualify)
+  const byReg = {};
+  tracks.forEach(t => { const r = t._cc && CODE_REGION[t._cc]; if(r) (byReg[r]=byReg[r]||[]).push(t); });
+  for (const r in byReg){ if (new Set(byReg[r].map(t=>t._cc)).size >= 2)
+    add("region", r, "🗺", mixPick([`${r} After Dark`,`Deep in ${r}`,`The Sound of ${r}`,`Across ${r}`], r+byReg[r].length), `a sweep across ${r}`, byReg[r], t => t._cc && CODE_REGION[t._cc]===r); }
   // passport stamps — one from each country, round-robin
   if (ccKeys.length >= 4){
     const pools = ccKeys.map(cc => mixShuf(byCC[cc])), spread=[]; let added=true, r=0;
@@ -507,7 +512,7 @@ function buildMixtapes(src){
   }).filter(m => m.tracks.length >= 6);
 }
 function rankClusters(cands){
-  const bonus = { passport:3, crosscut:3, vibe:2, diaspora:2, country:1, decade:1, artist:1 };
+  const bonus = { passport:3, crosscut:3, region:2, vibe:2, diaspora:2, country:1, decade:1, artist:1 };
   cands.forEach(c => c._score = c.seeds.length + (bonus[c.kind]||0)*2);
   cands.sort((a,b) => b._score - a._score);
   const kept = [], idset = c => new Set(c.seeds.map(t=>String(t.trackId)));
