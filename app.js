@@ -357,11 +357,13 @@ function openCountry(code){
   const genreBar = genres.length ? `<div class="genres" id="genres"><span class="genres__lbl">dig by genre →</span>` +
     genres.map(([g,n]) => `<button class="genre" data-genre="${esc(g)}">${esc(g)}<i>${n}</i></button>`).join("") + `</div>` : "";
 
+  const hasInfo = !!COUNTRY_INFO[code];
   inner.innerHTML = `
     <div class="jhead">
-      <div class="jhead__top">
+      <div class="jhead__top${hasInfo ? " jhead__top--info" : ""}"${hasInfo ? ` id="jhead-info" role="button" tabindex="0" title="Country info" aria-label="Open ${esc(c.name)} country info"` : ""}>
         <div class="jhead__flag">${flagImg(code)}</div>
         <h2 class="jhead__name" style="--accent:${c.color}">${c.name}${WC2026.has(code) ? '<span class="wc-ball" title="2026 World Cup team" aria-label="2026 World Cup team">⚽</span>' : ''}</h2>
+        ${hasInfo ? '<span class="jhead__info" aria-hidden="true">ⓘ</span>' : ''}
       </div>
       <div class="jhead__meta" id="jmeta"></div>
     </div>
@@ -369,6 +371,11 @@ function openCountry(code){
     ${genreBar}
     <div id="tracklist"></div>`;
 
+  if (hasInfo){
+    const ji = inner.querySelector("#jhead-info");
+    ji.onclick = () => openInfo(code);
+    ji.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); openInfo(code); } };
+  }
   inner.querySelectorAll(".era").forEach(b => b.onclick = () => renderEra(b.dataset.era));
   inner.querySelectorAll(".genre").forEach(b => b.onclick = () => renderGenre(b.dataset.genre));
   renderEra("now");
@@ -973,3 +980,200 @@ document.getElementById("art-fav").addEventListener("click", () => {
   toggleFav(t, t._cc || activeCode);
   refreshFavHearts();
 });
+
+
+/* ===================== COUNTRY INFO / "DOSSIER" OVERLAY ===================== */
+/* Opened by tapping the flag or name inside an open country panel. Prototype: Cuba (CU). */
+const wmFile = f => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=1200`;
+
+const COUNTRY_INFO = {
+  CU: {
+    tagline: "Isla Grande · the Caribbean's beating heart",
+    // verified free photos (Wikimedia Commons) — major cities, landmarks, landscapes
+    photos: [
+      { f: "DJI_0197_crp_wiki.jpg",                       cap: "Havana skyline from the sea" },
+      { f: "El_Capitolio_Havana_Cuba.jpg",                cap: "El Capitolio · Havana" },
+      { f: "Havana_malecon_(cropped).jpg",                cap: "The Malecón · Havana" },
+      { f: "Trinidad_in_Kuba.jpg",                        cap: "Colonial streets of Trinidad" },
+      { f: "Viñales_Valley.jpg",                          cap: "Viñales tobacco valley" },
+      { f: "Santiago_de_cuba_al_atardecer.jpg",           cap: "Santiago de Cuba at dusk" },
+      { f: "Cuba_20160320_4849_Cienfuegos_sRGB.jpg",      cap: "Cienfuegos · 'Pearl of the South'" },
+      { f: "Aerial_photo_of_Varadero_16.JPG",             cap: "Varadero beach" },
+      { f: "Che_Guevara_-_Grab_in_Santa_Clara,_Kuba.jpg", cap: "Che Guevara Mausoleum · Santa Clara" },
+      { f: "Ponte_de_Bacunayagua.JPG",                    cap: "Bacunayagua Bridge · Matanzas" },
+    ],
+    // recent independent, travel-focused overview video (verified embeddable)
+    video: { id: "TX-dYjafzX8", title: "The Best of Cuba in 10 days", by: "Journeys with LeJune" },
+    // cities plotted on the outline map ([lng, lat])
+    cities: [
+      { name: "Havana",          lng: -82.38, lat: 23.13, capital: true },
+      { name: "Santa Clara",     lng: -79.97, lat: 22.41 },
+      { name: "Cienfuegos",      lng: -80.44, lat: 22.15 },
+      { name: "Trinidad",        lng: -79.98, lat: 21.80 },
+      { name: "Camagüey",        lng: -77.92, lat: 21.38 },
+      { name: "Holguín",         lng: -76.26, lat: 20.89 },
+      { name: "Santiago de Cuba",lng: -75.82, lat: 20.02 },
+    ],
+    maps: "https://www.google.com/maps/place/Cuba/@21.6,-79.5,6z",
+    facts: {
+      capital:    "Havana (La Habana)",
+      population: "≈ 11.0 million (2024)",
+      languages:  "Spanish (official) · Haitian Creole & Lucumí also spoken",
+      langCount:  "≈ 7 languages spoken in total",
+      independence:"May 20, 1902 — republic founded (from Spain, Dec 10, 1898)",
+      government: "Unitary Marxist–Leninist one-party socialist republic",
+      etymology:  "From the Taíno — likely <em>cubao</em> (“where fertile land is abundant”) or <em>coabana</em> (“great place”). Columbus first named it <em>Juana</em>.",
+    },
+    people: [
+      { n: "José Martí",        r: "national hero — poet & apostle of independence" },
+      { n: "Carlos M. de Céspedes", r: "“Father of the Homeland” — freed his slaves, sparked 1868 war" },
+      { n: "Antonio Maceo",     r: "the “Bronze Titan” — independence general" },
+      { n: "Fidel Castro",      r: "led the 1959 Revolution; ruled for ~49 years" },
+      { n: "Che Guevara",       r: "Argentine-born revolutionary icon of the Cuban cause" },
+    ],
+    music:  { n: "Celia Cruz",       r: "the “Queen of Salsa” — ¡Azúcar!" },
+    sports: { n: "Teófilo Stevenson", r: "3× Olympic heavyweight boxing champion (1972·76·80)" },
+    sources: [
+      { label: "Photos",            detail: "Wikimedia Commons — CC-licensed, individual contributors", url: "https://commons.wikimedia.org/wiki/Category:Cuba" },
+      { label: "Facts & figures",   detail: "Wikipedia — “Cuba” & related articles",                    url: "https://en.wikipedia.org/wiki/Cuba" },
+      { label: "Travel film",       detail: "YouTube — “The Best of Cuba in 10 days” · Journeys with LeJune", url: "https://www.youtube.com/watch?v=TX-dYjafzX8" },
+      { label: "Map outline",       detail: "Natural Earth via world-atlas — public domain",             url: "https://www.naturalearthdata.com/" },
+      { label: "Location",          detail: "Google Maps",                                               url: "https://www.google.com/maps/place/Cuba/@21.6,-79.5,6z" },
+    ],
+  },
+};
+
+const info = document.getElementById("info");
+const infoInner = document.getElementById("info-inner");
+
+function openInfo(code){
+  const d = COUNTRY_INFO[code]; if (!d) return;
+  const c = COUNTRIES[code];
+  document.documentElement.style.setProperty("--accent", c.color);
+
+  const slides = [];
+  // video slide first (loaded lazily on open via the injected iframe below)
+  if (d.video) slides.push(
+    `<div class="info-slide info-slide--vid" data-yt="${d.video.id}">
+       <div class="info-vid" id="info-vid"></div>
+       <div class="info-slide__cap"><span class="info-slide__vtag">▶ TRAVEL FILM</span> ${esc(d.video.title)} · <i>${esc(d.video.by)}</i></div>
+     </div>`);
+  d.photos.forEach(p => slides.push(
+    `<div class="info-slide">
+       <img loading="lazy" src="${wmFile(p.f)}" alt="${esc(p.cap)}">
+       <div class="info-slide__cap">${esc(p.cap)}</div>
+     </div>`));
+
+  const factRow = (label, val) => `<div class="info-fact"><span class="info-fact__k">${label}</span><span class="info-fact__v">${val}</span></div>`;
+  const f = d.facts;
+  const peopleHtml = d.people.map(p => `<li><b>${esc(p.n)}</b> — ${esc(p.r)}</li>`).join("");
+
+  infoInner.innerHTML = `
+    <div class="info-head">
+      <div class="jhead__flag">${flagImg(code)}</div>
+      <div>
+        <h2 class="info-name" style="--accent:${c.color}">${esc(c.name)}</h2>
+        ${d.tagline ? `<div class="info-tag">${esc(d.tagline)}</div>` : ""}
+      </div>
+    </div>
+
+    <div class="info-carousel" id="info-carousel">
+      <button class="info-arrow info-arrow--l" id="info-prev" aria-label="Previous">‹</button>
+      <div class="info-track" id="info-track">${slides.join("")}</div>
+      <button class="info-arrow info-arrow--r" id="info-next" aria-label="Next">›</button>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-mapbox">
+        <svg class="info-map" id="info-map" viewBox="0 0 360 200" role="img" aria-label="Map of ${esc(c.name)} with major cities"></svg>
+        <a class="info-maps-link" href="${d.maps}" target="_blank" rel="noopener">📍 Open in Google Maps</a>
+      </div>
+      <div class="info-facts">
+        ${factRow("Capital", esc(f.capital))}
+        ${factRow("Population", esc(f.population))}
+        ${factRow("Languages", esc(f.languages) + `<small>${esc(f.langCount)}</small>`)}
+        ${factRow("Independence", esc(f.independence))}
+        ${factRow("Government", esc(f.government))}
+        ${factRow("Name origin", f.etymology)}
+      </div>
+    </div>
+
+    <div class="info-cards">
+      <div class="info-card info-card--wide">
+        <h3>Historically important figures</h3>
+        <ul class="info-people">${peopleHtml}</ul>
+      </div>
+      <div class="info-card">
+        <h3>🎵 Best-known music artist</h3>
+        <div class="info-star">${esc(d.music.n)}</div>
+        <div class="info-star__r">${esc(d.music.r)}</div>
+      </div>
+      <div class="info-card">
+        <h3>🏅 Most famous sports figure</h3>
+        <div class="info-star">${esc(d.sports.n)}</div>
+        <div class="info-star__r">${esc(d.sports.r)}</div>
+      </div>
+    </div>
+
+    <div class="info-sources">
+      <h3>Data sources</h3>
+      <ul>${(d.sources || []).map(s => `<li><a href="${s.url}" target="_blank" rel="noopener"><span class="info-sources__k">${esc(s.label)}</span> ${esc(s.detail)}</a></li>`).join("")}</ul>
+    </div>`;
+
+  info.hidden = false;
+  document.body.classList.add("info-open");
+
+  // lazy-load the YouTube video into its slide (only when the overlay is opened)
+  const vslot = document.getElementById("info-vid");
+  if (vslot && d.video){
+    const ifr = document.createElement("iframe");
+    ifr.src = `https://www.youtube-nocookie.com/embed/${d.video.id}?rel=0&modestbranding=1`;
+    ifr.title = d.video.title;
+    ifr.loading = "lazy";
+    ifr.allow = "accelerometer; encrypted-media; gyroscope; picture-in-picture";
+    ifr.setAttribute("allowfullscreen", "");
+    vslot.appendChild(ifr);
+  }
+
+  // carousel arrows (scroll by one slide)
+  const track = document.getElementById("info-track");
+  const step = () => (track.querySelector(".info-slide") || {}).clientWidth || track.clientWidth;
+  document.getElementById("info-prev").onclick = () => track.scrollBy({ left: -step() - 12, behavior: "smooth" });
+  document.getElementById("info-next").onclick = () => track.scrollBy({ left:  step() + 12, behavior: "smooth" });
+
+  drawCountryOutline(code, document.getElementById("info-map"));
+}
+
+function closeInfo(){
+  info.hidden = true;
+  document.body.classList.remove("info-open");
+  const vslot = document.getElementById("info-vid");
+  if (vslot) vslot.innerHTML = "";   // stop the video / free the iframe
+}
+document.getElementById("info-close").onclick = closeInfo;
+document.getElementById("info-scrim").onclick = closeInfo;
+document.addEventListener("keydown", e => { if (e.code === "Escape" && !info.hidden){ e.preventDefault(); e.stopPropagation(); closeInfo(); } }, true);
+
+/* draw a country's outline (from the already-loaded world-atlas) into an SVG, with city markers */
+function drawCountryOutline(code, svgEl){
+  if (!svgEl) return;
+  const iso = COUNTRIES[code] && +COUNTRIES[code].iso;
+  const feat = features.find(f => +f.id === iso);
+  if (!feat){ svgEl.innerHTML = `<text x="180" y="104" text-anchor="middle" fill="#8a83b8" font-family="Space Mono,monospace" font-size="11">map loading…</text>`; return; }
+  const vb = svgEl.viewBox.baseVal, W = vb.width || 360, H = vb.height || 200, pad = 22;
+  const proj = d3.geoMercator().fitExtent([[pad, pad], [W - pad, H - pad]], feat);
+  const gp = d3.geoPath(proj);
+  const color = COUNTRIES[code].color;
+  const cities = (COUNTRY_INFO[code] && COUNTRY_INFO[code].cities) || [];
+  const dots = cities.map(ci => {
+    const p = proj([ci.lng, ci.lat]); if (!p) return "";
+    const r = ci.capital ? 5 : 3.2;
+    const star = ci.capital ? `<circle cx="${p[0]}" cy="${p[1]}" r="8.5" fill="none" stroke="${color}" stroke-width="1.4" opacity=".55"/>` : "";
+    return `${star}<circle cx="${p[0]}" cy="${p[1]}" r="${r}" fill="#0a0916" stroke="${color}" stroke-width="2"/>
+      <text x="${p[0] + (p[0] > W*0.72 ? -7 : 7)}" y="${p[1] + 3}" text-anchor="${p[0] > W*0.72 ? "end" : "start"}"
+        fill="#fff7e6" font-family="Space Mono,monospace" font-size="9" font-weight="700"
+        style="paint-order:stroke;stroke:#0a0916;stroke-width:2.4px">${esc(ci.name)}${ci.capital ? " ★" : ""}</text>`;
+  }).join("");
+  svgEl.innerHTML =
+    `<path d="${gp(feat)}" fill="${color}" fill-opacity=".22" stroke="${color}" stroke-width="2" stroke-linejoin="round"/>` + dots;
+}
