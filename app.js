@@ -308,11 +308,15 @@ function openFavorites(){
     <h2 class="jhead__name" style="--accent:var(--pink)">Favorites</h2></div>
     <div class="jhead__meta" id="fav-meta"></div></div>
     ${accountRowHTML()}
-    <div class="mixtapes" id="mixtapes"></div>
-    <div class="fav-ctrls" id="fav-ctrls"></div>
-    <div class="fav-filters" id="fav-filters"></div>
-    <div id="tracklist"></div>`;
+    <div class="fav-scroll" id="fav-scroll">
+      <div class="mixtapes" id="mixtapes"></div>
+      <div class="fav-ctrls" id="fav-ctrls"></div>
+      <div class="fav-filters" id="fav-filters"></div>
+      <div id="tracklist"></div>
+    </div>`;
   wireAccountButtons();
+  const _fs = inner.querySelector("#fav-scroll");   // whole favorites body scrolls as one (mixtapes scroll away with the list)
+  if (_fs) _fs.addEventListener("scroll", () => panel.classList.toggle("scrolled", _fs.scrollTop > 8), { passive: true });
   setShuf("__favs");   // shuffle pre-filtered to favorites
   renderMixStrip();    // auto-generated themed mixtapes across the favorites
   renderFavorites("order");
@@ -1306,6 +1310,51 @@ artModal.addEventListener("click", e => { if (e.target === artModal) closeArt();
 document.getElementById("art-prev").addEventListener("click", prev);
 document.getElementById("art-play").addEventListener("click", togglePlay);
 document.getElementById("art-next").addEventListener("click", next);
+// mobile: drag / swipe the album art left→next, right→previous (with a carousel slide)
+(function(){
+  const img = document.getElementById("art-modal-img");
+  if (!img) return;
+  img.style.touchAction = "pan-y";
+  let x0 = 0, dx = 0, dragging = false;
+  const THRESH = 50;
+  img.addEventListener("pointerdown", e => {
+    if (queue.length < 2) return;
+    dragging = true; x0 = e.clientX; dx = 0;
+    img.style.transition = "none";
+    try { img.setPointerCapture(e.pointerId); } catch(_){}
+  });
+  img.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    dx = e.clientX - x0;
+    img.style.transform = `translateX(${dx}px) rotate(${dx*0.02}deg)`;
+    img.style.opacity = String(1 - Math.min(Math.abs(dx)/500, 0.35));
+  });
+  const finish = () => {
+    if (!dragging) return; dragging = false;
+    if (Math.abs(dx) > THRESH){
+      const goNext = dx < 0, W = img.offsetWidth || 260;
+      img.style.transition = "transform .14s ease, opacity .14s ease";
+      img.style.transform = `translateX(${goNext ? -W*1.3 : W*1.3}px) rotate(${goNext ? -8 : 8}deg)`;
+      img.style.opacity = "0";
+      setTimeout(() => {
+        (goNext ? next : prev)();                                  // renderArtModal swaps in the new cover/title/meta
+        img.style.transition = "none";
+        img.style.transform = `translateX(${goNext ? W*0.9 : -W*0.9}px)`;   // new art enters from the opposite edge
+        img.style.opacity = "0";
+        requestAnimationFrame(() => {
+          img.style.transition = "transform .2s ease, opacity .2s ease";
+          img.style.transform = ""; img.style.opacity = "";
+        });
+      }, 130);
+    } else {
+      img.style.transition = "transform .16s ease, opacity .16s ease";
+      img.style.transform = ""; img.style.opacity = "";
+    }
+    dx = 0;
+  };
+  img.addEventListener("pointerup", finish);
+  img.addEventListener("pointercancel", finish);
+})();
 document.getElementById("art-fav").addEventListener("click", () => {
   const t = queue[qIndex]; if (!t) return;
   toggleFav(t, t._cc || activeCode);

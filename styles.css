@@ -186,6 +186,10 @@ body{
 #tracklist{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:120px;
   scrollbar-width:none;margin-top:2px}
 #tracklist::-webkit-scrollbar{display:none}
+/* favorites: mixtapes + filters + list scroll together as one body (so the tall mixtape strip scrolls away) */
+.fav-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:120px}
+.fav-scroll::-webkit-scrollbar{display:none}
+.fav-scroll #tracklist{flex:none;min-height:0;overflow:visible;padding-bottom:0;margin-top:0}
 
 .jhead{position:relative;margin:18px 0 12px}
 .jhead__top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -451,7 +455,8 @@ body.list-view #map{display:none}
 .art-modal__card{display:flex;flex-direction:column;align-items:center;gap:15px;text-align:center;
   max-width:min(90vw,440px);margin:auto}
 .art-modal__img{width:min(74vw,42vh,380px);height:auto;aspect-ratio:1;object-fit:cover;border-radius:10px;
-  border:3px solid #0a0916;box-shadow:8px 8px 0 var(--pink);background:#000;cursor:default;margin-bottom:16px}
+  border:3px solid #0a0916;box-shadow:8px 8px 0 var(--pink);background:#000;margin-bottom:16px;
+  cursor:grab;user-select:none;-webkit-user-drag:none;touch-action:pan-y;will-change:transform}
 .art-modal__bar{width:100%;margin:0}
 .art-modal__title{font-family:"Anton",sans-serif;font-size:clamp(22px,6vw,34px);line-height:1.02;
   color:var(--paper);letter-spacing:.01em;max-width:100%;overflow-wrap:anywhere}
