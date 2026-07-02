@@ -35,7 +35,7 @@ body{
   z-index:40;border-bottom:3px solid #0a0916;display:flex;align-items:stretch;
   font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
 .ticker__scroll{flex:1 1 auto;min-width:0;overflow:hidden;display:flex;align-items:center}
-.ticker__track{white-space:nowrap;will-change:transform;animation:slide 80s linear infinite;padding-left:100%}
+.ticker__track{white-space:nowrap;will-change:transform;animation:slide 180s linear infinite;padding-left:100%}
 @keyframes slide{to{transform:translateX(-50%)}}
 
 
