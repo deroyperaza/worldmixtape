@@ -167,7 +167,8 @@ const trackFaveCounts = {};   // trackId -> fave count (cached from trackStats r
 function favRecord(t, cc){
   return { trackId: t.trackId, artist: t.artist || "", title: t.title || "", cover: t.cover || "",
     year: t.year || null, genre: t.genre || "", album: t.album || "", artistId: t.artistId || null,
-    decade: t.decade || "", diaspora: !!t.diaspora, _cc: t._cc || cc || null };
+    decade: t.decade || "", diaspora: !!t.diaspora, ytId: t.ytId || (CATALOG_BY_ID[String(t.trackId)] || {}).ytId || null,
+    _cc: t._cc || cc || null };
 }
 function loadLocalFavs(){ try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch { return []; } }
 function favoritesIsOpen(){ const h = inner.querySelector(".jhead__name"); return panel.classList.contains("show") && !!h && h.textContent.trim().toLowerCase() === "favorites"; }
@@ -292,6 +293,7 @@ function openFavorites(){
 }
 
 function renderFavorites(mode){
+  hydrateFavs();   // backfill ytId on favorites saved before full-song coverage → drops the "30s" tag
   const shuffled = mode === "shuffle";
   let list = favs.slice();
   if (shuffled) for (let i = list.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
@@ -731,6 +733,7 @@ async function play(i){
   if (!queue.length) return;
   qIndex = (i + queue.length) % queue.length;
   const t = queue[qIndex];
+  if (!t.ytId) hydrateFav(t);   // favorites saved pre-full-song → pull the ytId from the live catalog
   const cc = t._cc || activeCode;
   player.classList.add("show"); player.setAttribute("aria-hidden","false");
   document.getElementById("p-art").src = t.cover || "";
