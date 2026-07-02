@@ -476,7 +476,7 @@ function rankMixes(cands){
 }
 
 // ---- Mixtapes UI ----
-let currentMixes = [], viewingMix = null;
+let currentMixes = [], viewingMix = null, shufMix = null;   // shufMix → top shuffle scopes to the open mixtape
 function mixCollage(tracks){
   const covers = tracks.map(t=>t.cover).filter(Boolean).slice(0,4);
   while (covers.length < 4) covers.push(null);
@@ -508,7 +508,7 @@ function openMixtape(m){
       <button class="mix-btn mix-btn--play" id="mix-play">▶ Play</button>
       <button class="mix-btn" id="mix-shuf">🔀 Shuffle</button>
       ${shared ? `<button class="mix-btn" id="mix-save">♥ Save these</button>` : ``}
-      <button class="mix-btn mix-btn--share" id="mix-share">🔗 Share</button>
+      <button class="mix-btn mix-btn--share" id="mix-share">✈️ Share</button>
     </div></div>
     <div id="tracklist"></div>`;
   const back = inner.querySelector("#mix-back");
@@ -521,6 +521,16 @@ function openMixtape(m){
   const sv = inner.querySelector("#mix-save");
   if (sv) sv.onclick = () => { let n=0; m.tracks.forEach(t => { if(!isFav(t.trackId)){ toggleFav(t, t._cc); n++; } }); refreshFavHearts(); flashToast(n ? (n+" track"+(n>1?"s":"")+" saved to your favorites ♥") : "already in your favorites"); };
   showList(m.tracks);
+  setShufMix(m);   // top shuffle now reflects + shuffles within this mixtape
+}
+// point the top shuffle control at the open mixtape (no dropdown option — set scope directly)
+function setShufMix(m){
+  shufMix = m;
+  const rs=document.getElementById("f-region"), cs=document.getElementById("f-country"),
+        es=document.getElementById("f-era"), gs=document.getElementById("f-genre");
+  if (cs){ rs.value=""; cs.value=""; es.value=""; gs.value=""; }
+  shuf = { region:"", country:"__mix", era:"", genre:"" };
+  updateScope();
 }
 async function shareMixtape(m){
   if (!(FB && authUser)){ flashToast("sign in to share your mixtape"); if (window.signInGoogle) window.signInGoogle(); return; }
@@ -801,7 +811,8 @@ function applyShufFacets(){
 
 function updateScope(){
   const parts = [];
-  if (shuf.country === "__favs") parts.push("favorites");
+  if (shuf.country === "__mix") parts.push(shufMix ? shufMix.name : "this mixtape");
+  else if (shuf.country === "__favs") parts.push("favorites");
   else if (shuf.country) parts.push(COUNTRIES[shuf.country].name);
   else if (shuf.region) parts.push(shuf.region);
   if (shuf.era) parts.push((ERAS.find(e => e[0] === shuf.era) || [])[1]);
@@ -812,6 +823,7 @@ function updateScope(){
 
 // pre-filter the shuffle scope to what's on screen (country / favorites / world) — resets other facets
 function setShuf(country){
+  shufMix = null;   // any explicit scope change drops the mixtape scope
   const rs = document.getElementById("f-region"), cs = document.getElementById("f-country"),
         es = document.getElementById("f-era"), gs = document.getElementById("f-genre");
   if (cs){
@@ -825,7 +837,9 @@ function setShuf(country){
 
 function doShuffle(){
   const all = [];
-  if (shuf.country === "__favs"){
+  if (shuf.country === "__mix"){
+    (shufMix && shufMix.tracks || []).forEach(t => all.push(Object.assign({}, t)));
+  } else if (shuf.country === "__favs"){
     favs.forEach(t => {
       if (shuf.region && CODE_REGION[t._cc] !== shuf.region) return;
       if (shuf.era && t.decade !== shuf.era) return;
@@ -848,8 +862,15 @@ function doShuffle(){
   for (let i = all.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [all[i], all[j]] = [all[j], all[i]]; }
   togglePop(false);
   queue = all; qIndex = -1;
-  const scoped = !!shuf.country;   // a country or favorites is selected → stay put
+  const scoped = !!shuf.country;   // a country, favorites, or a mixtape is selected → stay put
   if (scoped && panel.classList.contains("show") && inner.querySelector("#tracklist")){
+    if (shuf.country === "__mix" && viewingMix){   // mixtape view → shuffle within the mixtape in place
+      const meta = inner.querySelector(".jhead--mix .jhead__meta");
+      if (meta) meta.textContent = "🔀 SHUFFLED · " + all.length + " TRACKS";
+      renderTracks(all);
+      if (all.length) play(0);
+      return;
+    }
     if (inner.querySelector("#fav-ctrls")){   // favorites view → shuffle the playlist in place
       renderFavorites("shuffle");
       if (queue.length) play(0);

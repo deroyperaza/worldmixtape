@@ -424,7 +424,7 @@ body.list-view #map{display:none}
 .wc-ball--list{font-size:19px;top:-12px;right:-7px}
 @media(max-width:680px){.wc-ball--list{font-size:17px;top:-11px;right:-6px}}
 /* continents icon for the map-view toggle */
-.vt-ic{width:44px;height:44px;border-radius:9px;vertical-align:-15px;margin-right:10px}
+.vt-ic{height:20px;width:auto;vertical-align:-4px;margin-right:8px}
 .clist__item:hover .clist__name{transform:rotate(-1deg) scale(1.03)}
 .clist__soonhdr{font-family:"Permanent Marker",cursive;color:var(--yellow);font-size:15px;margin:26px 0 12px;transform:rotate(-1deg)}
 .clist__soon{display:flex;flex-wrap:wrap;gap:7px 16px}
