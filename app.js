@@ -321,9 +321,43 @@ function renderGenre(g){
 
 const esc = s => (s||"").replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
-/* ---------- shuffle the world (with country / era / genre filters) ---------- */
+/* ---------- shuffle the world (with country / musical-region / era / genre filters) ---------- */
 const cap = g => g.replace(/(^|[^\p{L}])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
-let shuf = { country: "", era: "", genre: "" };
+
+// musical regions — countries grouped by shared musical DNA (not geography). Each country in one region.
+const REGIONS = {
+  "North America": ["US","CA"],
+  "Mexico & Central America": ["MX","GT","HN","SV","NI","CR"],
+  "Spanish Caribbean & Afro-Latin": ["CU","DO","PR","PA","VE","CO"],
+  "Creole Caribbean": ["JM","TT","BB","HT","CW","SR"],
+  "The Andes": ["PE","BO","EC"],
+  "Southern Cone": ["AR","UY","CL","PY"],
+  "Lusophone Atlantic": ["PT","BR","AO","CV","MZ"],
+  "British Isles": ["GB","IE"],
+  "Nordic": ["SE","NO","DK","FI","IS"],
+  "Western Europe": ["FR","DE","AT","CH","NL","BE"],
+  "Iberia & Mediterranean": ["ES","IT","GR"],
+  "The Balkans": ["RS","BA","HR","SI","BG","RO"],
+  "Eastern Europe & Baltics": ["PL","CZ","SK","HU","UA","BY","RU","MD","LT","LV","EE"],
+  "Maghreb": ["DZ","MA","TN","LY"],
+  "Levant & Eastern Mediterranean": ["EG","LB","SY","JO","PS","IQ","IL"],
+  "Arabian Gulf": ["SA","KW","AE","QA","OM"],
+  "West Africa": ["NG","GH","SN","ML","GN","CI","BJ","NE"],
+  "Central Africa": ["CD","CM"],
+  "East Africa": ["KE","TZ","UG"],
+  "Horn of Africa": ["ET","SO"],
+  "Southern Africa": ["ZA","ZW","ZM","MG"],
+  "Anatolia & Caucasus": ["TR","AM","AZ","GE"],
+  "Persia & the Steppe": ["IR","UZ","KZ","MN"],
+  "South Asia": ["IN","PK","BD","NP","LK"],
+  "Southeast Asia": ["ID","MY","PH","TH","VN","KH","MM"],
+  "East Asia": ["CN","TW","JP","KR"],
+  "Oceania": ["AU","NZ"],
+};
+const CODE_REGION = {};   // country code -> region name
+Object.entries(REGIONS).forEach(([r, codes]) => codes.forEach(code => { CODE_REGION[code] = r; }));
+
+let shuf = { country: "", region: "", era: "", genre: "" };
 
 (function initShufflePop(){
   const pop = document.getElementById("shuffle-pop");
@@ -332,26 +366,32 @@ let shuf = { country: "", era: "", genre: "" };
   const gset = new Set();
   Object.values(COUNTRIES).forEach(c => Object.values(c.eras).forEach(l => l.forEach(t => t.genre && gset.add(t.genre))));
   const genres = [...gset].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+  const regions = Object.keys(REGIONS);   // keep the grouped insertion order
   pop.innerHTML = `
     <h4>shuffle…</h4>
-    <div><label>where</label><select id="f-country"><option value="">🌍 everywhere</option><option value="__favs">♥ my favorites</option>${countries.map(([code, n]) => `<option value="${code}">${esc(n)}</option>`).join("")}</select></div>
+    <div><label>region</label><select id="f-region"><option value="">🌐 any region</option>${regions.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join("")}</select></div>
+    <div><label>country</label><select id="f-country"><option value="">🌍 everywhere</option><option value="__favs">♥ my favorites</option>${countries.map(([code, n]) => `<option value="${code}">${esc(n)}</option>`).join("")}</select></div>
     <div><label>when</label><select id="f-era"><option value="">all eras</option>${ERAS.map(([k, l]) => `<option value="${k}">${l}</option>`).join("")}</select></div>
     <div><label>what</label><select id="f-genre"><option value="">all genres</option>${genres.map(g => `<option value="${esc(g)}">${esc(cap(g))}</option>`).join("")}</select></div>
     <button class="shuffle-go" id="f-go">▶ shuffle these</button>
     <button class="shuffle-reset" id="f-reset">reset filters</button>
     <div class="shuffle-empty" id="f-empty" hidden>no tracks for that combo</div>`;
 
-  const cs = document.getElementById("f-country"), es = document.getElementById("f-era"), gs = document.getElementById("f-genre");
-  const sync = () => { shuf = { country: cs.value, era: es.value, genre: gs.value }; document.getElementById("f-empty").hidden = true; updateScope(); };
-  cs.onchange = es.onchange = gs.onchange = sync;
+  const rs = document.getElementById("f-region"), cs = document.getElementById("f-country"), es = document.getElementById("f-era"), gs = document.getElementById("f-genre");
+  const sync = () => { shuf = { country: cs.value, region: rs.value, era: es.value, genre: gs.value }; document.getElementById("f-empty").hidden = true; updateScope(); };
+  // region & country are mutually-exclusive scopes — picking one clears the other
+  rs.onchange = () => { if (rs.value) cs.value = ""; sync(); };
+  cs.onchange = () => { if (cs.value) rs.value = ""; sync(); };
+  es.onchange = gs.onchange = sync;
   document.getElementById("f-go").onclick = () => doShuffle();
-  document.getElementById("f-reset").onclick = () => { cs.value = es.value = gs.value = ""; sync(); };
+  document.getElementById("f-reset").onclick = () => { rs.value = cs.value = es.value = gs.value = ""; sync(); };
 })();
 
 function updateScope(){
   const parts = [];
   if (shuf.country === "__favs") parts.push("♥ faves");
   else if (shuf.country) parts.push(COUNTRIES[shuf.country].name);
+  else if (shuf.region) parts.push(shuf.region);
   if (shuf.era) parts.push((ERAS.find(e => e[0] === shuf.era) || [])[1]);
   if (shuf.genre) parts.push(cap(shuf.genre));
   document.getElementById("shuffle-scope").textContent = parts.length ? parts.join(" · ") : "the world";
@@ -360,8 +400,9 @@ function updateScope(){
 
 // pre-filter the shuffle scope to what's on screen (country / favorites / world)
 function setShuf(country){
-  shuf.country = country || "";
+  shuf.country = country || ""; shuf.region = "";   // a country scope clears any region
   const cs = document.getElementById("f-country"); if (cs) cs.value = shuf.country;
+  const rs = document.getElementById("f-region"); if (rs) rs.value = "";
   updateScope();
 }
 
@@ -369,6 +410,7 @@ function doShuffle(){
   const all = [];
   if (shuf.country === "__favs"){
     favs.forEach(t => {
+      if (shuf.region && CODE_REGION[t._cc] !== shuf.region) return;
       if (shuf.era && t.decade !== shuf.era) return;
       if (shuf.genre && t.genre !== shuf.genre) return;
       all.push(Object.assign({}, t));
@@ -376,6 +418,7 @@ function doShuffle(){
   } else {
     Object.entries(COUNTRIES).forEach(([code, c]) => {
       if (shuf.country && code !== shuf.country) return;
+      if (shuf.region && CODE_REGION[code] !== shuf.region) return;
       Object.entries(c.eras).forEach(([ek, list]) => {
         if (shuf.era && ek !== shuf.era) return;
         list.forEach(t => { if (shuf.genre && t.genre !== shuf.genre) return; all.push(Object.assign({ _cc: code }, t)); });
