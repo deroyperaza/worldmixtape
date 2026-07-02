@@ -138,10 +138,18 @@ function importFavsFromHash(){
   history.replaceState(null, "", location.pathname + location.search);   // strip the long hash from the URL
   if (!Array.isArray(incoming)) return;
   const have = new Set(favs.map(f => String(f.trackId)));
-  let added = 0;
-  incoming.forEach(f => { if (f && f.trackId != null && !have.has(String(f.trackId))){ favs.push(f); have.add(String(f.trackId)); added++; } });
-  if (added){ saveFavs(); flashToast(added + " favorite" + (added > 1 ? "s" : "") + " added from your other device"); }
-  else flashToast("favorites already in sync");
+  const fresh = incoming.filter(f => f && f.trackId != null && !have.has(String(f.trackId)));
+  if (!fresh.length){ flashToast("favorites already in sync"); return; }
+  if (authUser && FB){   // signed in → merge into the cloud account
+    const col = FB.firestore().collection("users").doc(authUser.uid).collection("favorites");
+    const batch = FB.firestore().batch();
+    fresh.forEach(f => batch.set(col.doc(String(f.trackId)), Object.assign(favRecord(f), { addedAt: FB.firestore.FieldValue.serverTimestamp() })));
+    batch.commit().catch(e => console.warn(e));
+  } else {
+    fresh.forEach(f => favs.push(f));
+    saveFavs();
+  }
+  flashToast(fresh.length + " favorite" + (fresh.length > 1 ? "s" : "") + " added from your other device");
 }
 function flashToast(msg){
   let el = document.getElementById("wmx-toast");
@@ -208,16 +216,17 @@ if (FB){
 
 // account row shown in the Favorites panel
 function accountRowHTML(){
-  let inner = "";
+  if (!FB) return "";   // Firebase unavailable → no account UI (favorites still work via localStorage)
+  let body = "";
   if (FB){
     if (authUser){
       const name = (authUser.displayName || authUser.email || "you").split(" ")[0];
-      inner = `<span class="acct__who">✓ signed in as ${esc(name)}</span><button class="acct__btn" id="acct-out">sign out</button>`;
+      body = `<span class="acct__who">✓ signed in as ${esc(name)}</span><button class="acct__btn" id="acct-out">sign out</button>`;
     } else {
-      inner = `<button class="acct__btn acct__in" id="acct-in"><span class="acct__g" aria-hidden="true">G</span> Sign in with Google</button><small class="acct__note">save across devices + see counts</small>`;
+      body = `<button class="acct__btn acct__in" id="acct-in"><span class="acct__g" aria-hidden="true">G</span> Sign in with Google</button><small class="acct__note">save across devices + see counts</small>`;
     }
   }
-  return `<div class="acct">${inner}<div class="acct__global" hidden></div></div>`;
+  return `<div class="acct">${body}<div class="acct__global" hidden></div></div>`;
 }
 function wireAccountButtons(){
   const i = inner.querySelector("#acct-in"); if (i) i.onclick = () => window.signInGoogle && window.signInGoogle();
@@ -260,14 +269,17 @@ function openFavorites(){
   if (!favs.length){
     inner.innerHTML = `<div class="jhead"><div class="jhead__top"><div class="jhead__flag jhead__flag--ico">♡</div>
       <h2 class="jhead__name" style="--accent:var(--pink)">Favorites</h2></div></div>
+      ${accountRowHTML()}
       <div class="empty">no favorites yet… <em>tap the ♥</em><small>save tracks while you listen and they'll live here.</small></div>`;
-    setShuf(""); openPanel(); return;
+    wireAccountButtons(); setShuf(""); openPanel(); return;
   }
   inner.innerHTML = `<div class="jhead"><div class="jhead__top"><div class="jhead__flag jhead__flag--ico">♥</div>
     <h2 class="jhead__name" style="--accent:var(--pink)">Favorites</h2></div>
     <div class="jhead__meta" id="fav-meta"></div></div>
+    ${accountRowHTML()}
     <div class="fav-ctrls" id="fav-ctrls"></div>
     <div id="tracklist"></div>`;
+  wireAccountButtons();
   setShuf("__favs");   // shuffle pre-filtered to favorites
   renderFavorites("order");
   openPanel();
@@ -379,9 +391,12 @@ function renderTracks(list){
         <div class="track__title">${esc(t.title)}${(!t.ytId)?'<span class="track__30s" title="Preview only — full song not available; 30-second clip">30s</span>':''}</div>
         <div class="track__artist">${esc(t.artist)}${t.diaspora?'<span class="track__nf">diáspora</span>':''}</div>
       </div>
+      <span class="track__ct" data-i="${i}" title="times hearted" hidden></span>
       <button class="track__fav${isFav(t.trackId)?" on":""}" data-i="${i}" data-id="${t.trackId}" aria-label="Save to favorites">♥</button>
       <button class="track__play" aria-label="Play">▶</button>
     </div>`).join("");
+  paintTrackCounts(list, tl);   // paint any cached counts immediately, then fetch the rest
+  fillTrackCounts(list, tl);
   tl.querySelectorAll(".track").forEach(el => el.onclick = () => play(+el.dataset.i));
   tl.querySelectorAll(".track__fav").forEach(el => el.onclick = e => {
     e.stopPropagation(); toggleFav(list[+el.dataset.i], activeCode); refreshFavHearts();
