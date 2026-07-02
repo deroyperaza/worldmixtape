@@ -234,7 +234,7 @@ body{
   padding:0 14px;background:#0a0916;border-top:4px solid var(--pink);
   transform:translateY(110%);transition:transform .3s}
 .player.show{transform:translateY(0)}
-.player__art{width:60px;height:60px;flex:0 0 auto;border-radius:6px;object-fit:cover;
+.player__art{width:60px;height:60px;flex:0 0 auto;border-radius:6px;object-fit:cover;margin-right:8px;
   border:2px solid #0a0916;box-shadow:3px 3px 0 var(--accent,var(--pink));background:#1b1540}
 .player.playing .player__art{animation:bob 2.2s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-2px) rotate(1.5deg)}}
@@ -285,7 +285,7 @@ body{
   .jhead{margin-top:12px;padding-right:74px}
   .map-hint{bottom:144px;font-size:11px}
   .player{height:72px;gap:7px;padding:0 7px}
-  .player__art{width:40px;height:40px}
+  .player__art{width:40px;height:40px;margin-right:12px}
   #p-prev,#p-next{display:none}
   .player__fav{font-size:30px;padding:0 12px}
   .player__ctrls{gap:2px}
