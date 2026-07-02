@@ -371,8 +371,8 @@ body.list-view #map{display:none}
   border:3px solid #0a0916;font-size:32px;display:flex;align-items:center;justify-content:center;
   box-shadow:5px 5px 0 var(--pink)}
 .art-modal__ctrls .is-big:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--pink)}
-.art-modal__fav{background:none;border:none;cursor:pointer;color:var(--paper);opacity:.6;font-size:14px;
-  font-family:"Space Mono",monospace;display:inline-flex;align-items:center;gap:6px;padding:4px 8px;transition:.12s}
+.art-modal__fav{background:none;border:none;cursor:pointer;color:var(--paper);opacity:.6;font-size:56px;
+  line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:2px 8px;transition:transform .12s,color .12s,opacity .12s}
 .art-modal__fav:hover{opacity:1;color:var(--pink)}
 .art-modal__fav.on{color:var(--pink);opacity:1}
 .art-modal__x{position:fixed;top:16px;right:16px;width:46px;height:46px;border-radius:50%;cursor:pointer;
