@@ -369,7 +369,7 @@ function openCountry(code){
       <div class="jhead__top${hasInfo ? " jhead__top--info" : ""}"${hasInfo ? ` id="jhead-info" role="button" tabindex="0" title="Country info" aria-label="Open ${esc(c.name)} country info"` : ""}>
         <div class="jhead__flag">${flagImg(code)}</div>
         <h2 class="jhead__name" style="--accent:${c.color}">${c.name}${WC2026.has(code) ? '<span class="wc-ball" title="2026 World Cup team" aria-label="2026 World Cup team">⚽</span>' : ''}</h2>
-        ${hasInfo ? '<span class="jhead__info" aria-hidden="true">ⓘ</span>' : ''}
+        ${hasInfo ? '<span class="jhead__info" aria-hidden="true">i</span>' : ''}
       </div>
       <div class="jhead__meta" id="jmeta"></div>
     </div>
@@ -1070,6 +1070,7 @@ function openInfo(code){
        <div class="info-slide__cap">${esc(p.cap)}</div>
      </div>`));
 
+  if (slides.length > 1 && /info-slide--vid/.test(slides[0])) { const _v = slides.shift(); slides.splice(1, 0, _v); }  // video always 2nd
   const factRow = (label, val) => `<div class="info-fact"><span class="info-fact__k">${label}</span><span class="info-fact__v">${val}</span></div>`;
   const f = d.facts;
   const peopleHtml = d.people.map(p => `<li><b>${esc(p.n)}</b> — ${esc(p.r)}</li>`).join("");
