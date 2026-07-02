@@ -335,7 +335,7 @@ body.list-view #map{display:none}
   .clist__soon-item{font-size:15px}
   .view-toggle{bottom:88px;font-size:14px;padding:7px 15px}
   /* smaller mobile brand → shorter scrim + less top padding, list scrolls up under the header */
-  .clist{padding-top:96px}
+  .clist{padding-top:206px}   /* start below the scrim so the top countries aren't dimmed (they still scroll under it) */
   body.list-view::before{height:200px}
 }
 
