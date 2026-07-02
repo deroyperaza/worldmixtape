@@ -177,9 +177,15 @@ if (FB){
   const auth = FB.auth(), db = FB.firestore();
   const userFavs = uid => db.collection("users").doc(uid).collection("favorites");
 
-  window.signInGoogle = () => auth.signInWithPopup(new FB.auth.GoogleAuthProvider())
-    .catch(e => { console.warn("sign-in", e); flashToast("sign-in didn't complete"); });
+  // full-page redirect (popups get blocked by Chrome/Safari third-party-cookie partitioning)
+  window.signInGoogle = () => {
+    flashToast("redirecting to Google…");
+    auth.signInWithRedirect(new FB.auth.GoogleAuthProvider())
+      .catch(e => { console.warn("sign-in", e); flashToast("sign-in error: " + (e.code || "failed")); });
+  };
   window.signOutUser = () => auth.signOut();
+  // success is handled by onAuthStateChanged; this only surfaces errors from the redirect return
+  auth.getRedirectResult().catch(e => { console.warn("redirect", e); if (e && e.code) flashToast("sign-in error: " + e.code); });
 
   auth.onAuthStateChanged(async u => {
     authUser = u || null;
