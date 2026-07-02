@@ -1183,6 +1183,7 @@ function openInfo(code){
     <div class="info-grid">
       <div class="info-mapbox">
         <svg class="info-map" id="info-map" viewBox="0 0 360 200" role="img" aria-label="Map of ${esc(c.name)} with major cities"></svg>
+        <div class="info-insets" id="info-insets"></div>
         <span class="info-map__hint" aria-hidden="true">⤢ scroll · pinch to zoom</span>
         <a class="info-maps-link" href="${d.maps}" target="_blank" rel="noopener">📍 Open in Google Maps</a>
       </div>
@@ -1218,6 +1219,7 @@ function openInfo(code){
 
   info.hidden = false;
   document.body.classList.add("info-open");
+  infoInner.scrollTop = 0;   // always open a country dossier scrolled to the top
 
   // lazy-load the YouTube video into its slide (only when the overlay is opened)
   const vslot = document.getElementById("info-vid");
@@ -1250,40 +1252,103 @@ document.getElementById("info-close").onclick = closeInfo;
 document.getElementById("info-scrim").onclick = closeInfo;
 document.addEventListener("keydown", e => { if (e.code === "Escape" && !info.hidden){ e.preventDefault(); e.stopPropagation(); closeInfo(); } }, true);
 
-/* draw a country's outline (from the already-loaded world-atlas) into an SVG, with city markers */
-function drawCountryOutline(code, svgEl){
+// render a country's outline + a set of city markers into one SVG, fitted to `bounds`
+// ([[w,s],[e,n]]) or to the whole feature when bounds is null. Adds drag/scroll/pinch zoom.
+function renderMap(svgEl, feat, color, cityList, bounds){
   if (!svgEl) return;
-  const iso = COUNTRIES[code] && +COUNTRIES[code].iso;
-  const feat = features.find(f => +f.id === iso);
-  if (!feat){ svgEl.innerHTML = `<text x="180" y="104" text-anchor="middle" fill="#8a83b8" font-family="Space Mono,monospace" font-size="11">map loading…</text>`; return; }
-  const vb = svgEl.viewBox.baseVal, W = vb.width || 360, H = vb.height || 200, pad = 22;
-  const proj = d3.geoMercator().fitExtent([[pad, pad], [W - pad, H - pad]], feat);
+  const vb = svgEl.viewBox.baseVal, W = vb.width || 360, H = vb.height || 200;
+  const pad = Math.min(W, H) < 160 ? 8 : 16;
+  const proj = d3.geoMercator();
+  if (bounds){
+    // fit to the box CORNERS as a MultiPoint — a Polygon here hits d3-geo's spherical winding
+    // ambiguity (it reads the box as "whole globe minus box" and zooms all the way out)
+    const boxFeat = { type:"MultiPoint", coordinates:[
+      [bounds[0][0],bounds[0][1]],[bounds[1][0],bounds[0][1]],
+      [bounds[1][0],bounds[1][1]],[bounds[0][0],bounds[1][1]] ] };
+    proj.fitExtent([[pad,pad],[W-pad,H-pad]], boxFeat);
+  } else {
+    proj.fitExtent([[pad,pad],[W-pad,H-pad]], feat);
+  }
   const gp = d3.geoPath(proj);
-  const color = COUNTRIES[code].color;
-  const cities = (COUNTRY_INFO[code] && COUNTRY_INFO[code].cities) || [];
-  // 5-pointed star marker for the capital (outer radius R), so it reads as more important than a city dot
+  const small = Math.min(W, H) < 160;
+  const rDot = small ? 2.4 : 3.2, rStar = small ? 6 : 8, fs = small ? 8 : 9;
   const starPts = (cx, cy, R) => Array.from({length:10}, (_, i) => {
     const rad = i % 2 ? R * 0.42 : R, a = -Math.PI/2 + i * Math.PI/5;
     return `${(cx + rad*Math.cos(a)).toFixed(2)},${(cy + rad*Math.sin(a)).toFixed(2)}`;
   }).join(" ");
-  const dots = cities.map(ci => {
+  const dots = (cityList || []).map(ci => {
     const p = proj([ci.lng, ci.lat]); if (!p) return "";
-    const off = ci.capital ? 10 : 7;   // capital's star is larger → nudge its label out a touch more
+    const off = ci.capital ? rStar + 2 : rDot + 4;
     const marker = ci.capital
-      ? `<polygon points="${starPts(p[0], p[1], 8)}" fill="${color}" stroke="#0a0916" stroke-width="1.4" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`
-      : `<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="#0a0916" stroke="${color}" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
+      ? `<polygon points="${starPts(p[0], p[1], rStar)}" fill="${color}" stroke="#0a0916" stroke-width="1.4" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`
+      : `<circle cx="${p[0]}" cy="${p[1]}" r="${rDot}" fill="#0a0916" stroke="${color}" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
     return `${marker}
       <text x="${p[0] + (p[0] > W*0.72 ? -off : off)}" y="${p[1] + 3}" text-anchor="${p[0] > W*0.72 ? "end" : "start"}"
-        fill="#fff7e6" font-family="Space Mono,monospace" font-size="9" font-weight="700"
+        fill="#fff7e6" font-family="Space Mono,monospace" font-size="${fs}" font-weight="700"
         style="paint-order:stroke;stroke:#0a0916;stroke-width:2.4px;vector-effect:non-scaling-stroke">${esc(ci.name)}</text>`;
   }).join("");
-  // everything lives in a <g> so pan + zoom (drag / scroll / pinch) can transform it — lets clustered cities spread out & read
+  // everything lives in a <g> so pan + zoom (drag / scroll / pinch) can transform it
   svgEl.innerHTML = `<g class="info-map__g">` +
     `<path d="${gp(feat)}" fill="${color}" fill-opacity=".22" stroke="${color}" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>` +
     dots + `</g>`;
   const g = svgEl.querySelector(".info-map__g");
-  const mapZoom = d3.zoom().scaleExtent([1, 10])
+  const mapZoom = d3.zoom().scaleExtent([1, 12])
     .translateExtent([[0, 0], [W, H]]).extent([[0, 0], [W, H]])
     .on("zoom", e => g.setAttribute("transform", e.transform.toString()));
-  d3.select(svgEl).call(mapZoom).call(mapZoom.transform, d3.zoomIdentity);   // fresh zoom state per country
+  d3.select(svgEl).call(mapZoom).call(mapZoom.transform, d3.zoomIdentity);
+}
+
+/* draw a country: main map fitted to the MAINLAND (ignoring far territories), with far islands/
+   territories that have cities rendered as their own zoomable inset boxes (e.g. Alaska + Hawaii for US). */
+function drawCountryOutline(code, svgEl){
+  if (!svgEl) return;
+  const insetWrap = document.getElementById("info-insets");
+  if (insetWrap) insetWrap.innerHTML = "";
+  const iso = COUNTRIES[code] && +COUNTRIES[code].iso;
+  const feat = features.find(f => +f.id === iso);
+  if (!feat){ svgEl.innerHTML = `<text x="180" y="104" text-anchor="middle" fill="#8a83b8" font-family="Space Mono,monospace" font-size="11">map loading…</text>`; return; }
+  const color = COUNTRIES[code].color;
+  const cities = (COUNTRY_INFO[code] && COUNTRY_INFO[code].cities) || [];
+
+  // split into polygons; the mainland = the largest polygon plus any polygons near it
+  const geom = feat.geometry;
+  const polys = geom.type === "MultiPolygon" ? geom.coordinates.map(c => ({ type:"Polygon", coordinates:c })) : [geom];
+  const parts = polys.map(g => { const f = { type:"Feature", geometry:g }; return { area: d3.geoArea(f), b: d3.geoBounds(f), c: d3.geoCentroid(f) }; })
+    .sort((a,b) => b.area - a.area);
+  const big = parts[0];
+  const bigSpan = Math.max(big.b[1][0]-big.b[0][0], big.b[1][1]-big.b[0][1]) || 1;
+  const bigCtr = [(big.b[0][0]+big.b[1][0])/2, (big.b[0][1]+big.b[1][1])/2];
+  const mb = [[big.b[0][0], big.b[0][1]], [big.b[1][0], big.b[1][1]]];   // main-map extent (grows to include nearby land)
+  parts.forEach(p => {
+    if (p === big) return;
+    if (Math.hypot(p.c[0]-bigCtr[0], p.c[1]-bigCtr[1]) < bigSpan * 2.2){   // near mainland → part of the main map
+      mb[0][0] = Math.min(mb[0][0], p.b[0][0]); mb[0][1] = Math.min(mb[0][1], p.b[0][1]);
+      mb[1][0] = Math.max(mb[1][0], p.b[1][0]); mb[1][1] = Math.max(mb[1][1], p.b[1][1]);
+    }
+  });
+  const mx = (mb[1][0]-mb[0][0])*0.08 + 0.6, my = (mb[1][1]-mb[0][1])*0.08 + 0.6;
+  const inMain = ci => ci.lng >= mb[0][0]-mx && ci.lng <= mb[1][0]+mx && ci.lat >= mb[0][1]-my && ci.lat <= mb[1][1]+my;
+  const mainCities = cities.filter(inMain), farCities = cities.filter(ci => !inMain(ci));
+
+  renderMap(svgEl, feat, color, mainCities, mb);
+
+  // far cities → cluster within ~8° → one zoomable inset box each (Alaska, Hawaii, …)
+  if (insetWrap && farCities.length){
+    const clusters = [];
+    farCities.forEach(ci => {
+      const cl = clusters.find(k => k.some(c => Math.hypot(c.lng-ci.lng, c.lat-ci.lat) < 8));
+      if (cl) cl.push(ci); else clusters.push([ci]);
+    });
+    clusters.forEach(cl => {
+      const lngs = cl.map(c=>c.lng), lats = cl.map(c=>c.lat);
+      let ib = [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]];
+      const ipad = Math.max(ib[1][0]-ib[0][0], ib[1][1]-ib[0][1], 2) * 0.7 + 1.5;
+      ib = [[ib[0][0]-ipad, ib[0][1]-ipad], [ib[1][0]+ipad, ib[1][1]+ipad]];
+      const box = document.createElement("div");
+      box.className = "info-inset";
+      box.innerHTML = `<svg viewBox="0 0 150 112" role="img" aria-label="${esc(cl[0].name)} inset map"></svg>`;
+      insetWrap.appendChild(box);
+      renderMap(box.querySelector("svg"), feat, color, cl, ib);
+    });
+  }
 }

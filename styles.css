@@ -508,6 +508,14 @@ body.list-view #map{display:none}
   font-size:12px;font-weight:700;text-decoration:none;color:#0a0916;background:var(--cyan);
   border:2.5px solid #0a0916;border-radius:20px;padding:6px 12px;box-shadow:2px 2px 0 var(--pink);transition:transform .12s}
 .info-maps-link:hover{transform:translateY(-1px)}
+/* inset boxes for far-away territories (e.g. Alaska + Hawaii) — each independently zoomable */
+.info-insets{position:absolute;right:10px;bottom:10px;z-index:2;display:flex;gap:8px;flex-wrap:wrap;
+  justify-content:flex-end;max-width:62%}
+.info-insets:empty{display:none}
+.info-inset{width:122px;background:#0a0916;border:2px solid var(--accent);border-radius:9px;
+  overflow:hidden;box-shadow:2px 2px 0 rgba(0,0,0,.4)}
+.info-inset svg{width:100%;height:auto;display:block;cursor:grab;touch-action:none}
+.info-inset svg:active{cursor:grabbing}
 .info-facts{display:flex;flex-direction:column;gap:2px}
 .info-fact{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:9px 4px;
   border-bottom:1.5px dashed #3a2f63;align-items:baseline}
