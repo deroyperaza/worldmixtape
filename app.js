@@ -1011,6 +1011,7 @@ document.getElementById("art-fav").addEventListener("click", () => {
 /* ===================== COUNTRY INFO / "DOSSIER" OVERLAY ===================== */
 /* Opened by tapping the flag or name inside an open country panel. Prototype: Cuba (CU). */
 const wmFile = f => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=1200`;
+const wmFace = f => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=320`;   // small headshots
 
 const COUNTRY_INFO = {
   CU: {
@@ -1051,14 +1052,14 @@ const COUNTRY_INFO = {
       etymology:  "From the Taíno — likely <em>cubao</em> (“where fertile land is abundant”) or <em>coabana</em> (“great place”). Columbus first named it <em>Juana</em>.",
     },
     people: [
-      { n: "José Martí",        r: "national hero — poet & apostle of independence" },
-      { n: "Carlos M. de Céspedes", r: "“Father of the Homeland” — freed his slaves, sparked 1868 war" },
-      { n: "Antonio Maceo",     r: "the “Bronze Titan” — independence general" },
-      { n: "Fidel Castro",      r: "led the 1959 Revolution; ruled for ~49 years" },
-      { n: "Che Guevara",       r: "Argentine-born revolutionary icon of the Cuban cause" },
+      { n: "José Martí",        r: "national hero — poet & apostle of independence", img: "José_Martí_retrato_más_conocido_Jamaica_1892.jpg" },
+      { n: "Carlos M. de Céspedes", r: "“Father of the Homeland” — freed his slaves, sparked 1868 war", img: "Carlos_Manuel_de_Cespedes_y_del_Castillo.jpg" },
+      { n: "Antonio Maceo",     r: "the “Bronze Titan” — independence general", img: "Antonio_Maceo.jpg" },
+      { n: "Fidel Castro",      r: "led the 1959 Revolution; ruled for ~49 years", img: "Fidel_Castro_1950s.jpg" },
+      { n: "Che Guevara",       r: "Argentine-born revolutionary icon of the Cuban cause", img: "Che_Guevara_-_Guerrillero_Heroico_by_Alberto_Korda.jpg" },
     ],
-    music:  { n: "Celia Cruz",       r: "the “Queen of Salsa” — ¡Azúcar!" },
-    sports: { n: "Teófilo Stevenson", r: "3× Olympic heavyweight boxing champion (1972·76·80)" },
+    music:  { n: "Celia Cruz",       r: "the “Queen of Salsa” — ¡Azúcar!", img: "Celia_Cruz_1957_color.jpg" },
+    sports: { n: "Teófilo Stevenson", r: "3× Olympic heavyweight boxing champion (1972·76·80)", img: "Bundesarchiv_Bild_183-1985-1004-023,_Teofilo_Stevenson_cropped.jpg" },
     sources: [
       { label: "Photos",            detail: "Wikimedia Commons — CC-licensed, individual contributors", url: "https://commons.wikimedia.org/wiki/Category:Cuba" },
       { label: "Facts & figures",   detail: "Wikipedia — “Cuba” & related articles",                    url: "https://en.wikipedia.org/wiki/Cuba" },
@@ -1093,7 +1094,15 @@ function openInfo(code){
   if (slides.length > 1 && /info-slide--vid/.test(slides[0])) { const _v = slides.shift(); slides.splice(1, 0, _v); }  // video always 2nd
   const factRow = (label, val) => `<div class="info-fact"><span class="info-fact__k">${label}</span><span class="info-fact__v">${val}</span></div>`;
   const f = d.facts;
-  const peopleHtml = d.people.map(p => `<li><b>${esc(p.n)}</b> — ${esc(p.r)}</li>`).join("");
+  const faceImg = (img, name) => img
+    ? `<img class="info-face__img" loading="lazy" src="${wmFace(img)}" alt="${esc(name)}">`
+    : `<div class="info-face__img info-face__img--none">${esc((name || "?").trim().slice(0,1))}</div>`;
+  const peopleHtml = d.people.map(p => `
+    <div class="info-face">
+      ${faceImg(p.img, p.n)}
+      <div class="info-face__n">${esc(p.n)}</div>
+      <div class="info-face__r">${esc(p.r)}</div>
+    </div>`).join("");
 
   infoInner.innerHTML = `
     <div class="info-head">
@@ -1129,17 +1138,15 @@ function openInfo(code){
     <div class="info-cards">
       <div class="info-card info-card--wide">
         <h3>Historically important figures</h3>
-        <ul class="info-people">${peopleHtml}</ul>
+        <div class="info-faces">${peopleHtml}</div>
       </div>
       <div class="info-card">
         <h3>🎵 Best-known music artist</h3>
-        <div class="info-star">${esc(d.music.n)}</div>
-        <div class="info-star__r">${esc(d.music.r)}</div>
+        <div class="info-starrow">${faceImg(d.music.img, d.music.n)}<div><div class="info-star">${esc(d.music.n)}</div><div class="info-star__r">${esc(d.music.r)}</div></div></div>
       </div>
       <div class="info-card">
         <h3>🏅 Most famous sports figure</h3>
-        <div class="info-star">${esc(d.sports.n)}</div>
-        <div class="info-star__r">${esc(d.sports.r)}</div>
+        <div class="info-starrow">${faceImg(d.sports.img, d.sports.n)}<div><div class="info-star">${esc(d.sports.n)}</div><div class="info-star__r">${esc(d.sports.r)}</div></div></div>
       </div>
     </div>
 
