@@ -736,11 +736,23 @@ function trackMetaHtml(t, cc){
     + (t.genre ? " · " + esc(t.genre.replace(/(^|[^\p{L}])(\p{L})/gu, (m, a, b) => a + b.toUpperCase())) : "");
 }
 
+/* ---------- play tracking → Cloud Function (per-song + total; fire-and-forget, ≥5s = a real play) ---------- */
+const PLAY_LOG_URL = "https://us-central1-world-mix-tape.cloudfunctions.net/logPlay";
+let _playLogT = null;
+function schedulePlayLog(trackId){
+  clearTimeout(_playLogT);
+  if (trackId == null) return;
+  _playLogT = setTimeout(() => {
+    try { fetch(PLAY_LOG_URL + "?t=" + encodeURIComponent(trackId), { method: "POST", keepalive: true }).catch(() => {}); } catch (_){}
+  }, 5000);   // skips (<5s) don't count
+}
+
 async function play(i){
   if (!queue.length) return;
   qIndex = (i + queue.length) % queue.length;
   const t = queue[qIndex];
   if (!t.ytId) hydrateFav(t);   // favorites saved pre-full-song → pull the ytId from the live catalog
+  schedulePlayLog(t.trackId);   // count this play if it lasts ≥5s
   const cc = t._cc || activeCode;
   player.classList.add("show"); player.setAttribute("aria-hidden","false");
   document.getElementById("p-art").src = t.cover || "";
