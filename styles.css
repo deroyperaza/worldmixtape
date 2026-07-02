@@ -524,12 +524,13 @@ body.list-view #map{display:none}
   font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.04em;color:var(--paper);opacity:.4;
   background:rgba(10,9,22,.6);padding:2px 7px;border-radius:10px}
 /* Google Maps button — tucked into the lower-left corner of the map box */
-.info-maps-link{position:absolute;left:12px;bottom:12px;z-index:3;font-family:"Space Mono",monospace;
+.info-maps-link{position:static;flex:0 0 auto;font-family:"Space Mono",monospace;
   font-size:12px;font-weight:700;text-decoration:none;color:#0a0916;background:var(--cyan);
   border:2.5px solid #0a0916;border-radius:20px;padding:6px 12px;box-shadow:2px 2px 0 var(--pink);transition:transform .12s}
 .info-maps-link:hover{transform:translateY(-1px)}
 /* inset boxes for far-away territories (e.g. Alaska + Hawaii) — a row BELOW the main map (no overlap), each independently zoomable */
-.info-insets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding-top:2px}
+.info-mapfoot{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.info-insets{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .info-insets:empty{display:none}
 .info-inset{width:130px;background:#0a0916;border:2px solid var(--accent);border-radius:9px;
   overflow:hidden;box-shadow:2px 2px 0 rgba(0,0,0,.4)}

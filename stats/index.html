@@ -119,7 +119,6 @@ h2.sec{font-family:"Permanent Marker",cursive;color:var(--yellow);font-size:22px
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-<script src="/data.js"></script>
 <script>
 firebase.initializeApp({
   apiKey: "AIzaSyBbWFFtd5t9XtW0ksNdcw4Z65NuxYuYpoU",
@@ -131,64 +130,51 @@ firebase.initializeApp({
 });
 const db = firebase.firestore();
 
-/* ---- catalog stats from data.js (COUNTRIES) ---- */
-const ERA_ORDER = ["pre1940s","1940s","1950s","1960s","1970s","1980s","1990s","2000s","2010s","2020s","now"];
-const ERA_LABEL = {pre1940s:"pre-40s","1940s":"40s","1950s":"50s","1960s":"60s","1970s":"70s","1980s":"80s","1990s":"90s","2000s":"00s","2010s":"10s","2020s":"20s",now:"NOW"};
-const CAT = {};   // trackId -> {artist,title,cover,cc}
-let songs=0;
-const byDecade = {}; const byCountry = [];
-for (const [cc,c] of Object.entries(COUNTRIES)){
-  let n=0;
-  for (const [era,list] of Object.entries(c.eras)){
-    n += list.length; songs += list.length;
-    byDecade[era] = (byDecade[era]||0) + list.length;
-    for (const t of list){ if (t.trackId!=null) CAT[String(t.trackId)] = {artist:t.artist,title:t.title,cover:t.cover,cc}; }
-  }
-  byCountry.push([c.name, cc, n]);
-}
-const countries = Object.keys(COUNTRIES).length;
-const hours = Math.round(songs * 245.9 / 3600);
+/* ---- inline catalog summary → KPIs + bars render INSTANTLY (no 7MB data.js dependency) ---- */
+const WMT_STATS = {"countries":150,"songs":21210,"hours":1449,"byDecade":[348,404,725,1435,2017,2180,3022,3160,3260,3173,1486],"topCountries":[["United States",494],["United Kingdom",425],["Brazil",274],["France",270],["Cuba",270],["Greece",262],["Argentina",259],["Trinidad & Tobago",257],["Spain",251],["Colombia",244],["Italy",241],["Mexico",234],["Puerto Rico",231],["Jamaica",224]]};
+const ERA_LABELS = ["pre-40s","40s","50s","60s","70s","80s","90s","00s","10s","20s","NOW"];
 
-/* ---- KPI cards ---- */
 function fmt(n){ return (n||0).toLocaleString(); }
-function kpi(val, label, color, rot){ return `<div class="kpi" style="--kc:${color};--r:${rot}deg"><b data-count="${val}">0</b><span>${label}</span></div>`; }
-document.getElementById("kpis").innerHTML =
-  kpi(countries,"Countries","var(--cyan)",-1.5) +
-  kpi(songs,"Songs","var(--pink)",1) +
-  kpi(hours,"Hours of music","var(--yellow)",-1) +
-  kpi(1,"Mixtape Makers","var(--tang)",1) +
-  kpi(0,"Total plays","var(--lime)",1.5) +
-  kpi(0,"Hearts","var(--violet)",-1);
-const kmakers = document.querySelectorAll("#kpis .kpi b")[3];
-const kplays  = document.querySelectorAll("#kpis .kpi b")[4];
-const khearts = document.querySelectorAll("#kpis .kpi b")[5];
-
-/* count-up animation */
 function countUp(el, to){
   const dur=900, t0=performance.now(), from=+(el.dataset.from||0);
   function step(now){ const p=Math.min(1,(now-t0)/dur); el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-p,3))).toLocaleString(); if(p<1)requestAnimationFrame(step); else el.dataset.from=to; }
   requestAnimationFrame(step);
 }
-document.querySelectorAll("#kpis .kpi b").forEach(b => countUp(b, +b.dataset.count));
+function kpi(label, color, rot){ return `<div class="kpi" style="--kc:${color};--r:${rot}deg"><b>0</b><span>${label}</span></div>`; }
+document.getElementById("kpis").innerHTML =
+  kpi("Countries","var(--cyan)",-1.5) + kpi("Songs","var(--pink)",1) + kpi("Hours of music","var(--yellow)",-1) +
+  kpi("Mixtape Makers","var(--tang)",1) + kpi("Total plays","var(--lime)",1.5) + kpi("Hearts","var(--violet)",-1);
+const kb = document.querySelectorAll("#kpis .kpi b");
+countUp(kb[0], WMT_STATS.countries); countUp(kb[1], WMT_STATS.songs); countUp(kb[2], WMT_STATS.hours);
+countUp(kb[3], 1);   // Mixtape Makers: floor at 1 (you); Firestore may raise it below
+const kmakers=kb[3], kplays=kb[4], khearts=kb[5];
 
-/* ---- decade bars ---- */
-function renderBars(el, rows){   // rows: [label, value]
+function renderBars(el, rows){
   const max = Math.max(1, ...rows.map(r=>r[1]));
   el.innerHTML = rows.map(([lab,v]) =>
     `<div class="bar"><div class="bar__lab">${lab}</div><div class="bar__track"><div class="bar__fill" style="width:0"></div></div><div class="bar__v">${fmt(v)}</div></div>`).join("");
   requestAnimationFrame(()=>{ el.querySelectorAll(".bar").forEach((b,i)=>{ b.querySelector(".bar__fill").style.width = (rows[i][1]/max*100)+"%"; }); });
 }
-renderBars(document.getElementById("bars-decade"), ERA_ORDER.map(e=>[ERA_LABEL[e], byDecade[e]||0]));
-renderBars(document.getElementById("bars-country"),
-  byCountry.sort((a,b)=>b[2]-a[2]).slice(0,14).map(([name,cc,n])=>[name, n]));
+renderBars(document.getElementById("bars-decade"), WMT_STATS.byDecade.map((v,i)=>[ERA_LABELS[i], v]));
+renderBars(document.getElementById("bars-country"), WMT_STATS.topCountries);
 
-/* ---- leaderboards from Firestore ---- */
+/* ---- live totals (Firestore) → KPIs ---- */
+db.doc("stats/global").get().then(d=>{
+  const g = d.exists ? d.data() : {};
+  countUp(kmakers, g.totalUsers||1);   // floor at 1 (you) until totalUsers is seeded
+  countUp(kplays, g.totalPlays||0);
+  countUp(khearts, g.totalFaves||0);
+}).catch(()=>{});
+
+/* ---- leaderboards: query Firestore now, resolve names via data.js loaded LAZILY (non-blocking) ---- */
 function flag(cc){ return cc ? `<img class="flag" src="https://flagcdn.com/${cc.toLowerCase()}.svg" alt="" loading="lazy">` : ""; }
 function esc(s){ return String(s||"").replace(/[&<>"]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
-function renderLB(el, docs, field, cls){
+const topPlays = db.collection("trackStats").orderBy("plays","desc").limit(30).get();
+const topFaves = db.collection("trackStats").orderBy("count","desc").limit(30).get();
+function renderLB(el, docs, CAT, field, cls){
   const rows = [];
-  docs.forEach(d => { const m = CAT[d.id]; const v = (d.data()[field])||0; if (v>0) rows.push({m,v,id:d.id}); });
-  if (!rows.length){ el.innerHTML = `<li class="empty">No ${field==="plays"?"plays":"hearts"} yet — be the first.</li>`; return; }
+  docs.forEach(d => { const v=(d.data()[field])||0; if (v>0) rows.push({m:CAT[d.id],v,id:d.id}); });
+  if (!rows.length){ el.innerHTML = `<li class="empty">No ${cls==='plays'?'plays':'hearts'} yet — be the first.</li>`; return; }
   el.innerHTML = rows.slice(0,15).map((r,i)=>{
     const m = r.m || {artist:"—",title:"(track "+r.id+")",cover:"",cc:""};
     return `<li><span class="lb__n">${i+1}</span>
@@ -198,21 +184,17 @@ function renderLB(el, docs, field, cls){
       <div class="lb__ct ${cls}">${cls==='plays'?'▶ ':'♥ '}${fmt(r.v)}</div></li>`;
   }).join("");
 }
-// global totals
-db.doc("stats/global").get().then(d=>{
-  const g = d.exists ? d.data() : {};
-  countUp(kmakers, g.totalUsers||1);   // floor at 1 (you) until Firestore totalUsers is seeded
-  countUp(kplays, g.totalPlays||0);
-  countUp(khearts, g.totalFaves||0);
-}).catch(()=>{});
-// most played
-db.collection("trackStats").orderBy("plays","desc").limit(30).get()
-  .then(s=>renderLB(document.getElementById("lb-plays"), s.docs, "plays", "plays"))
-  .catch(e=>{ document.getElementById("lb-plays").innerHTML='<li class="empty">plays coming soon</li>'; });
-// most hearted
-db.collection("trackStats").orderBy("count","desc").limit(30).get()
-  .then(s=>renderLB(document.getElementById("lb-faves"), s.docs, "count", "faves"))
-  .catch(e=>{ document.getElementById("lb-faves").innerHTML='<li class="empty">hearts coming soon</li>'; });
+const s = document.createElement("script"); s.src = "/data.js";
+s.onload = () => {
+  const CAT = {};
+  for (const [cc,c] of Object.entries(COUNTRIES))
+    for (const list of Object.values(c.eras))
+      for (const t of list){ if (t.trackId!=null) CAT[String(t.trackId)] = {artist:t.artist,title:t.title,cover:t.cover,cc}; }
+  topPlays.then(q=>renderLB(document.getElementById("lb-plays"), q.docs, CAT, "plays","plays")).catch(()=>{document.getElementById("lb-plays").innerHTML='<li class="empty">plays coming soon</li>';});
+  topFaves.then(q=>renderLB(document.getElementById("lb-faves"), q.docs, CAT, "count","faves")).catch(()=>{document.getElementById("lb-faves").innerHTML='<li class="empty">hearts coming soon</li>';});
+};
+s.onerror = () => { document.getElementById("lb-plays").innerHTML=document.getElementById("lb-faves").innerHTML='<li class="empty">leaderboard unavailable</li>'; };
+document.head.appendChild(s);
 </script>
 </body>
 </html>

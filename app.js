@@ -1304,9 +1304,11 @@ function openInfo(code){
         <div class="info-mapmain">
           <svg class="info-map" id="info-map" viewBox="0 0 360 200" role="img" aria-label="Map of ${esc(c.name)} with major cities"></svg>
           <span class="info-map__hint" aria-hidden="true">⤢ scroll · pinch to zoom</span>
-          <a class="info-maps-link" href="${d.maps}" target="_blank" rel="noopener">📍 Open in Google Maps</a>
         </div>
-        <div class="info-insets" id="info-insets"></div>
+        <div class="info-mapfoot">
+          <a class="info-maps-link" href="${d.maps}" target="_blank" rel="noopener">📍 Open in Google Maps</a>
+          <div class="info-insets" id="info-insets"></div>
+        </div>
       </div>
       <div class="info-facts">
         ${factRow("Capital", esc(f.capital))}
