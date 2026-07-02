@@ -1183,6 +1183,7 @@ function openInfo(code){
     <div class="info-grid">
       <div class="info-mapbox">
         <svg class="info-map" id="info-map" viewBox="0 0 360 200" role="img" aria-label="Map of ${esc(c.name)} with major cities"></svg>
+        <span class="info-map__hint" aria-hidden="true">⤢ scroll · pinch to zoom</span>
         <a class="info-maps-link" href="${d.maps}" target="_blank" rel="noopener">📍 Open in Google Maps</a>
       </div>
       <div class="info-facts">
@@ -1269,13 +1270,20 @@ function drawCountryOutline(code, svgEl){
     const p = proj([ci.lng, ci.lat]); if (!p) return "";
     const off = ci.capital ? 10 : 7;   // capital's star is larger → nudge its label out a touch more
     const marker = ci.capital
-      ? `<polygon points="${starPts(p[0], p[1], 8)}" fill="${color}" stroke="#0a0916" stroke-width="1.4" stroke-linejoin="round"/>`
-      : `<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="#0a0916" stroke="${color}" stroke-width="2"/>`;
+      ? `<polygon points="${starPts(p[0], p[1], 8)}" fill="${color}" stroke="#0a0916" stroke-width="1.4" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`
+      : `<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="#0a0916" stroke="${color}" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
     return `${marker}
       <text x="${p[0] + (p[0] > W*0.72 ? -off : off)}" y="${p[1] + 3}" text-anchor="${p[0] > W*0.72 ? "end" : "start"}"
         fill="#fff7e6" font-family="Space Mono,monospace" font-size="9" font-weight="700"
-        style="paint-order:stroke;stroke:#0a0916;stroke-width:2.4px">${esc(ci.name)}</text>`;
+        style="paint-order:stroke;stroke:#0a0916;stroke-width:2.4px;vector-effect:non-scaling-stroke">${esc(ci.name)}</text>`;
   }).join("");
-  svgEl.innerHTML =
-    `<path d="${gp(feat)}" fill="${color}" fill-opacity=".22" stroke="${color}" stroke-width="2" stroke-linejoin="round"/>` + dots;
+  // everything lives in a <g> so pan + zoom (drag / scroll / pinch) can transform it — lets clustered cities spread out & read
+  svgEl.innerHTML = `<g class="info-map__g">` +
+    `<path d="${gp(feat)}" fill="${color}" fill-opacity=".22" stroke="${color}" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>` +
+    dots + `</g>`;
+  const g = svgEl.querySelector(".info-map__g");
+  const mapZoom = d3.zoom().scaleExtent([1, 10])
+    .translateExtent([[0, 0], [W, H]]).extent([[0, 0], [W, H]])
+    .on("zoom", e => g.setAttribute("transform", e.transform.toString()));
+  d3.select(svgEl).call(mapZoom).call(mapZoom.transform, d3.zoomIdentity);   // fresh zoom state per country
 }
