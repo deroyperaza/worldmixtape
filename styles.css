@@ -169,7 +169,8 @@ body{
 .jhead{transition:margin .22s ease}
 .jhead__flag .flag{transition:height .22s ease}
 .eras,.genres{transition:padding .22s ease,margin .22s ease}
-.panel.scrolled .jhead{margin-bottom:6px}
+.panel.scrolled .jhead{margin-top:8px;margin-bottom:4px}
+.panel.scrolled .panel__close{transform:translateY(-12px)}
 .panel.scrolled .jhead__name{font-size:clamp(20px,5.2vw,30px);padding:3px 10px 5px}
 .panel.scrolled .jhead__flag .flag{height:24px}
 .panel.scrolled .eras{padding-bottom:8px}
