@@ -289,7 +289,7 @@ let shuf = { country: "", era: "", genre: "" };
   const countries = Object.entries(COUNTRIES).map(([code, c]) => [code, c.name]).sort((a, b) => a[1].localeCompare(b[1]));
   const gset = new Set();
   Object.values(COUNTRIES).forEach(c => Object.values(c.eras).forEach(l => l.forEach(t => t.genre && gset.add(t.genre))));
-  const genres = [...gset].sort();
+  const genres = [...gset].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
   pop.innerHTML = `
     <h4>shuffle…</h4>
     <div><label>where</label><select id="f-country"><option value="">🌍 everywhere</option><option value="__favs">♥ my favorites</option>${countries.map(([code, n]) => `<option value="${code}">${esc(n)}</option>`).join("")}</select></div>
@@ -464,9 +464,23 @@ async function play(i){
   highlightRow();
   refreshFavHearts();
 
+  // YouTube pilot (e.g. Cuba): tracks carrying a ytId play full-length in-browser, no login, for everyone.
+  // Primary when available; on embed error it falls through to Spotify/preview (see onYtError). Other
+  // countries carry no ytId, so this branch never fires for them.
+  if (t.ytId && ytReady && !ytFailed.has(t.ytId)){
+    audio.pause();
+    if (SPOT.isConnected()) SPOT.pause();
+    stopFullPoll(); stopDeskProgress();
+    playSource = "youtube"; ytExpected = t.ytId; curDuration = 0;
+    yt.loadVideoById(t.ytId);
+    if (yt.playVideo) yt.playVideo();
+    startYtPoll();
+    return;
+  }
+
   // full-song mode: desktop streams in-browser (SDK); mobile remote-controls the Spotify app (Connect)
   if (fullMode && SPOT.fullReady()){
-    audio.pause();
+    stopYt(); audio.pause();
     let uri = t._spUri;
     if (uri === undefined){ uri = await SPOT.search(t.artist, t.title); t._spUri = uri || null; }
     if (queue[qIndex] !== t) return;                 // user skipped while we were resolving
@@ -477,6 +491,7 @@ async function play(i){
     }
     // Spotify couldn't play this → fall through to the 30s preview so audio never goes silent after connecting
   }
+  stopYt();
   stopFullPoll(); stopDeskProgress();
   if (SPOT.isConnected()) SPOT.pause();
   playSource = "preview";
@@ -494,6 +509,11 @@ function setPlayIcon(playing){ document.getElementById("p-play").textContent = p
 
 function togglePlay(){
   if (qIndex < 0){ if (queue.length) play(0); return; }
+  if (playSource === "youtube"){
+    if (!yt) return;
+    if (yt.getPlayerState() === YT.PlayerState.PLAYING) yt.pauseVideo(); else yt.playVideo();
+    return;
+  }
   if (playSource === "full"){ SPOT.toggle(); return; }
   if (audio.paused){ audio.play(); setPlayIcon(true); player.classList.add("playing"); }
   else { audio.pause(); setPlayIcon(false); player.classList.remove("playing"); }
@@ -510,6 +530,48 @@ document.getElementById("p-fav").onclick = () => {
 };
 document.getElementById("faves-btn").onclick = openFavorites;
 updateFavCount();
+
+/* ---------- YouTube full-song playback (per-track ytId; Cuba pilot) ---------- */
+// A hidden audio-only IFrame player. Tracks with a ytId play here full-length, no login, for everyone.
+// The IFrame API calls onYouTubeIframeAPIReady once loaded (script tag is after app.js in index.html).
+let yt = null, ytReady = false, ytPoll = null, ytExpected = null;
+const ytFailed = new Set();                              // ytIds that errored (embed disabled/removed) → don't retry
+window.onYouTubeIframeAPIReady = function(){
+  yt = new YT.Player("yt-player", {
+    host: "https://www.youtube.com",
+    playerVars: { playsinline: 1, rel: 0, controls: 0, modestbranding: 1 },
+    events: {
+      onReady:       () => { ytReady = true; },
+      onStateChange: onYtState,
+      onError:       onYtError
+    }
+  });
+};
+function stopYtPoll(){ if (ytPoll){ clearInterval(ytPoll); ytPoll = null; } }
+function startYtPoll(){                                    // drive the progress bar off the YT playhead
+  stopYtPoll();
+  ytPoll = setInterval(() => {
+    if (playSource !== "youtube" || !yt || scrubbing) return;
+    const d = yt.getDuration ? yt.getDuration() : 0;
+    const p = yt.getCurrentTime ? yt.getCurrentTime() : 0;
+    if (d){ curDuration = d; document.getElementById("p-progress").style.width = (p / d * 100) + "%"; }
+  }, 250);
+}
+function stopYt(){ if (yt){ try { yt.pauseVideo(); } catch(_){} } stopYtPoll(); }
+function onYtState(e){
+  if (playSource !== "youtube") return;
+  if (e.data === YT.PlayerState.PLAYING){ setPlayIcon(true);  player.classList.add("playing"); }
+  if (e.data === YT.PlayerState.PAUSED){  setPlayIcon(false); player.classList.remove("playing"); }
+  if (e.data === YT.PlayerState.ENDED){   next(); }                 // auto-advance like preview/Spotify
+}
+function onYtError(){                                                // embed disabled / removed / restricted
+  if (playSource !== "youtube") return;
+  const t = queue[qIndex];
+  if (t && t.ytId) ytFailed.add(t.ytId);                            // stop retrying this one
+  flashPlayerNote("full song unavailable — playing preview", 3000);
+  playSource = "preview";
+  play(qIndex);                                                     // re-run; ytFailed now skips the YT branch
+}
 
 /* ---------- full-song mode (Spotify Web Playback SDK) ---------- */
 let fullMode = localStorage.getItem("wmx_fullmode") === "1";
@@ -676,7 +738,8 @@ function barFrac(e){
 }
 const setFill = f => { document.getElementById("p-progress").style.width = (f * 100) + "%"; };
 function seekTo(f){
-  if (playSource === "full"){ if (curDuration) SPOT.seek(Math.round(f * curDuration)); }
+  if (playSource === "youtube"){ if (curDuration && yt && yt.seekTo) yt.seekTo(f * curDuration, true); }
+  else if (playSource === "full"){ if (curDuration) SPOT.seek(Math.round(f * curDuration)); }
   else if (audio.duration){ audio.currentTime = f * audio.duration; }
   setFill(f);
 }

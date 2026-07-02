@@ -101,11 +101,14 @@
     <img class="art-modal__img" id="art-modal-img" alt="Album art" />
   </div>
   <audio id="audio" preload="none"></audio>
+  <!-- hidden audio-only YouTube player (full-length playback for tracks that carry a ytId, e.g. Cuba pilot) -->
+  <div id="yt-player" aria-hidden="true" style="position:fixed;left:-9999px;top:0;width:200px;height:200px;opacity:0;pointer-events:none"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
-  <script src="data.js?v=93"></script>
+  <script src="data.js?v=94"></script>
   <script src="spotify.js?v=11"></script>
-  <script src="app.js?v=95"></script>
+  <script src="app.js?v=97"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
