@@ -87,6 +87,7 @@ const panel = document.getElementById("panel");
 const scrim = document.getElementById("scrim");
 const inner = document.getElementById("panel-inner");
 let activeCode = null, queue = [], qIndex = -1, currentEra = "now", currentGenre = null, renderedList = null;
+let favFilterCC = null, favFilterGenre = null;   // active country / genre filters in the Favorites tab
 
 /* ---------- favorites (persisted to localStorage) ---------- */
 const FAV_KEY = "wmx_favs_v1";
@@ -237,7 +238,7 @@ function accountRowHTML(){
         : `<span class="acct__pic acct__pic--txt">${initial}</span>`;
       body = `<button class="acct__btn acct__signed" id="acct-out" title="Signed in as ${esc(name)} — sign out">${pic}<span>sign out</span></button>`;
     } else {
-      body = `<button class="acct__btn acct__in" id="acct-in"><span class="acct__g" aria-hidden="true">G</span> Sign in with Google</button><small class="acct__note">save across devices + see counts</small>`;
+      body = `<button class="acct__btn acct__in" id="acct-in"><svg class="acct__g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Sign in to save across devices</button>`;
     }
   }
   return `<div class="acct">${body}<div class="acct__global" hidden></div></div>`;
@@ -279,7 +280,7 @@ function paintTrackCounts(list, tl){
 }
 
 function openFavorites(){
-  activeCode = null; currentEra = null; currentGenre = null;
+  activeCode = null; currentEra = null; currentGenre = null; favFilterCC = null; favFilterGenre = null;
   if (!favs.length){
     inner.innerHTML = `<div class="jhead"><div class="jhead__top"><div class="jhead__flag jhead__flag--ico">♡</div>
       <h2 class="jhead__name" style="--accent:var(--pink)">Favorites</h2></div></div>
@@ -292,6 +293,7 @@ function openFavorites(){
     <div class="jhead__meta" id="fav-meta"></div></div>
     ${accountRowHTML()}
     <div class="fav-ctrls" id="fav-ctrls"></div>
+    <div class="fav-filters" id="fav-filters"></div>
     <div id="tracklist"></div>`;
   wireAccountButtons();
   setShuf("__favs");   // shuffle pre-filtered to favorites
@@ -303,25 +305,55 @@ function renderFavorites(mode){
   hydrateFavs();   // backfill ytId on favorites saved before full-song coverage → drops the "30s" tag
   const shuffled = mode === "shuffle";
   let list = favs.slice();
+  if (favFilterCC) list = list.filter(f => f._cc === favFilterCC);        // country / genre filter tags
+  if (favFilterGenre) list = list.filter(f => f.genre === favFilterGenre);
   if (shuffled) for (let i = list.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
   const curId = (qIndex >= 0 && queue[qIndex]) ? queue[qIndex].trackId : null;  // keep the playing track highlighted across reorders
   queue = list;
   qIndex = curId != null ? list.findIndex(t => t.trackId === curId) : -1;
+  buildFavFilters();
+  const filtered = !!(favFilterCC || favFilterGenre);
+  // no dedicated "shuffle" button here — the top shuffle control already covers favorites.
+  // when shuffled, show only a small chip to drop back to saved order.
   const ctrls = inner.querySelector("#fav-ctrls");
   if (ctrls){
     ctrls.innerHTML = shuffled
-      ? '<button class="fav-mode on" id="fav-shuf-toggle" title="exit shuffle">🔀 shuffled <span aria-hidden="true">✕</span></button>'
-      : '<button class="fav-mode" id="fav-shuf-toggle">🔀 shuffle</button>';
-    inner.querySelector("#fav-shuf-toggle").onclick = () => {
-      if (shuffled) renderFavorites("order");
-      else { renderFavorites("shuffle"); if (queue.length) play(0); }
-    };
+      ? '<button class="fav-mode on" id="fav-shuf-toggle" title="back to saved order">🔀 shuffled <span aria-hidden="true">✕</span></button>'
+      : '';
+    const t = inner.querySelector("#fav-shuf-toggle");
+    if (t) t.onclick = () => renderFavorites("order");
   }
   const meta = inner.querySelector("#fav-meta");
   if (meta) meta.textContent = shuffled
     ? ("🔀 SHUFFLED · " + list.length + " TRACKS · ✕ TO EXIT")
-    : (favs.length + " SAVED · TAP ♥ TO REMOVE");
+    : (filtered ? (list.length + " OF " + favs.length + " · TAP TAGS TO FILTER") : (favs.length + " SAVED · TAP ♥ TO REMOVE"));
+  if (!list.length){
+    const tl = inner.querySelector("#tracklist");
+    if (tl) tl.innerHTML = `<div class="empty">nothing matches<br>that filter… <em>tap the tag to clear</em></div>`;
+    renderedList = list;
+    return;
+  }
   renderTracks(list);
+}
+
+// country + genre filter tags for the Favorites tab — only the ones present in the current favorites
+function buildFavFilters(){
+  const el = inner.querySelector("#fav-filters"); if (!el) return;
+  const cc = {}, gc = {};
+  favs.forEach(f => {
+    if (f._cc && COUNTRIES[f._cc]) cc[f._cc] = (cc[f._cc] || 0) + 1;
+    if (f.genre) gc[f.genre] = (gc[f.genre] || 0) + 1;
+  });
+  const countries = Object.entries(cc).sort((a, b) => b[1] - a[1]);
+  const genres = Object.entries(gc).sort((a, b) => b[1] - a[1]);
+  let html = "";
+  if (countries.length > 1) html += `<div class="fav-frow"><span class="fav-frow__lbl">country →</span>` +
+    countries.map(([code, n]) => `<button class="fav-tag${favFilterCC === code ? " on" : ""}" data-cc="${code}">${flagImg(code)}${esc(COUNTRIES[code].name)}<i>${n}</i></button>`).join("") + `</div>`;
+  if (genres.length > 1) html += `<div class="fav-frow"><span class="fav-frow__lbl">genre →</span>` +
+    genres.map(([g, n]) => `<button class="fav-tag${favFilterGenre === g ? " on" : ""}" data-genre="${esc(g)}">${esc(cap(g))}<i>${n}</i></button>`).join("") + `</div>`;
+  el.innerHTML = html;
+  el.querySelectorAll("[data-cc]").forEach(b => b.onclick = () => { favFilterCC = favFilterCC === b.dataset.cc ? null : b.dataset.cc; renderFavorites("order"); });
+  el.querySelectorAll("[data-genre]").forEach(b => b.onclick = () => { favFilterGenre = favFilterGenre === b.dataset.genre ? null : b.dataset.genre; renderFavorites("order"); });
 }
 
 function onCountry(e, d) {
@@ -578,7 +610,7 @@ function applyShufFacets(){
 
 function updateScope(){
   const parts = [];
-  if (shuf.country === "__favs") parts.push("♥ faves");
+  if (shuf.country === "__favs") parts.push("favorites");
   else if (shuf.country) parts.push(COUNTRIES[shuf.country].name);
   else if (shuf.region) parts.push(shuf.region);
   if (shuf.era) parts.push((ERAS.find(e => e[0] === shuf.era) || [])[1]);
@@ -591,7 +623,12 @@ function updateScope(){
 function setShuf(country){
   const rs = document.getElementById("f-region"), cs = document.getElementById("f-country"),
         es = document.getElementById("f-era"), gs = document.getElementById("f-genre");
-  if (cs){ rs.value = ""; cs.value = country || ""; es.value = ""; gs.value = ""; applyShufFacets(); }
+  if (cs){
+    rs.value = ""; es.value = ""; gs.value = ""; cs.value = "";
+    applyShufFacets();               // rebuild the option lists first (adds "__favs" once there are favorites)
+    cs.value = country || "";        // now the desired option exists, so the assignment sticks
+    applyShufFacets();               // re-apply with it selected → updates shuf scope + label
+  }
   else { shuf = { country: country || "", region: "", era: "", genre: "" }; updateScope(); }
 }
 

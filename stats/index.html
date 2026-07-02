@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WORLD MIXTAPE — Stats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/WMT-Icon.svg" />
+<style>
+:root{
+  --ink:#0a0916; --paper:#fff7e6; --pink:#ff2e92; --lime:#c6ff00; --cyan:#00e5ff;
+  --tang:#ff6d00; --violet:#b388ff; --yellow:#ffe600; --card:#141029; --edge:#2a2350;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--ink);color:var(--paper);font-family:"Space Mono",monospace;
+  -webkit-font-smoothing:antialiased}
+body{min-height:100vh;background:
+  radial-gradient(circle at 18% 8%, rgba(255,46,146,.20), transparent 40%),
+  radial-gradient(circle at 84% 12%, rgba(0,229,255,.16), transparent 42%),
+  radial-gradient(circle at 50% 108%, rgba(198,255,0,.14), transparent 46%),
+  var(--ink);}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:60;mix-blend-mode:overlay;opacity:.35;
+  background-image:radial-gradient(rgba(255,255,255,.5) .5px, transparent .6px);background-size:3px 3px}
+.wrap{max-width:1080px;margin:0 auto;padding:26px 18px 70px}
+
+/* header */
+header.hd{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.hd__logo{height:64px;width:auto;display:block}
+.hd__t{font-family:"Anton",sans-serif;font-size:clamp(30px,6vw,52px);letter-spacing:.02em;line-height:.9;margin:0;
+  text-transform:uppercase}
+.hd__t b{color:var(--lime)}
+.hd__sub{font-size:13px;color:var(--violet);margin:2px 0 0}
+.back{margin-left:auto;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em;
+  color:#0a0916;background:var(--lime);border:3px solid #0a0916;border-radius:22px;padding:8px 14px;
+  text-decoration:none;box-shadow:3px 3px 0 var(--pink);transform:rotate(-2deg);white-space:nowrap}
+.back:hover{transform:rotate(-2deg) scale(1.05)}
+
+/* KPI cards */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:22px 0 30px}
+@media(max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:420px){.kpis{grid-template-columns:1fr 1fr}}
+.kpi{background:var(--card);border:3px solid #0a0916;border-radius:16px;padding:16px 14px;position:relative;
+  box-shadow:5px 5px 0 var(--kc,var(--pink));transform:rotate(var(--r,0deg))}
+.kpi b{display:block;font-family:"Anton",sans-serif;font-size:clamp(26px,4.4vw,40px);line-height:1;color:var(--kc,var(--pink))}
+.kpi span{display:block;margin-top:7px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--paper);opacity:.8}
+
+/* section */
+h2.sec{font-family:"Permanent Marker",cursive;color:var(--yellow);font-size:22px;margin:34px 0 14px;
+  transform:rotate(-1deg)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media(max-width:760px){.cols{grid-template-columns:1fr}}
+
+/* leaderboard */
+.lb{list-style:none;margin:0;padding:0;background:var(--card);border:3px solid #0a0916;border-radius:16px;overflow:hidden}
+.lb li{display:flex;align-items:center;gap:11px;padding:9px 12px;border-bottom:1px solid var(--edge)}
+.lb li:last-child{border-bottom:none}
+.lb__n{font-family:"Anton",sans-serif;font-size:16px;color:var(--cyan);width:22px;text-align:center;flex:0 0 auto}
+.lb__art{width:38px;height:38px;border-radius:5px;object-fit:cover;flex:0 0 auto;background:#221c3f;border:1px solid #0a0916}
+.lb__tx{min-width:0;flex:1}
+.lb__title{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb__artist{font-size:11px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb__artist .flag{width:14px;height:10px;object-fit:cover;vertical-align:middle;margin-right:3px;border-radius:2px}
+.lb__ct{font-family:"Anton",sans-serif;font-size:15px;flex:0 0 auto;color:var(--pink)}
+.lb__ct.plays{color:var(--lime)}
+.empty{padding:22px 14px;text-align:center;color:var(--violet);font-size:12px}
+
+/* bars */
+.bars{background:var(--card);border:3px solid #0a0916;border-radius:16px;padding:14px 16px}
+.bar{display:grid;grid-template-columns:74px 1fr auto;align-items:center;gap:10px;margin:7px 0;font-size:12px}
+.bar__lab{opacity:.85;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar__track{background:#221c3f;border-radius:6px;height:16px;overflow:hidden}
+.bar__fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--pink),var(--violet));min-width:2px;
+  transition:width .8s cubic-bezier(.2,.9,.25,1)}
+.bar:nth-child(even) .bar__fill{background:linear-gradient(90deg,var(--cyan),var(--lime))}
+.bar__v{font-weight:700;opacity:.85;font-variant-numeric:tabular-nums}
+.foot{margin-top:40px;text-align:center;font-size:11px;color:var(--violet);opacity:.8;line-height:1.7}
+.foot a{color:var(--cyan)}
+.live{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--lime);margin-right:5px;
+  box-shadow:0 0 8px var(--lime);animation:pulse 1.6s ease-in-out infinite;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="hd">
+    <img class="hd__logo" src="/WMT-logo.svg" alt="World Mixtape" onerror="this.style.display='none'"/>
+    <div>
+      <h1 class="hd__t">The <b>Numbers</b></h1>
+      <p class="hd__sub"><span class="live"></span>a century of local music, by the stats</p>
+    </div>
+    <a class="back" href="/">← back to the map</a>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="cols">
+    <div>
+      <h2 class="sec">▶ Most played</h2>
+      <ul class="lb" id="lb-plays"><li class="empty">loading…</li></ul>
+    </div>
+    <div>
+      <h2 class="sec">♥ Most hearted</h2>
+      <ul class="lb" id="lb-faves"><li class="empty">loading…</li></ul>
+    </div>
+  </div>
+
+  <h2 class="sec">🎚 The crate, by decade</h2>
+  <div class="bars" id="bars-decade"></div>
+
+  <h2 class="sec">🌍 Deepest catalogs (songs per country)</h2>
+  <div class="bars" id="bars-country"></div>
+
+  <div class="foot">
+    Catalog figures are live from the collection · plays &amp; hearts update in real time from listeners worldwide.<br>
+    <a href="/">worldmixtape.com</a> — a Hyperakt joint.
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="/data.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyBbWFFtd5t9XtW0ksNdcw4Z65NuxYuYpoU",
+  authDomain: "world-mix-tape.firebaseapp.com",
+  projectId: "world-mix-tape",
+  storageBucket: "world-mix-tape.firebasestorage.app",
+  messagingSenderId: "162520484749",
+  appId: "1:162520484749:web:01633111371f1fd1f0cbc4"
+});
+const db = firebase.firestore();
+
+/* ---- catalog stats from data.js (COUNTRIES) ---- */
+const ERA_ORDER = ["pre1940s","1940s","1950s","1960s","1970s","1980s","1990s","2000s","2010s","2020s","now"];
+const ERA_LABEL = {pre1940s:"pre-40s","1940s":"40s","1950s":"50s","1960s":"60s","1970s":"70s","1980s":"80s","1990s":"90s","2000s":"00s","2010s":"10s","2020s":"20s",now:"NOW"};
+const CAT = {};   // trackId -> {artist,title,cover,cc}
+let songs=0;
+const byDecade = {}; const byCountry = [];
+for (const [cc,c] of Object.entries(COUNTRIES)){
+  let n=0;
+  for (const [era,list] of Object.entries(c.eras)){
+    n += list.length; songs += list.length;
+    byDecade[era] = (byDecade[era]||0) + list.length;
+    for (const t of list){ if (t.trackId!=null) CAT[String(t.trackId)] = {artist:t.artist,title:t.title,cover:t.cover,cc}; }
+  }
+  byCountry.push([c.name, cc, n]);
+}
+const countries = Object.keys(COUNTRIES).length;
+const hours = Math.round(songs * 245.9 / 3600);
+
+/* ---- KPI cards ---- */
+function fmt(n){ return (n||0).toLocaleString(); }
+function kpi(val, label, color, rot){ return `<div class="kpi" style="--kc:${color};--r:${rot}deg"><b data-count="${val}">0</b><span>${label}</span></div>`; }
+document.getElementById("kpis").innerHTML =
+  kpi(countries,"Countries","var(--cyan)",-1.5) +
+  kpi(songs,"Songs","var(--pink)",1) +
+  kpi(hours,"Hours of music","var(--yellow)",-1) +
+  kpi(0,"Total plays","var(--lime)",1.5) +
+  kpi(0,"Hearts","var(--violet)",-1);
+const kplays = document.querySelectorAll("#kpis .kpi b")[3];
+const khearts = document.querySelectorAll("#kpis .kpi b")[4];
+
+/* count-up animation */
+function countUp(el, to){
+  const dur=900, t0=performance.now(), from=+(el.dataset.from||0);
+  function step(now){ const p=Math.min(1,(now-t0)/dur); el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-p,3))).toLocaleString(); if(p<1)requestAnimationFrame(step); else el.dataset.from=to; }
+  requestAnimationFrame(step);
+}
+document.querySelectorAll("#kpis .kpi b").forEach(b => countUp(b, +b.dataset.count));
+
+/* ---- decade bars ---- */
+function renderBars(el, rows){   // rows: [label, value]
+  const max = Math.max(1, ...rows.map(r=>r[1]));
+  el.innerHTML = rows.map(([lab,v]) =>
+    `<div class="bar"><div class="bar__lab">${lab}</div><div class="bar__track"><div class="bar__fill" style="width:0"></div></div><div class="bar__v">${fmt(v)}</div></div>`).join("");
+  requestAnimationFrame(()=>{ el.querySelectorAll(".bar").forEach((b,i)=>{ b.querySelector(".bar__fill").style.width = (rows[i][1]/max*100)+"%"; }); });
+}
+renderBars(document.getElementById("bars-decade"), ERA_ORDER.map(e=>[ERA_LABEL[e], byDecade[e]||0]));
+renderBars(document.getElementById("bars-country"),
+  byCountry.sort((a,b)=>b[2]-a[2]).slice(0,14).map(([name,cc,n])=>[name, n]));
+
+/* ---- leaderboards from Firestore ---- */
+function flag(cc){ return cc ? `<img class="flag" src="https://flagcdn.com/${cc.toLowerCase()}.svg" alt="" loading="lazy">` : ""; }
+function esc(s){ return String(s||"").replace(/[&<>"]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+function renderLB(el, docs, field, cls){
+  const rows = [];
+  docs.forEach(d => { const m = CAT[d.id]; const v = (d.data()[field])||0; if (v>0) rows.push({m,v,id:d.id}); });
+  if (!rows.length){ el.innerHTML = `<li class="empty">No ${field==="plays"?"plays":"hearts"} yet — be the first.</li>`; return; }
+  el.innerHTML = rows.slice(0,15).map((r,i)=>{
+    const m = r.m || {artist:"—",title:"(track "+r.id+")",cover:"",cc:""};
+    return `<li><span class="lb__n">${i+1}</span>
+      <img class="lb__art" src="${esc(m.cover)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+      <div class="lb__tx"><div class="lb__title">${esc(m.title)}</div>
+        <div class="lb__artist">${flag(m.cc)}${esc(m.artist)}</div></div>
+      <div class="lb__ct ${cls}">${cls==='plays'?'▶ ':'♥ '}${fmt(r.v)}</div></li>`;
+  }).join("");
+}
+// global totals
+db.doc("stats/global").get().then(d=>{
+  const g = d.exists ? d.data() : {};
+  countUp(kplays, g.totalPlays||0);
+  countUp(khearts, g.totalFaves||0);
+}).catch(()=>{});
+// most played
+db.collection("trackStats").orderBy("plays","desc").limit(30).get()
+  .then(s=>renderLB(document.getElementById("lb-plays"), s.docs, "plays", "plays"))
+  .catch(e=>{ document.getElementById("lb-plays").innerHTML='<li class="empty">plays coming soon</li>'; });
+// most hearted
+db.collection("trackStats").orderBy("count","desc").limit(30).get()
+  .then(s=>renderLB(document.getElementById("lb-faves"), s.docs, "count", "faves"))
+  .catch(e=>{ document.getElementById("lb-faves").innerHTML='<li class="empty">hearts coming soon</li>'; });
+</script>
+</body>
+</html>
