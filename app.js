@@ -702,9 +702,11 @@ function renderTracks(list){
         <div class="track__title">${esc(t.title)}${t.__rec?'<span class="track__new" title="A discovery pick matched to your taste — heart it to save"><span class="track__new-star">✦</span> new</span>':''}${(!t.ytId)?'<span class="track__30s" title="Preview only — full song not available; 30-second clip">30s</span>':''}</div>
         <div class="track__artist">${esc(t.artist)}${t.diaspora?'<span class="track__nf">diáspora</span>':''}</div>
       </div>
-      <span class="track__ct" data-i="${i}" title="times hearted" hidden></span>
-      <button class="track__fav${isFav(t.trackId)?" on":""}" data-i="${i}" data-id="${t.trackId}" aria-label="Save to favorites">♥</button>
-      <button class="track__play" aria-label="Play">▶</button>
+      <div class="track__actions">
+        <span class="track__ct" data-i="${i}" title="times hearted" hidden></span>
+        <button class="track__fav${isFav(t.trackId)?" on":""}" data-i="${i}" data-id="${t.trackId}" aria-label="Save to favorites">♥</button>
+        <button class="track__play" aria-label="Play">▶</button>
+      </div>
     </div>`).join("");
   paintTrackCounts(list, tl);   // paint any cached counts immediately, then fetch the rest
   fillTrackCounts(list, tl);
@@ -1310,28 +1312,34 @@ artModal.addEventListener("click", e => { if (e.target === artModal) closeArt();
 document.getElementById("art-prev").addEventListener("click", prev);
 document.getElementById("art-play").addEventListener("click", togglePlay);
 document.getElementById("art-next").addEventListener("click", next);
-// mobile: drag / swipe the album art left→next, right→previous (with a carousel slide)
+// mobile: drag the album art — horizontal = prev/next (carousel slide), swipe DOWN = close
 (function(){
   const img = document.getElementById("art-modal-img");
   if (!img) return;
-  img.style.touchAction = "pan-y";
-  let x0 = 0, dx = 0, dragging = false;
-  const THRESH = 50;
+  img.style.touchAction = "none";
+  let x0 = 0, y0 = 0, dx = 0, dy = 0, dragging = false, axis = null;
+  const HT = 50, VT = 90;   // horizontal next/prev threshold, vertical close threshold
   img.addEventListener("pointerdown", e => {
-    if (queue.length < 2) return;
-    dragging = true; x0 = e.clientX; dx = 0;
+    dragging = true; x0 = e.clientX; y0 = e.clientY; dx = 0; dy = 0; axis = null;
     img.style.transition = "none";
     try { img.setPointerCapture(e.pointerId); } catch(_){}
   });
   img.addEventListener("pointermove", e => {
     if (!dragging) return;
-    dx = e.clientX - x0;
-    img.style.transform = `translateX(${dx}px) rotate(${dx*0.02}deg)`;
-    img.style.opacity = String(1 - Math.min(Math.abs(dx)/500, 0.35));
+    dx = e.clientX - x0; dy = e.clientY - y0;
+    if (!axis && Math.max(Math.abs(dx), Math.abs(dy)) > 8) axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
+    if (axis === "x"){
+      img.style.transform = `translateX(${dx}px) rotate(${dx*0.02}deg)`;
+      img.style.opacity = String(1 - Math.min(Math.abs(dx)/500, 0.35));
+    } else if (axis === "y"){
+      const d = Math.max(dy, 0);   // downward only
+      img.style.transform = `translateY(${d}px) scale(${1 - Math.min(d/1600, 0.12)})`;
+      img.style.opacity = String(1 - Math.min(d/500, 0.5));
+    }
   });
   const finish = () => {
     if (!dragging) return; dragging = false;
-    if (Math.abs(dx) > THRESH){
+    if (axis === "x" && queue.length > 1 && Math.abs(dx) > HT){
       const goNext = dx < 0, W = img.offsetWidth || 260;
       img.style.transition = "transform .14s ease, opacity .14s ease";
       img.style.transform = `translateX(${goNext ? -W*1.3 : W*1.3}px) rotate(${goNext ? -8 : 8}deg)`;
@@ -1346,11 +1354,16 @@ document.getElementById("art-next").addEventListener("click", next);
           img.style.transform = ""; img.style.opacity = "";
         });
       }, 130);
+    } else if (axis === "y" && dy > VT){
+      const H = img.offsetHeight || 260;                            // swipe down → dismiss
+      img.style.transition = "transform .18s ease, opacity .18s ease";
+      img.style.transform = `translateY(${H*1.4}px) scale(.8)`; img.style.opacity = "0";
+      setTimeout(() => { closeArt(); img.style.transition = "none"; img.style.transform = ""; img.style.opacity = ""; }, 150);
     } else {
       img.style.transition = "transform .16s ease, opacity .16s ease";
       img.style.transform = ""; img.style.opacity = "";
     }
-    dx = 0;
+    dx = 0; dy = 0; axis = null;
   };
   img.addEventListener("pointerup", finish);
   img.addEventListener("pointercancel", finish);
