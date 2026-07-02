@@ -27,15 +27,17 @@ body{min-height:100vh;background:
 
 /* header */
 header.hd{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
-.hd__logo{height:64px;width:auto;display:block}
+.hd__logo{width:262px;height:auto;display:block;margin-left:-46px}
+@media(max-width:680px){.hd__logo{width:168px;margin-left:-28px}}
 .hd__t{font-family:"Anton",sans-serif;font-size:clamp(30px,6vw,52px);letter-spacing:.02em;line-height:.9;margin:0;
   text-transform:uppercase}
 .hd__t b{color:var(--lime)}
 .hd__sub{font-size:13px;color:var(--violet);margin:2px 0 0}
-.back{margin-left:auto;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em;
-  color:#0a0916;background:var(--lime);border:3px solid #0a0916;border-radius:22px;padding:8px 14px;
-  text-decoration:none;box-shadow:3px 3px 0 var(--pink);transform:rotate(-2deg);white-space:nowrap}
-.back:hover{transform:rotate(-2deg) scale(1.05)}
+.back{position:fixed;top:16px;right:16px;z-index:50;display:inline-flex;align-items:center;gap:5px;font-weight:700;font-size:19px;line-height:1;
+  color:#0a0916;background:var(--lime);border:3px solid #0a0916;border-radius:20px;padding:4px 9px 4px 12px;
+  text-decoration:none;box-shadow:3px 3px 0 var(--pink);transform:rotate(-2deg)}
+.back:hover{transform:rotate(-2deg) scale(1.06)}
+.back__ic{width:36px;height:36px;border-radius:7px;display:block}
 
 /* KPI cards */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:22px 0 30px}
@@ -89,7 +91,7 @@ h2.sec{font-family:"Permanent Marker",cursive;color:var(--yellow);font-size:22px
       <h1 class="hd__t">The <b>Numbers</b></h1>
       <p class="hd__sub"><span class="live"></span>a century of local music, by the stats</p>
     </div>
-    <a class="back" href="/">← back to the map</a>
+    <a class="back" href="/" title="Back to the map" aria-label="Back to the map">←<img class="back__ic" src="/WMT-Icon.svg" alt=""></a>
   </header>
 
   <div class="kpis" id="kpis"></div>
@@ -175,7 +177,7 @@ const topPlays = db.collection("trackStats").orderBy("plays","desc").limit(30).g
 const topFaves = db.collection("trackStats").orderBy("count","desc").limit(30).get();
 function renderLB(el, docs, CAT, field, cls){
   const rows = [];
-  docs.forEach(d => { const v=(d.data()[field])||0; if (v>0) rows.push({m:CAT[d.id],v,id:d.id}); });
+  docs.forEach(d => { const v=(d.data()[field])||0; if (v>0 && CAT[d.id]) rows.push({m:CAT[d.id],v,id:d.id}); });  // skip tracks no longer in the catalog
   if (!rows.length){ el.innerHTML = `<li class="empty">No ${cls==='plays'?'plays':'hearts'} yet — be the first.</li>`; return; }
   el.innerHTML = rows.slice(0,15).map((r,i)=>{
     const m = r.m || {artist:"—",title:"(track "+r.id+")",cover:"",cc:""};
