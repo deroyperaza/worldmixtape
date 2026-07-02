@@ -182,14 +182,30 @@ if (FB){
   const auth = FB.auth(), db = FB.firestore();
   const userFavs = uid => db.collection("users").doc(uid).collection("favorites");
 
-  // full-page redirect (popups get blocked by Chrome/Safari third-party-cookie partitioning)
-  window.signInGoogle = () => {
-    flashToast("redirecting to Google…");
-    auth.signInWithRedirect(new FB.auth.GoogleAuthProvider())
-      .catch(e => { console.warn("sign-in", e); flashToast("sign-in error: " + (e.code || "failed")); });
+  // Popup sign-in. signInWithRedirect is broken here because authDomain
+  // (world-mix-tape.firebaseapp.com) differs from the site's domain, so browser
+  // storage partitioning loses the redirect result. Popup returns the credential
+  // via postMessage and sidesteps that. Fall back to redirect only when a popup
+  // genuinely can't open (in-app browsers / popup-blocked).
+  window.signInGoogle = async () => {
+    const provider = new FB.auth.GoogleAuthProvider();
+    try {
+      flashToast("opening Google sign-in…");
+      await auth.signInWithPopup(provider);   // success handled by onAuthStateChanged
+    } catch (e) {
+      console.warn("popup sign-in", e);
+      const code = e && e.code;
+      if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") return; // user dismissed
+      if (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment") {
+        flashToast("redirecting to Google…");
+        auth.signInWithRedirect(provider).catch(er => { console.warn("redirect", er); flashToast("sign-in error: " + (er.code || "failed")); });
+        return;
+      }
+      flashToast("sign-in error: " + (code || "failed"));
+    }
   };
   window.signOutUser = () => auth.signOut();
-  // success is handled by onAuthStateChanged; this only surfaces errors from the redirect return
+  // handles the redirect fallback path (in-app browsers); popup resolves inline above
   auth.getRedirectResult().catch(e => { console.warn("redirect", e); if (e && e.code) flashToast("sign-in error: " + e.code); });
 
   auth.onAuthStateChanged(async u => {
