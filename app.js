@@ -308,11 +308,13 @@ function openFavorites(){
     <h2 class="jhead__name" style="--accent:var(--pink)">Favorites</h2></div>
     <div class="jhead__meta" id="fav-meta"></div></div>
     ${accountRowHTML()}
+    <div class="mixtapes" id="mixtapes"></div>
     <div class="fav-ctrls" id="fav-ctrls"></div>
     <div class="fav-filters" id="fav-filters"></div>
     <div id="tracklist"></div>`;
   wireAccountButtons();
   setShuf("__favs");   // shuffle pre-filtered to favorites
+  renderMixStrip();    // auto-generated themed mixtapes across the favorites
   renderFavorites("order");
   openPanel();
 }
@@ -370,6 +372,179 @@ function buildFavFilters(){
   el.innerHTML = html;
   el.querySelectorAll("[data-cc]").forEach(b => b.onclick = () => { favFilterCC = favFilterCC === b.dataset.cc ? null : b.dataset.cc; renderFavorites("order"); });
   el.querySelectorAll("[data-genre]").forEach(b => b.onclick = () => { favFilterGenre = favFilterGenre === b.dataset.genre ? null : b.dataset.genre; renderFavorites("order"); });
+}
+
+/* ---------- Mixtapes: auto-generated themed collections from a set of favorites ---------- */
+// vibe families — each has an emoji, a subtitle, and a bank of playful names
+const VIBES = {
+  latenight: { emoji:"💔", sub:"for the small, aching hours", names:["3 A.M. & Heartbroken","Cry in Any Language","Slow Dance Alone","Blue Hour","Torch Songs"] },
+  slowroast: { emoji:"☕", sub:"warm, unhurried, easy", names:["Sunday Slow Roast","Coffee & Vinyl","No Alarm Set","Golden Hour"] },
+  dancefloor:{ emoji:"🔥", sub:"do not sit down", names:["Bodies on the Floor","Sweat Equity","Move or Leave","Speaker Damage","Last One Standing"] },
+  windowsdown:{emoji:"🚗", sub:"loud, fast, sing it out", names:["Windows Down","Full Tank","Highway Hymns","Open Road"] },
+  cypher:    { emoji:"🎤", sub:"heads down, bars up", names:["Corner Cypher","Head Nod Only","Bars & Breaks","Boom Bap"] },
+  carnival:  { emoji:"🎉", sub:"hips don't ask permission", names:["Carnival Rules","Fiesta Forever","Fifth Wind","Fireworks"] },
+  folkroots: { emoji:"🪕", sub:"strings, roots, and stories", names:["Roots & Wires","Old Souls","Handmade Sound","The Old Ways"] },
+};
+const GENRE_VIBE = {};
+(function(){ const T = {
+  latenight:["bolero","fado","tarab","chanson","desert blues","blues","laiko","rebetiko","andean","estrada","ballad","ranchera","tango","morna","enka","ghazal","qawwali"],
+  slowroast:["jazz","bossa","bossa nova","soul","r&b","rnb","highlife","son","samba","mpb","neo-soul","lounge"],
+  dancefloor:["afrobeats","afropop","reggaeton","soca","dancehall","house","dance","electronic","edm","kompa","mbalax","soukous","bongo-flava","amapiano","kuduro","dembow","techno","disco","funk","zouk","kizomba"],
+  windowsdown:["rock","pop-rock","rock nacional","indie","pop","punk","new wave","synth-pop","britpop","v-pop","k-pop","j-pop","c-pop"],
+  cypher:["hip-hop","rap","grime","drill","trap"],
+  carnival:["calypso","salsa","merengue","cumbia","mande","bachata","vallenato","chicha","mariachi","norteño","banda"],
+  folkroots:["folk","world","filmi","khaleeji","rai","fusión","fusion","gnawa","flamenco","celtic","country","reggae","mbaqanga"],
+}; for (const v in T) T[v].forEach(g => { GENRE_VIBE[g] = v; }); })();
+function vibeOf(t){
+  const g = (t.genre||"").toLowerCase();
+  if (GENRE_VIBE[g]) return GENRE_VIBE[g];
+  for (const key in GENRE_VIBE){ if (g && (g.includes(key) || key.includes(g))) return GENRE_VIBE[key]; }
+  return "folkroots";
+}
+const DEC_NAME = { "2020s":["Fresh Off the Press","Right Now","This Just In"], "now":["Fresh Off the Press","Right Now","Straight Off the Wire"],
+  "2010s":["The Streaming Years","2010s Reboot"], "2000s":["Y2K Kids","The iPod Era","2000s Throwback"], "1990s":["The Cassette Years","'90s Forever"],
+  "1980s":["Neon Nights","Big Hair Energy","'80s Reboot"], "1970s":["Disco Dust","'70s Gold"], "1960s":["Vinyl Crackle","The Swinging '60s"],
+  "1950s":["Jukebox Era","Old School Cool"], "1940s":["Sepia Tone","The Wireless Years"], "pre1940s":["Wax Cylinder","Sepia Tone"] };
+const DEC_SUB = { "2020s":"the newest of the new","now":"hot off the press","2010s":"the streaming decade","2000s":"burned to a CD-R","1990s":"rewind the tape","1980s":"neon and synths","1970s":"flares and grooves","1960s":"the crackle years","1950s":"jukebox gold","1940s":"static and swing","pre1940s":"from the wax" };
+
+function mixShuf(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function mixHash(s){ let h=2166136261>>>0; for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;} return h>>>0; }
+function mixPick(bank, seed){ return bank[mixHash(seed)%bank.length]; }
+function mixAccent(m){
+  if (m.kind==="country" && COUNTRIES[m.key]) return COUNTRIES[m.key].color;
+  const VC = {latenight:"#8B77F8",slowroast:"#2AABCC",dancefloor:"#FF4D00",windowsdown:"#c8e64f",cypher:"#ff2e92",carnival:"#12a58c",folkroots:"#f4a08a"};
+  if (m.kind==="vibe" && VC[m.key]) return VC[m.key];
+  return ({passport:"#2AABCC",diaspora:"#8B77F8",decade:"#FF4D00",crosscut:"#ff2e92",artist:"#c8e64f"})[m.kind] || "#ff2e92";
+}
+const MIX_MIN = 5, MIX_MAX = 18;
+function buildMixtapes(src){
+  const tracks = (src||[]).filter(t => t && t.trackId != null);
+  if (tracks.length < 6) return [];
+  const cands = [];
+  const push = (kind, key, emoji, name, sub, list) => {
+    const seen = new Set(), uniq = [];
+    list.forEach(t => { const id=String(t.trackId); if(!seen.has(id)){ seen.add(id); uniq.push(t); } });
+    if (uniq.length < MIX_MIN) return;
+    cands.push({ kind, key, emoji, name, sub, tracks: mixShuf(uniq).slice(0, MIX_MAX) });
+  };
+  // vibe / mood
+  const byVibe = {};
+  tracks.forEach(t => { const v=vibeOf(t); (byVibe[v]=byVibe[v]||[]).push(t); });
+  for (const v in byVibe){ const V=VIBES[v]; push("vibe", v, V.emoji, mixPick(V.names, v+byVibe[v].length), V.sub, byVibe[v]); }
+  // geography — single-country deep dives
+  const byCC = {};
+  tracks.forEach(t => { if(t._cc && COUNTRIES[t._cc]) (byCC[t._cc]=byCC[t._cc]||[]).push(t); });
+  const ccKeys = Object.keys(byCC);
+  ccKeys.forEach(cc => { const n=COUNTRIES[cc].name;
+    push("country", cc, "📍", mixPick([`One Night in ${n}`,`${n} After Dark`,`Deep in ${n}`,`${n} on Repeat`], cc+byCC[cc].length), `all roads lead to ${n}`, byCC[cc]); });
+  // passport stamps — one from each country, round-robin
+  if (ccKeys.length >= 5){
+    const pools = ccKeys.map(cc => mixShuf(byCC[cc])), spread=[]; let added=true, r=0;
+    while (added && spread.length < MIX_MAX){ added=false; pools.forEach(p => { if(p[r]){ spread.push(p[r]); added=true; } }); r++; }
+    push("passport","world","🌍", mixPick(["Passport Stamps","No Layovers","Frequent Flyer","Customs Declaration"], "pp"+ccKeys.length), `${ccKeys.length} countries, one tape`, spread);
+  }
+  // diaspora
+  push("diaspora","dia","🧭", mixPick(["Children of the Diaspora","Far From Home","Roots & Routes","The Long Way Home"], "dia"), "sounds carried across borders", tracks.filter(t=>t.diaspora));
+  // time — decades
+  const byDec = {};
+  tracks.forEach(t => { if(t.decade) (byDec[t.decade]=byDec[t.decade]||[]).push(t); });
+  for (const d in byDec){ push("decade", d, "🕰", mixPick(DEC_NAME[d]||[cap(d)], d+byDec[d].length), DEC_SUB[d]||("the "+d+" on tape"), byDec[d]); }
+  // cross-cut — heartbreak across languages
+  const mel = byVibe.latenight||[]; const melCC = new Set(mel.map(t=>t._cc).filter(Boolean));
+  if (mel.length >= MIX_MIN && melCC.size >= 3) push("crosscut","heartlang","🌧", `Heartbreak in ${melCC.size} Languages`, "the ache is universal", mel);
+  // artist obsession
+  const byArtist = {};
+  tracks.forEach(t => { if(t.artist) (byArtist[t.artist]=byArtist[t.artist]||[]).push(t); });
+  const top = Object.entries(byArtist).filter(([,l])=>l.length>=3).sort((a,b)=>b[1].length-a[1].length)[0];
+  if (top) push("artist", top[0], "⭐", mixPick([`All ${top[0]}, All Night`,`The ${top[0]} Obsession`,`Can't Stop Playing ${top[0]}`], top[0]), "you clearly have a type", top[1]);
+  return rankMixes(cands);
+}
+function rankMixes(cands){
+  const bonus = { passport:3, crosscut:3, vibe:2, diaspora:2, country:1, decade:1, artist:1 };
+  cands.forEach(c => c._score = c.tracks.length + (bonus[c.kind]||0)*2);
+  cands.sort((a,b) => b._score - a._score);
+  const kept = [], idset = c => new Set(c.tracks.map(t=>String(t.trackId)));
+  for (const c of cands){
+    const cs = idset(c); let dup=false;
+    for (const k of kept){ const ks=idset(k); let inter=0; cs.forEach(id=>{if(ks.has(id))inter++;});
+      if (inter/Math.min(cs.size,ks.size) > 0.65){ dup=true; break; } }
+    if (!dup) kept.push(c);
+    if (kept.length >= 8) break;
+  }
+  kept.forEach(c => c.id = c.kind+"_"+c.key);
+  return kept;
+}
+
+// ---- Mixtapes UI ----
+let currentMixes = [], viewingMix = null;
+function mixCollage(tracks){
+  const covers = tracks.map(t=>t.cover).filter(Boolean).slice(0,4);
+  while (covers.length < 4) covers.push(null);
+  return `<span class="mix-cov">${covers.map(c => c ? `<img loading="lazy" src="${esc(c)}" alt="">` : `<span class="mix-cov__x"></span>`).join("")}</span>`;
+}
+function renderMixStrip(){
+  const el = inner.querySelector("#mixtapes"); if (!el) return;
+  currentMixes = buildMixtapes(favs);
+  if (!currentMixes.length){ el.innerHTML = ""; return; }
+  el.innerHTML = `<div class="mix-head"><span class="mix-head__t">🎧 Your Mixtapes</span><span class="mix-head__s">auto-mixed from your favorites — tap to play, share to send</span></div>
+    <div class="mix-row">${currentMixes.map((m,i)=>`
+      <button class="mix-card" data-i="${i}" style="--accent:${mixAccent(m)}">
+        ${mixCollage(m.tracks)}
+        <span class="mix-card__body"><span class="mix-card__name">${m.emoji} ${esc(m.name)}</span>
+        <span class="mix-card__sub">${esc(m.sub)}</span>
+        <span class="mix-card__ct">${m.tracks.length} tracks →</span></span>
+      </button>`).join("")}</div>`;
+  el.querySelectorAll(".mix-card").forEach(b => b.onclick = () => openMixtape(currentMixes[+b.dataset.i]));
+}
+function openMixtape(m){
+  viewingMix = m; activeCode = null; currentEra = null; currentGenre = null;
+  const shared = !!m.shared, acc = mixAccent(m);
+  inner.innerHTML = `<div class="jhead jhead--mix">
+    <button class="mix-back" id="mix-back">${shared ? "‹ explore the map" : "‹ favorites"}</button>
+    <div class="jhead__top"><div class="jhead__flag jhead__flag--ico" style="--accent:${acc}">${m.emoji||"🎧"}</div>
+      <h2 class="jhead__name" style="--accent:${acc}">${esc(m.name)}</h2></div>
+    <div class="jhead__meta">${esc((m.sub||"").toUpperCase())} · ${m.tracks.length} TRACKS${shared && m.by ? " · FROM "+esc((m.by||"").toUpperCase()) : ""}</div>
+    <div class="mix-actions">
+      <button class="mix-btn mix-btn--play" id="mix-play">▶ Play</button>
+      <button class="mix-btn" id="mix-shuf">🔀 Shuffle</button>
+      ${shared ? `<button class="mix-btn" id="mix-save">♥ Save these</button>` : ``}
+      <button class="mix-btn mix-btn--share" id="mix-share">🔗 Share</button>
+    </div></div>
+    <div id="tracklist"></div>`;
+  const back = inner.querySelector("#mix-back");
+  back.onclick = () => { viewingMix=null; if (shared) backToMap(); else openFavorites(); };
+  // renderTracks only paints the DOM — the queue must be set alongside it so row-clicks/Play scope to THIS mixtape
+  const showList = list => { queue = list; qIndex = -1; renderTracks(list); };
+  inner.querySelector("#mix-play").onclick = () => { showList(m.tracks); play(0); };
+  inner.querySelector("#mix-shuf").onclick = () => { showList(mixShuf(m.tracks)); play(0); };
+  inner.querySelector("#mix-share").onclick = () => shareMixtape(m);
+  const sv = inner.querySelector("#mix-save");
+  if (sv) sv.onclick = () => { let n=0; m.tracks.forEach(t => { if(!isFav(t.trackId)){ toggleFav(t, t._cc); n++; } }); refreshFavHearts(); flashToast(n ? (n+" track"+(n>1?"s":"")+" saved to your favorites ♥") : "already in your favorites"); };
+  showList(m.tracks);
+}
+async function shareMixtape(m){
+  if (!(FB && authUser)){ flashToast("sign in to share your mixtape"); if (window.signInGoogle) window.signInGoogle(); return; }
+  try {
+    flashToast("creating share link…");
+    const rec = { name:(m.name||"Mixtape").slice(0,80), sub:(m.sub||"").slice(0,120), emoji:m.emoji||"🎧", kind:m.kind||"mix",
+      by: authUser.displayName || "", uid: authUser.uid,
+      tracks: m.tracks.slice(0,30).map(t => favRecord(t, t._cc)),
+      createdAt: FB.firestore.FieldValue.serverTimestamp() };
+    const ref = await FB.firestore().collection("mixes").add(rec);
+    const url = location.origin + location.pathname + "?m=" + ref.id;
+    if (navigator.share){ try { await navigator.share({ title:m.name, text:`${m.emoji||"🎧"} ${m.name} — a World Mixtape`, url }); } catch(_){} }
+    else { try { await navigator.clipboard.writeText(url); flashToast("link copied — paste it anywhere 🔗"); } catch(_){ prompt("Copy your mixtape link:", url); } }
+  } catch(e){ console.warn("share", e); flashToast("couldn't create link: " + (e.code||"error")); }
+}
+async function loadSharedMix(id){
+  if (!FB){ flashToast("sharing needs a connection"); return; }
+  try {
+    const doc = await FB.firestore().collection("mixes").doc(id).get();
+    if (!doc.exists){ flashToast("that mixtape link isn't valid"); return; }
+    const d = doc.data();
+    openMixtape({ id, name:d.name, sub:d.sub, emoji:d.emoji, kind:d.kind, key:d.kind, by:d.by, tracks:(d.tracks||[]), shared:true });
+    openPanel();
+  } catch(e){ console.warn("load shared", e); flashToast("couldn't load that mixtape"); }
 }
 
 function onCountry(e, d) {
@@ -1801,3 +1976,12 @@ function drawCountryOutline(code, svgEl){
     });
   }
 }
+
+// deep link: ?m=<id> opens a shared mixtape (works signed-out — mixes are public-read)
+(function(){
+  const mid = new URLSearchParams(location.search).get("m");
+  if (!mid) return;
+  const go = () => { try { loadSharedMix(mid); } catch(e){ console.warn("shared mix", e); } history.replaceState(null, "", location.pathname); };
+  if (window.firebase && firebase.apps && firebase.apps.length) setTimeout(go, 300);
+  else setTimeout(go, 1000);
+})();
