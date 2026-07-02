@@ -296,6 +296,9 @@ body{
   .shuffle-filt{padding:0 7px;font-size:11px}
   .shuffle-pop{top:70px;right:9px}
   .panel{top:26px;width:100vw;border-left:none;border-top:5px solid var(--lime)}
+  /* close sits top-right on the flag's line (not its own row) → tighter header, more logo shows */
+  .panel__close{position:absolute;top:20px;right:14px;margin:0;align-self:auto;z-index:6}
+  .jhead{margin-top:12px;padding-right:74px}
   .map-hint{bottom:144px;font-size:11px}
   .player{height:72px;gap:7px;padding:0 7px}
   .player__art{width:40px;height:40px}
