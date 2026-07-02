@@ -377,13 +377,18 @@ function doShuffle(){
     if (meta) meta.textContent = "🔀 SHUFFLED · " + all.length + " TRACKS · ✕ TO EXIT";
     renderTracks(all);
   } else {
-    // global world shuffle → open a panel with the shuffled queue as a scrollable playlist
+    // global world shuffle → open a panel with the shuffled queue as a scrollable playlist.
+    // CAP the queue: rendering 16k+ track rows (each with an <img>) freezes/crashes the browser.
+    const pool = all.length;
+    if (all.length > 250) all.length = 250;
+    queue = all;
     activeCode = null; currentEra = null; currentGenre = null;
     const scopeTxt = (document.getElementById("shuffle-scope").textContent || "the world");
+    const countTxt = pool > all.length ? `${all.length} OF ${pool.toLocaleString()} TRACKS` : `${all.length} TRACKS`;
     inner.innerHTML = `<div class="jhead"><div class="jhead__top">` +
       `<div class="jhead__flag jhead__flag--ico" style="color:var(--lime)">🔀</div>` +
       `<h2 class="jhead__name" style="--accent:var(--lime)">Shuffle</h2></div>` +
-      `<div class="jhead__meta" id="jmeta">🔀 ${esc(scopeTxt.toUpperCase())} · ${all.length} TRACKS</div></div>` +
+      `<div class="jhead__meta" id="jmeta">🔀 ${esc(scopeTxt.toUpperCase())} · ${countTxt}</div></div>` +
       `<div id="tracklist"></div>`;
     renderTracks(all);
     openPanel();
