@@ -8,6 +8,9 @@ Object.entries(COUNTRIES).forEach(([code, c]) => { isoToCode[+c.iso] = code; });
 // teams that played the 2026 FIFA World Cup (⚽ sticker on their country label)
 const WC2026 = new Set(["AR","AU","BR","CA","CO","EG","ES","FR","GB","GH","JP","KR","MX","PA","SN","TR","US","ZA","DE","CD","CV","PT","TN","CI","NO","SE","EC","BE","BA","AT","HR","CH","DZ","MA","PY","NL","UY","IR","NZ","JO","UZ","SA","QA","IQ","CZ","HT","CW"]);
 
+// men's FIFA World Cup winners → number of titles (🏆 stickers + a ⚽ on the country-info overlay header)
+const WC_TITLES = { BR:5, DE:4, IT:4, AR:3, FR:2, UY:2, GB:1, ES:1 };
+
 // alpha-2 code -> flag emoji
 const flag = code => code.replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt()));
 // flat SVG flags (match the riso aesthetic better than wavy emoji)
@@ -1087,6 +1090,7 @@ function openInfo(code){
         <h2 class="info-name" style="--accent:${c.color}">${esc(c.name)}</h2>
         ${d.tagline ? `<div class="info-tag">${esc(d.tagline)}</div>` : ""}
       </div>
+      ${WC_TITLES[code] ? `<div class="info-wc" title="${WC_TITLES[code]} FIFA World Cup title${WC_TITLES[code] > 1 ? "s" : ""}" aria-label="${WC_TITLES[code]} World Cup title${WC_TITLES[code] > 1 ? "s" : ""} won">${'<span class="info-wc__t">🏆</span>'.repeat(WC_TITLES[code])}<span class="info-wc__b">⚽</span></div>` : ""}
     </div>
 
     <div class="info-carousel" id="info-carousel">

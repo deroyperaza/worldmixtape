@@ -535,3 +535,11 @@ body.list-view #map{display:none}
 .info-sources a:hover .info-sources__k{color:var(--lime)}
 .info-sources__k{color:var(--yellow);font-weight:700}
 .info-sources__k::after{content:" —";color:#6b6395;font-weight:400}
+
+/* World Cup winner stickers on the country-info header — one 🏆 per title won + a ⚽ */
+.info-wc{display:flex;flex-wrap:wrap;align-items:center;gap:3px 4px;align-self:center;max-width:196px;margin-left:2px}
+.info-wc span{font-size:25px;line-height:1;filter:drop-shadow(2px 2px 0 #0a0916)}
+.info-wc__t{transform:rotate(-7deg)}
+.info-wc__t:nth-child(2n){transform:rotate(7deg)}
+.info-wc__b{transform:rotate(9deg)}
+@media (max-width:520px){ .info-wc span{font-size:21px} .info-wc{max-width:152px} }
