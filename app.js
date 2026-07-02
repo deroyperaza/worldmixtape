@@ -377,9 +377,16 @@ function doShuffle(){
     if (meta) meta.textContent = "🔀 SHUFFLED · " + all.length + " TRACKS · ✕ TO EXIT";
     renderTracks(all);
   } else {
-    // global (or no panel open) → lean back to the map
-    closePanel();
+    // global world shuffle → open a panel with the shuffled queue as a scrollable playlist
     activeCode = null; currentEra = null; currentGenre = null;
+    const scopeTxt = (document.getElementById("shuffle-scope").textContent || "the world");
+    inner.innerHTML = `<div class="jhead"><div class="jhead__top">` +
+      `<div class="jhead__flag jhead__flag--ico" style="color:var(--lime)">🔀</div>` +
+      `<h2 class="jhead__name" style="--accent:var(--lime)">Shuffle</h2></div>` +
+      `<div class="jhead__meta" id="jmeta">🔀 ${esc(scopeTxt.toUpperCase())} · ${all.length} TRACKS</div></div>` +
+      `<div id="tracklist"></div>`;
+    renderTracks(all);
+    openPanel();
   }
   play(0);
 }
