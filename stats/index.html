@@ -38,9 +38,7 @@ header.hd{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:
 .back:hover{transform:rotate(-2deg) scale(1.05)}
 
 /* KPI cards */
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:22px 0 30px}
-@media(max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:420px){.kpis{grid-template-columns:1fr 1fr}}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:22px 0 30px}
 .kpi{background:var(--card);border:3px solid #0a0916;border-radius:16px;padding:16px 14px;position:relative;
   box-shadow:5px 5px 0 var(--kc,var(--pink));transform:rotate(var(--r,0deg))}
 .kpi b{display:block;font-family:"Anton",sans-serif;font-size:clamp(26px,4.4vw,40px);line-height:1;color:var(--kc,var(--pink))}
@@ -158,10 +156,12 @@ document.getElementById("kpis").innerHTML =
   kpi(countries,"Countries","var(--cyan)",-1.5) +
   kpi(songs,"Songs","var(--pink)",1) +
   kpi(hours,"Hours of music","var(--yellow)",-1) +
+  kpi(0,"Mixtape Makers","var(--tang)",1) +
   kpi(0,"Total plays","var(--lime)",1.5) +
   kpi(0,"Hearts","var(--violet)",-1);
-const kplays = document.querySelectorAll("#kpis .kpi b")[3];
-const khearts = document.querySelectorAll("#kpis .kpi b")[4];
+const kmakers = document.querySelectorAll("#kpis .kpi b")[3];
+const kplays  = document.querySelectorAll("#kpis .kpi b")[4];
+const khearts = document.querySelectorAll("#kpis .kpi b")[5];
 
 /* count-up animation */
 function countUp(el, to){
@@ -201,6 +201,7 @@ function renderLB(el, docs, field, cls){
 // global totals
 db.doc("stats/global").get().then(d=>{
   const g = d.exists ? d.data() : {};
+  countUp(kmakers, g.totalUsers||0);
   countUp(kplays, g.totalPlays||0);
   countUp(khearts, g.totalFaves||0);
 }).catch(()=>{});
