@@ -111,7 +111,7 @@ body{
 .brand__sub{margin:16px 0 0 2px;font-size:14px;max-width:300px;color:var(--paper);
   display:inline-block;font-weight:700;
   text-shadow:1px 1px 0 #0a0916, 0 0 10px #0a0916, 0 0 20px #0a0916, 0 3px 14px #0a0916;
-  transform:rotate(-4deg);transform-origin:left top}
+  transform:rotate(-4deg);transform-origin:left top;transition:opacity .28s}
 .brand__sub b{color:var(--pink)}
 
 /* map */
@@ -262,6 +262,8 @@ body{
   .brand{top:32px;left:11px}
   /* country open → slide the logo up so WORLD MIXTAPE clears the panel; slides back on close */
   body.panel-open .brand{transform:translateY(-40px)}
+  /* country open → hide the tagline (only show it on the homepage) */
+  body.panel-open .brand__sub{opacity:0}
   .brand__sub{font-size:11px;max-width:210px;margin-top:10px}
   .topctrls{top:30px;right:9px;gap:6px}
   .faves-btn{font-size:11px;padding:5px 8px;gap:4px}
