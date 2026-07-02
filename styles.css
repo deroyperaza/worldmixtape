@@ -163,7 +163,17 @@ body{
 .jhead__flag .flag{height:30px;border-radius:4px;box-shadow:0 0 0 1.5px #0a0916}
 .jhead__name{font-family:"Anton";font-size:clamp(30px,8vw,52px);line-height:.98;margin:0;
   color:#0a0916;background:var(--accent,var(--pink));display:inline-block;padding:6px 12px 8px;
-  transform:rotate(-2deg);box-shadow:5px 5px 0 #0a0916;text-transform:uppercase;position:relative}
+  transform:rotate(-2deg);box-shadow:5px 5px 0 #0a0916;text-transform:uppercase;position:relative;
+  transition:font-size .22s ease,padding .22s ease}
+/* collapse the header once the tracklist is scrolled → more room for the playlist */
+.jhead{transition:margin .22s ease}
+.jhead__flag .flag{transition:height .22s ease}
+.eras,.genres{transition:padding .22s ease,margin .22s ease}
+.panel.scrolled .jhead{margin-bottom:6px}
+.panel.scrolled .jhead__name{font-size:clamp(20px,5.2vw,30px);padding:3px 10px 5px}
+.panel.scrolled .jhead__flag .flag{height:24px}
+.panel.scrolled .eras{padding-bottom:8px}
+.panel.scrolled .genres{padding-bottom:6px;margin-bottom:2px}
 /* 2026 World Cup sticker on the country label */
 .wc-ball{position:absolute;top:-13px;right:-11px;font-size:24px;line-height:1;
   transform:rotate(9deg);z-index:3;pointer-events:none;filter:drop-shadow(1px 1px 0 rgba(0,0,0,.45))}

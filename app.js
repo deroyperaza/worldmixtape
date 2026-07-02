@@ -220,6 +220,9 @@ function openCountry(code){
 
 function renderTracks(list){
   const tl = inner.querySelector("#tracklist");
+  if (!tl.dataset.hs){ tl.dataset.hs = "1";   // collapse the header once the list is scrolled
+    tl.addEventListener("scroll", () => panel.classList.toggle("scrolled", tl.scrollTop > 8), { passive: true });
+  }
   renderedList = list;
   const accOf = t => (t._cc && COUNTRIES[t._cc] ? COUNTRIES[t._cc].color
     : (activeCode && COUNTRIES[activeCode] ? COUNTRIES[activeCode].color : "#ff2e92"));
@@ -242,6 +245,7 @@ function renderTracks(list){
     el.addEventListener("mouseenter", () => { hoverMq(el.querySelector(".track__title"), true); hoverMq(el.querySelector(".track__artist"), true); });
     el.addEventListener("mouseleave", () => { hoverMq(el.querySelector(".track__title"), false); hoverMq(el.querySelector(".track__artist"), false); });
   });
+  tl.scrollTop = 0; panel.classList.remove("scrolled");   // a new list starts at the top with the header expanded
   highlightRow();
 }
 
