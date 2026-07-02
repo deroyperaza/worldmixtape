@@ -1216,7 +1216,7 @@ const COUNTRY_INFO = {
    sports:{n:"David Beckham",r:"football icon — free-kick maestro turned global star",img:"David_Beckham_UNICEF_(cropped2).jpg"},
    sources:[{label:"Photos",detail:"Wikimedia Commons — CC-licensed, individual contributors",url:"https://commons.wikimedia.org/wiki/Category:United_Kingdom"},{label:"Facts & figures",detail:"Wikipedia — \"United Kingdom\" & related articles",url:"https://en.wikipedia.org/wiki/United_Kingdom"},{label:"Travel film",detail:"YouTube — \"THINGS TO KNOW BEFORE YOU GO TO THE UK\" · Creative Travel Guide",url:"https://www.youtube.com/watch?v=rd1K1sBf1Ug"},{label:"Map outline",detail:"Natural Earth via world-atlas — public domain",url:"https://www.naturalearthdata.com/"},{label:"Location",detail:"Google Maps",url:"https://www.google.com/maps/place/United+Kingdom/@54,-2,5z"}] },
   US: { tagline:"Sea to shining sea · fifty states, one restless dream",
-   photos:[{f:"View_of_Empire_State_Building_from_Rockefeller_Center_New_York_City_dllu_(cropped).jpg",cap:"Manhattan skyline · New York City"},{f:"Canyon_River_Tree_(165872763).jpeg",cap:"The Grand Canyon · Arizona"},{f:"Golden_Gate_Bridge_as_seen_from_Battery_East.jpg",cap:"Golden Gate Bridge · San Francisco"},{f:"Statue_of_Liberty,_statue,_Liberty_Island,_New_York.jpg",cap:"Statue of Liberty · New York Harbor"},{f:"Grand_Canyon_of_yellowstone.jpg",cap:"Grand Canyon of the Yellowstone · Wyoming"},{f:"Las_Vegas_Strip_09_2017_4897.jpg",cap:"The Strip after dark · Las Vegas"},{f:"Capitol_Building_Full_View.jpg",cap:"The U.S. Capitol · Washington, D.C."},{f:"French_Quarter,_looking_north_with_Mississippi_River_to_the_right_2011.jpg",cap:"The French Quarter · New Orleans"},{f:"Monument_Valley,_Utah,_USA_(23611451292).jpg",cap:"Monument Valley · Utah–Arizona border"},{f:"Central_Californian_Coastline,_Big_Sur_-_May_2013.jpg",cap:"The Big Sur coast · California"}],
+   photos:[{f:"View_of_Empire_State_Building_from_Rockefeller_Center_New_York_City_dllu_(cropped).jpg",cap:"Manhattan skyline · New York City"},{f:"Canyon_River_Tree_(165872763).jpeg",cap:"The Grand Canyon · Arizona"},{f:"Golden_Gate_Bridge_as_seen_from_Battery_East.jpg",cap:"Golden Gate Bridge · San Francisco"},{f:"Statue_of_Liberty_frontal_2.jpg",cap:"Statue of Liberty · New York Harbor"},{f:"Grand_Canyon_of_yellowstone.jpg",cap:"Grand Canyon of the Yellowstone · Wyoming"},{f:"Las_Vegas_Strip_09_2017_4897.jpg",cap:"The Strip after dark · Las Vegas"},{f:"Capitol_Building_Full_View.jpg",cap:"The U.S. Capitol · Washington, D.C."},{f:"French_Quarter,_looking_north_with_Mississippi_River_to_the_right_2011.jpg",cap:"The French Quarter · New Orleans"},{f:"Monument_Valley,_Utah,_USA_(23611451292).jpg",cap:"Monument Valley · Utah–Arizona border"},{f:"Central_Californian_Coastline,_Big_Sur_-_May_2013.jpg",cap:"The Big Sur coast · California"}],
    video:{id:"Yaw22v_lG80",title:"10 DAY USA ROAD TRIP — Yosemite, Sequoia, Death Valley, Zion, Bryce, Vegas",by:"Karl Watson: Travel Documentaries"},
    cities:[{name:"Washington, D.C.",lng:-77.04,lat:38.91,capital:true},{name:"New York",lng:-74.01,lat:40.71},{name:"Los Angeles",lng:-118.24,lat:34.05},{name:"Chicago",lng:-87.63,lat:41.88},{name:"Houston",lng:-95.37,lat:29.76},{name:"San Francisco",lng:-122.42,lat:37.77},{name:"Honolulu",lng:-157.86,lat:21.31},{name:"Anchorage",lng:-149.90,lat:61.22}],
    maps:"https://www.google.com/maps/place/United+States/@39.8,-98.6,4z",
@@ -1271,15 +1271,17 @@ function openInfo(code){
   if (slides.length > 1 && /info-slide--vid/.test(slides[0])) { const _v = slides.shift(); slides.splice(1, 0, _v); }  // video always 2nd
   const factRow = (label, val) => `<div class="info-fact"><span class="info-fact__k">${label}</span><span class="info-fact__v">${val}</span></div>`;
   const f = d.facts;
+  // Wikipedia "Go" search resolves to the exact article (or a redirect) when it exists — lets people dig deeper
+  const wikiLink = name => "https://en.wikipedia.org/wiki/Special:Search?go=Go&search=" + encodeURIComponent(name);
   const faceImg = (img, name) => img
     ? `<img class="info-face__img" loading="lazy" src="${wmFace(img)}" alt="${esc(name)}">`
     : `<div class="info-face__img info-face__img--none">${esc((name || "?").trim().slice(0,1))}</div>`;
   const peopleHtml = d.people.map(p => `
-    <div class="info-face">
+    <a class="info-face" href="${wikiLink(p.n)}" target="_blank" rel="noopener" title="${esc(p.n)} — read on Wikipedia">
       ${faceImg(p.img, p.n)}
-      <div class="info-face__n">${esc(p.n)}</div>
+      <div class="info-face__n">${esc(p.n)} <span class="info-face__ext" aria-hidden="true">↗</span></div>
       <div class="info-face__r">${esc(p.r)}</div>
-    </div>`).join("");
+    </a>`).join("");
 
   infoInner.innerHTML = `
     <div class="info-head">
@@ -1299,10 +1301,12 @@ function openInfo(code){
 
     <div class="info-grid">
       <div class="info-mapbox">
-        <svg class="info-map" id="info-map" viewBox="0 0 360 200" role="img" aria-label="Map of ${esc(c.name)} with major cities"></svg>
+        <div class="info-mapmain">
+          <svg class="info-map" id="info-map" viewBox="0 0 360 200" role="img" aria-label="Map of ${esc(c.name)} with major cities"></svg>
+          <span class="info-map__hint" aria-hidden="true">⤢ scroll · pinch to zoom</span>
+          <a class="info-maps-link" href="${d.maps}" target="_blank" rel="noopener">📍 Open in Google Maps</a>
+        </div>
         <div class="info-insets" id="info-insets"></div>
-        <span class="info-map__hint" aria-hidden="true">⤢ scroll · pinch to zoom</span>
-        <a class="info-maps-link" href="${d.maps}" target="_blank" rel="noopener">📍 Open in Google Maps</a>
       </div>
       <div class="info-facts">
         ${factRow("Capital", esc(f.capital))}
@@ -1321,11 +1325,11 @@ function openInfo(code){
       </div>
       <div class="info-card">
         <h3>🎵 Best-known music artist</h3>
-        <div class="info-starrow">${faceImg(d.music.img, d.music.n)}<div><div class="info-star">${esc(d.music.n)}</div><div class="info-star__r">${esc(d.music.r)}</div></div></div>
+        <a class="info-starrow" href="${wikiLink(d.music.n)}" target="_blank" rel="noopener" title="${esc(d.music.n)} — read on Wikipedia">${faceImg(d.music.img, d.music.n)}<div><div class="info-star">${esc(d.music.n)} <span class="info-face__ext" aria-hidden="true">↗</span></div><div class="info-star__r">${esc(d.music.r)}</div></div></a>
       </div>
       <div class="info-card">
         <h3>🏅 Most famous sports figure</h3>
-        <div class="info-starrow">${faceImg(d.sports.img, d.sports.n)}<div><div class="info-star">${esc(d.sports.n)}</div><div class="info-star__r">${esc(d.sports.r)}</div></div></div>
+        <a class="info-starrow" href="${wikiLink(d.sports.n)}" target="_blank" rel="noopener" title="${esc(d.sports.n)} — read on Wikipedia">${faceImg(d.sports.img, d.sports.n)}<div><div class="info-star">${esc(d.sports.n)} <span class="info-face__ext" aria-hidden="true">↗</span></div><div class="info-star__r">${esc(d.sports.r)}</div></div></a>
       </div>
     </div>
 
@@ -1415,6 +1419,25 @@ function renderMap(svgEl, feat, color, cityList, bounds){
   d3.select(svgEl).call(mapZoom).call(mapZoom.transform, d3.zoomIdentity);
 }
 
+/* bounds of the landmass local to a city cluster — vertices within ~28° lng (wrap-aware) / 20° lat of
+   the cluster, so an inset shows the WHOLE nearby territory (all of Alaska, all of Hawaii), not just the city */
+function localBounds(feat, cities){
+  const cx = cities.reduce((a,c)=>a+c.lng,0)/cities.length, cy = cities.reduce((a,c)=>a+c.lat,0)/cities.length;
+  const geom = feat.geometry, polys = geom.type === "MultiPolygon" ? geom.coordinates : [geom.coordinates];
+  let w = Infinity, s = Infinity, e = -Infinity, n = -Infinity;
+  polys.forEach(poly => poly.forEach(ring => ring.forEach(pt => {
+    const lng = pt[0], lat = pt[1];
+    let dl = Math.abs(lng - cx); if (dl > 180) dl = 360 - dl;   // antimeridian-aware longitude gap
+    if (dl < 28 && Math.abs(lat - cy) < 20){
+      if (lng < w) w = lng; if (lng > e) e = lng; if (lat < s) s = lat; if (lat > n) n = lat;
+    }
+  })));
+  cities.forEach(c => { if (c.lng < w) w = c.lng; if (c.lng > e) e = c.lng; if (c.lat < s) s = c.lat; if (c.lat > n) n = c.lat; });
+  if (!isFinite(w)){ const p = 3; return [[cx-p, cy-p], [cx+p, cy+p]]; }
+  const pad = Math.max(e-w, n-s, 2) * 0.1 + 0.8;
+  return [[w-pad, s-pad], [e+pad, n+pad]];
+}
+
 /* draw a country: main map fitted to the MAINLAND (ignoring far territories), with far islands/
    territories that have cities rendered as their own zoomable inset boxes (e.g. Alaska + Hawaii for US). */
 function drawCountryOutline(code, svgEl){
@@ -1465,10 +1488,7 @@ function drawCountryOutline(code, svgEl){
       if (cl) cl.push(ci); else clusters.push([ci]);
     });
     clusters.forEach(cl => {
-      const lngs = cl.map(c=>c.lng), lats = cl.map(c=>c.lat);
-      let ib = [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]];
-      const ipad = Math.max(ib[1][0]-ib[0][0], ib[1][1]-ib[0][1], 2) * 0.7 + 1.5;
-      ib = [[ib[0][0]-ipad, ib[0][1]-ipad], [ib[1][0]+ipad, ib[1][1]+ipad]];
+      const ib = localBounds(feat, cl);   // fit to the WHOLE nearby landmass (all of Alaska / Hawaii), not just the city
       const box = document.createElement("div");
       box.className = "info-inset";
       box.innerHTML = `<svg viewBox="0 0 150 112" role="img" aria-label="${esc(cl[0].name)} inset map"></svg>`;

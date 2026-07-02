@@ -515,7 +515,8 @@ body.list-view #map{display:none}
 .info-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:18px}
 @media (min-width:640px){ .info-grid{grid-template-columns:minmax(300px,1fr) 1.1fr} }
 .info-mapbox{position:relative;background:#0a0916;border:3px solid var(--accent);border-radius:14px;
-  padding:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:180px}
+  padding:10px;overflow:hidden;display:flex;flex-direction:column;gap:10px;min-height:180px}
+.info-mapmain{position:relative;flex:1;display:flex;align-items:center;justify-content:center;min-height:150px}
 .info-map{width:100%;height:auto;display:block;cursor:grab;touch-action:none}
 .info-map:active{cursor:grabbing}
 /* zoom hint — faint, top-right; fades once you interact */
@@ -527,11 +528,10 @@ body.list-view #map{display:none}
   font-size:12px;font-weight:700;text-decoration:none;color:#0a0916;background:var(--cyan);
   border:2.5px solid #0a0916;border-radius:20px;padding:6px 12px;box-shadow:2px 2px 0 var(--pink);transition:transform .12s}
 .info-maps-link:hover{transform:translateY(-1px)}
-/* inset boxes for far-away territories (e.g. Alaska + Hawaii) — each independently zoomable */
-.info-insets{position:absolute;right:10px;bottom:10px;z-index:2;display:flex;gap:8px;flex-wrap:wrap;
-  justify-content:flex-end;max-width:62%}
+/* inset boxes for far-away territories (e.g. Alaska + Hawaii) — a row BELOW the main map (no overlap), each independently zoomable */
+.info-insets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding-top:2px}
 .info-insets:empty{display:none}
-.info-inset{width:122px;background:#0a0916;border:2px solid var(--accent);border-radius:9px;
+.info-inset{width:130px;background:#0a0916;border:2px solid var(--accent);border-radius:9px;
   overflow:hidden;box-shadow:2px 2px 0 rgba(0,0,0,.4)}
 .info-inset svg{width:100%;height:auto;display:block;cursor:grab;touch-action:none}
 .info-inset svg:active{cursor:grabbing}
@@ -556,7 +556,14 @@ body.list-view #map{display:none}
   scrollbar-width:thin;scrollbar-color:var(--pink) transparent}
 .info-faces::-webkit-scrollbar{height:7px}
 .info-faces::-webkit-scrollbar-thumb{background:var(--pink);border-radius:8px}
-.info-face{flex:0 0 128px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;text-align:center}
+.info-face{flex:0 0 128px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;text-align:center;
+  text-decoration:none;color:inherit;cursor:pointer}
+/* figure / artist / sport cards link out to Wikipedia — subtle ↗ cue, underline the name on hover */
+.info-face__ext{font-size:9px;color:var(--cyan);opacity:.7;vertical-align:1px}
+.info-face:hover .info-face__n,.info-starrow:hover .info-star{text-decoration:underline;text-underline-offset:2px}
+.info-face:hover .info-face__img{border-color:var(--cyan)}
+.info-starrow{text-decoration:none;color:inherit;cursor:pointer}
+.info-starrow:hover .info-face__img{border-color:var(--cyan)}
 .info-face__img{width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:top center;
   border:3px solid var(--accent);box-shadow:2px 2px 0 #0a0916;background:#0a0916;flex:0 0 auto}
 .info-face__img--none{display:flex;align-items:center;justify-content:center;

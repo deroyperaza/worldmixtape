@@ -156,7 +156,7 @@ document.getElementById("kpis").innerHTML =
   kpi(countries,"Countries","var(--cyan)",-1.5) +
   kpi(songs,"Songs","var(--pink)",1) +
   kpi(hours,"Hours of music","var(--yellow)",-1) +
-  kpi(0,"Mixtape Makers","var(--tang)",1) +
+  kpi(1,"Mixtape Makers","var(--tang)",1) +
   kpi(0,"Total plays","var(--lime)",1.5) +
   kpi(0,"Hearts","var(--violet)",-1);
 const kmakers = document.querySelectorAll("#kpis .kpi b")[3];
@@ -201,7 +201,7 @@ function renderLB(el, docs, field, cls){
 // global totals
 db.doc("stats/global").get().then(d=>{
   const g = d.exists ? d.data() : {};
-  countUp(kmakers, g.totalUsers||0);
+  countUp(kmakers, g.totalUsers||1);   // floor at 1 (you) until Firestore totalUsers is seeded
   countUp(kplays, g.totalPlays||0);
   countUp(khearts, g.totalFaves||0);
 }).catch(()=>{});
