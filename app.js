@@ -416,62 +416,110 @@ function mixAccent(m){
   if (m.kind==="vibe" && VC[m.key]) return VC[m.key];
   return ({passport:"#2AABCC",diaspora:"#8B77F8",decade:"#FF4D00",crosscut:"#ff2e92",artist:"#c8e64f"})[m.kind] || "#ff2e92";
 }
-const MIX_MIN = 5, MIX_MAX = 18;
+const MIN_SEEDS = 3, MAX_SEEDS = 6, REC_RATIO = 3;   // per mixtape: detect ≥3 saved seeds, fill 3 recs per seed
+
+// flat catalog (every track + its country), built once — the recommendation pool
+let CATALOG_FLAT = null;
+function catalogFlat(){
+  if (CATALOG_FLAT) return CATALOG_FLAT;
+  CATALOG_FLAT = [];
+  for (const cc in COUNTRIES){ const c=COUNTRIES[cc]; for (const e of Object.values(c.eras||{})) for (const t of e){ if (t.trackId!=null) CATALOG_FLAT.push(Object.assign({_cc:cc}, t)); } }
+  return CATALOG_FLAT;
+}
+// given seed favorites + a pool predicate, recommend catalog tracks that CONTINUE the vibe (never already-saved)
+function recommend(seeds, pred, favIds, n){
+  if (n <= 0) return [];
+  const prof = {cc:{}, dec:{}, gen:{}, art:{}};
+  seeds.forEach(t => { if(t._cc)prof.cc[t._cc]=(prof.cc[t._cc]||0)+1; if(t.decade)prof.dec[t.decade]=(prof.dec[t.decade]||0)+1; if(t.genre)prof.gen[t.genre]=(prof.gen[t.genre]||0)+1; if(t.artist)prof.art[t.artist]=(prof.art[t.artist]||0)+1; });
+  const scored = [];
+  for (const t of catalogFlat()){
+    if (favIds.has(String(t.trackId)) || !pred(t)) continue;
+    // cohesion with the seed profile — same country/genre matters most, then decade; small jitter for freshness
+    const s = 3*(prof.cc[t._cc]||0) + 2*(prof.gen[t.genre]||0) + 1*(prof.dec[t.decade]||0) + (prof.art[t.artist]?1.5:0) + Math.random()*2.5;
+    scored.push([t, s]);
+  }
+  scored.sort((a,b) => b[1] - a[1]);
+  const out = [], seen = new Set();
+  for (const [t] of scored){ const id=String(t.trackId); if(seen.has(id))continue; seen.add(id);
+    out.push(Object.assign({__rec:true}, t));   // clone + flag as a discovery pick (don't mutate the catalog)
+    if (out.length >= n) break; }
+  return out;
+}
+// weave seeds + recs at 1 saved : REC_RATIO recommended
+function weave(seeds, recs){
+  const out = []; let ri = 0;
+  seeds.forEach(s => { out.push(s); for (let k=0;k<REC_RATIO && ri<recs.length;k++) out.push(recs[ri++]); });
+  while (ri < recs.length) out.push(recs[ri++]);
+  return out;
+}
+
 function buildMixtapes(src){
   const tracks = (src||[]).filter(t => t && t.trackId != null);
-  if (tracks.length < 6) return [];
+  if (tracks.length < MIN_SEEDS) return [];
+  const favIds = new Set(tracks.map(t=>String(t.trackId)));
   const cands = [];
-  const push = (kind, key, emoji, name, sub, list) => {
+  const add = (kind, key, emoji, name, sub, list, pred) => {
     const seen = new Set(), uniq = [];
     list.forEach(t => { const id=String(t.trackId); if(!seen.has(id)){ seen.add(id); uniq.push(t); } });
-    if (uniq.length < MIX_MIN) return;
-    cands.push({ kind, key, emoji, name, sub, tracks: mixShuf(uniq).slice(0, MIX_MAX) });
+    if (uniq.length < MIN_SEEDS) return;
+    cands.push({ kind, key, emoji, name, sub, seeds: uniq, pred });
   };
   // vibe / mood
   const byVibe = {};
   tracks.forEach(t => { const v=vibeOf(t); (byVibe[v]=byVibe[v]||[]).push(t); });
-  for (const v in byVibe){ const V=VIBES[v]; push("vibe", v, V.emoji, mixPick(V.names, v+byVibe[v].length), V.sub, byVibe[v]); }
+  for (const v in byVibe){ const V=VIBES[v]; add("vibe", v, V.emoji, mixPick(V.names, v+byVibe[v].length), V.sub, byVibe[v], t => vibeOf(t)===v); }
   // geography — single-country deep dives
   const byCC = {};
   tracks.forEach(t => { if(t._cc && COUNTRIES[t._cc]) (byCC[t._cc]=byCC[t._cc]||[]).push(t); });
   const ccKeys = Object.keys(byCC);
   ccKeys.forEach(cc => { const n=COUNTRIES[cc].name;
-    push("country", cc, "📍", mixPick([`One Night in ${n}`,`${n} After Dark`,`Deep in ${n}`,`${n} on Repeat`], cc+byCC[cc].length), `all roads lead to ${n}`, byCC[cc]); });
+    add("country", cc, "📍", mixPick([`One Night in ${n}`,`${n} After Dark`,`Deep in ${n}`,`${n} on Repeat`], cc+byCC[cc].length), `all roads lead to ${n}`, byCC[cc], t => t._cc===cc); });
   // passport stamps — one from each country, round-robin
-  if (ccKeys.length >= 5){
+  if (ccKeys.length >= 4){
     const pools = ccKeys.map(cc => mixShuf(byCC[cc])), spread=[]; let added=true, r=0;
-    while (added && spread.length < MIX_MAX){ added=false; pools.forEach(p => { if(p[r]){ spread.push(p[r]); added=true; } }); r++; }
-    push("passport","world","🌍", mixPick(["Passport Stamps","No Layovers","Frequent Flyer","Customs Declaration"], "pp"+ccKeys.length), `${ccKeys.length} countries, one tape`, spread);
+    while (added && spread.length < MAX_SEEDS*2){ added=false; pools.forEach(p => { if(p[r]){ spread.push(p[r]); added=true; } }); r++; }
+    const ccSet = new Set(ccKeys);
+    add("passport","world","🌍", mixPick(["Passport Stamps","No Layovers","Frequent Flyer","Customs Declaration"], "pp"+ccKeys.length), `${ccKeys.length} countries you love`, spread, t => ccSet.has(t._cc));
   }
   // diaspora
-  push("diaspora","dia","🧭", mixPick(["Children of the Diaspora","Far From Home","Roots & Routes","The Long Way Home"], "dia"), "sounds carried across borders", tracks.filter(t=>t.diaspora));
+  add("diaspora","dia","🧭", mixPick(["Children of the Diaspora","Far From Home","Roots & Routes","The Long Way Home"], "dia"), "sounds carried across borders", tracks.filter(t=>t.diaspora), t => !!t.diaspora);
   // time — decades
   const byDec = {};
   tracks.forEach(t => { if(t.decade) (byDec[t.decade]=byDec[t.decade]||[]).push(t); });
-  for (const d in byDec){ push("decade", d, "🕰", mixPick(DEC_NAME[d]||[cap(d)], d+byDec[d].length), DEC_SUB[d]||("the "+d+" on tape"), byDec[d]); }
+  for (const d in byDec){ add("decade", d, "🕰", mixPick(DEC_NAME[d]||[cap(d)], d+byDec[d].length), DEC_SUB[d]||("the "+d+" on tape"), byDec[d], t => t.decade===d); }
   // cross-cut — heartbreak across languages
   const mel = byVibe.latenight||[]; const melCC = new Set(mel.map(t=>t._cc).filter(Boolean));
-  if (mel.length >= MIX_MIN && melCC.size >= 3) push("crosscut","heartlang","🌧", `Heartbreak in ${melCC.size} Languages`, "the ache is universal", mel);
-  // artist obsession
+  if (mel.length >= MIN_SEEDS && melCC.size >= 3) add("crosscut","heartlang","🌧", `Heartbreak in ${melCC.size} Languages`, "the ache is universal", mel, t => vibeOf(t)==="latenight");
+  // artist obsession → recommend more in that artist's lane (their dominant genre)
   const byArtist = {};
   tracks.forEach(t => { if(t.artist) (byArtist[t.artist]=byArtist[t.artist]||[]).push(t); });
-  const top = Object.entries(byArtist).filter(([,l])=>l.length>=3).sort((a,b)=>b[1].length-a[1].length)[0];
-  if (top) push("artist", top[0], "⭐", mixPick([`All ${top[0]}, All Night`,`The ${top[0]} Obsession`,`Can't Stop Playing ${top[0]}`], top[0]), "you clearly have a type", top[1]);
-  return rankMixes(cands);
+  const top = Object.entries(byArtist).filter(([,l])=>l.length>=MIN_SEEDS).sort((a,b)=>b[1].length-a[1].length)[0];
+  if (top){ const g = (top[1].find(t=>t.genre)||{}).genre;
+    add("artist", top[0], "⭐", mixPick([`More Like ${top[0]}`,`The ${top[0]} Lane`,`If You Love ${top[0]}…`], top[0]), "more in this lane", top[1], t => g ? t.genre===g : t.artist===top[0]); }
+
+  // rank + dedupe candidate CLUSTERS on their seed sets, then fill each with recommendations
+  const kept = rankClusters(cands);
+  return kept.map(c => {
+    const seeds = mixShuf(c.seeds).slice(0, MAX_SEEDS);
+    const recs = recommend(seeds, c.pred, favIds, seeds.length * REC_RATIO);
+    return { kind:c.kind, key:c.key, emoji:c.emoji, name:c.name, sub:c.sub, id:c.kind+"_"+c.key,
+             seedCount:seeds.length, recCount:recs.length, tracks: weave(seeds, recs) };
+  }).filter(m => m.tracks.length >= 6);
 }
-function rankMixes(cands){
+function rankClusters(cands){
   const bonus = { passport:3, crosscut:3, vibe:2, diaspora:2, country:1, decade:1, artist:1 };
-  cands.forEach(c => c._score = c.tracks.length + (bonus[c.kind]||0)*2);
+  cands.forEach(c => c._score = c.seeds.length + (bonus[c.kind]||0)*2);
   cands.sort((a,b) => b._score - a._score);
-  const kept = [], idset = c => new Set(c.tracks.map(t=>String(t.trackId)));
+  const kept = [], idset = c => new Set(c.seeds.map(t=>String(t.trackId)));
   for (const c of cands){
     const cs = idset(c); let dup=false;
     for (const k of kept){ const ks=idset(k); let inter=0; cs.forEach(id=>{if(ks.has(id))inter++;});
-      if (inter/Math.min(cs.size,ks.size) > 0.65){ dup=true; break; } }
+      // symmetric Jaccard so a small cluster nested inside a big one (e.g. a country inside a decade)
+      // survives as its own discovery angle — only near-identical clusters are dropped
+      if (inter/(cs.size + ks.size - inter) > 0.6){ dup=true; break; } }
     if (!dup) kept.push(c);
     if (kept.length >= 8) break;
   }
-  kept.forEach(c => c.id = c.kind+"_"+c.key);
   return kept;
 }
 
@@ -492,7 +540,7 @@ function renderMixStrip(){
         ${mixCollage(m.tracks)}
         <span class="mix-card__body"><span class="mix-card__name">${m.emoji} ${esc(m.name)}</span>
         <span class="mix-card__sub">${esc(m.sub)}</span>
-        <span class="mix-card__ct">${m.tracks.length} tracks →</span></span>
+        <span class="mix-card__ct">${m.tracks.length} tracks${m.recCount?` · ${m.recCount} new`:``} →</span></span>
       </button>`).join("")}</div>`;
   el.querySelectorAll(".mix-card").forEach(b => b.onclick = () => openMixtape(currentMixes[+b.dataset.i]));
 }
@@ -503,7 +551,8 @@ function openMixtape(m){
     <button class="mix-back" id="mix-back">${shared ? "‹ explore the map" : "‹ favorites"}</button>
     <div class="jhead__top"><div class="jhead__flag jhead__flag--ico" style="--accent:${acc}">${m.emoji||"🎧"}</div>
       <h2 class="jhead__name" style="--accent:${acc}">${esc(m.name)}</h2></div>
-    <div class="jhead__meta">${esc((m.sub||"").toUpperCase())} · ${m.tracks.length} TRACKS${shared && m.by ? " · FROM "+esc((m.by||"").toUpperCase()) : ""}</div>
+    <div class="jhead__meta">${esc((m.sub||"").toUpperCase())} · ${m.recCount ? (m.seedCount+" SAVED + "+m.recCount+" NEW") : (m.tracks.length+" TRACKS")}${shared && m.by ? " · FROM "+esc((m.by||"").toUpperCase()) : ""}</div>
+    ${m.recCount ? `<div class="mix-hint">✦ fresh picks matched to your taste — heart the keepers to save them</div>` : ``}
     <div class="mix-actions">
       <button class="mix-btn mix-btn--play" id="mix-play">▶ Play</button>
       <button class="mix-btn" id="mix-shuf">🔀 Shuffle</button>
@@ -641,7 +690,7 @@ function renderTracks(list){
       <div class="track__rank">${i+1}${t.year?`<span class="track__yr">${t.year}</span>`:''}</div>
       <img class="track__art" loading="lazy" src="${t.cover||''}" alt="">
       <div class="track__txt">
-        <div class="track__title">${esc(t.title)}${(!t.ytId)?'<span class="track__30s" title="Preview only — full song not available; 30-second clip">30s</span>':''}</div>
+        <div class="track__title">${esc(t.title)}${t.__rec?'<span class="track__new" title="A discovery pick matched to your taste — heart it to save">✦ new</span>':''}${(!t.ytId)?'<span class="track__30s" title="Preview only — full song not available; 30-second clip">30s</span>':''}</div>
         <div class="track__artist">${esc(t.artist)}${t.diaspora?'<span class="track__nf">diáspora</span>':''}</div>
       </div>
       <span class="track__ct" data-i="${i}" title="times hearted" hidden></span>
