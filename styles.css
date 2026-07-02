@@ -298,6 +298,8 @@ body{
   .panel{top:26px;width:100vw;border-left:none;border-top:5px solid var(--lime)}
   /* close sits top-right on the flag's line (not its own row) → tighter header, more logo shows */
   .panel__close{position:absolute;top:26px;right:14px;margin:0;align-self:auto;z-index:6}
+  /* scrolled: pull the close up to stay level with the collapsed country name */
+  .panel.scrolled .panel__close{transform:translateY(-24px)}
   /* meta line removed → drop the country name into that space with breathing room above + below */
   .jhead{margin:30px 0 22px;padding-right:74px}
   .map-hint{bottom:144px;font-size:11px}
