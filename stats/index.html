@@ -84,7 +84,9 @@ h2.sec{font-family:"Permanent Marker",cursive;color:var(--yellow);font-size:22px
 /* shared credit footer (matches the About page) */
 footer.ab-foot{border-top:1px solid var(--edge);margin-top:22px;padding:22px 0 10px;text-align:center}
 footer.ab-foot p{font-size:12px;color:#8a83b8;margin:6px 0}
-.ft-logo{display:block;width:140px;height:auto;margin:0 auto 12px}
+.ft-logolink{display:block;width:140px;margin:0 auto 12px;line-height:0;transition:transform .12s}
+.ft-logolink:hover{transform:scale(1.04)}
+.ft-logo{display:block;width:140px;height:auto}
 .hk{color:#fff7e6;font-weight:700;text-decoration:none}
 .hk:hover{color:var(--lime)}
 .hk-logo{display:inline-block;margin-top:12px;transition:transform .12s;text-decoration:none}
@@ -128,7 +130,7 @@ footer.ab-foot p{font-size:12px;color:#8a83b8;margin:6px 0}
   </div>
 
   <footer class="ab-foot">
-    <img class="ft-logo" src="/WMT-logo-cream.svg" alt="World Mixtape">
+    <a class="ft-logolink" href="/" aria-label="World Mixtape — home"><img class="ft-logo" src="/WMT-logo-cream.svg" alt="World Mixtape"></a>
     <p>a century of local music, decade by decade</p>
     <p>An experiment by <a class="hk" href="https://hyperakt.com" target="_blank" rel="noopener">Hyperakt</a>.</p>
     <a class="hk-logo" href="https://hyperakt.com" target="_blank" rel="noopener" aria-label="Hyperakt"><img class="hk-ic" src="/hyperakt-h.svg?v=3" alt="Hyperakt"></a>
