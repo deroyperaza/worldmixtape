@@ -727,3 +727,10 @@ body.list-view #map{display:none}
 .lang-item:hover{background:#1c1740}
 .lang-item.on{background:var(--violet);color:#0a0916;font-weight:700}
 .lang-note{font-family:"Space Mono",monospace;font-size:9.5px;color:var(--cyan);opacity:.75;margin-top:8px;text-align:center;line-height:1.3}
+/* right-to-left languages (Arabic, Hebrew, Persian, Urdu…) → right-align translated text */
+html.wmx-rtl .brand__sub,
+html.wmx-rtl .panel__inner,
+html.wmx-rtl .info__inner,
+html.wmx-rtl .player__meta,
+html.wmx-rtl .mix-card,
+html.wmx-rtl .lang-item{text-align:right}

@@ -1255,6 +1255,7 @@ let trLang = localStorage.getItem("wmx_lang") || "en";
 const trCache = new Map();          // `${lang} ${srcTrimmed}` -> translated
 let trObserver = null;
 function trName(code){ const l = TR_LANGS.find(x => x.code === code); return l ? l.name : code; }
+function trIsRTL(code){ return ["ar","iw","fa","ur","ps","sd","ug","yi"].includes(code); }   // right-to-left scripts
 function trSkip(node){
   const t = node.nodeValue;
   if (!t || !t.trim()) return true;
@@ -1322,6 +1323,7 @@ async function setLang(code){
   trLang = code; localStorage.setItem("wmx_lang", code);
   updateLangBtn(code); closeLangPop();
   document.documentElement.setAttribute("lang", code);
+  document.documentElement.classList.toggle("wmx-rtl", trIsRTL(code));   // RTL scripts → right-align text
   if (code === "en"){ trRestore(document.body); if (trObserver) trObserver.disconnect(); return; }
   await trApply(document.body, code); trObserve();
 }
@@ -1349,6 +1351,7 @@ document.addEventListener("click", e => { const p = document.getElementById("lan
 updateLangBtn(trLang);
 if (trLang !== "en"){                                            // restore saved language on load
   document.documentElement.setAttribute("lang", trLang);
+  document.documentElement.classList.toggle("wmx-rtl", trIsRTL(trLang));
   trApply(document.body, trLang).then(trObserve);
 }
 updateFavCount();
