@@ -27,8 +27,9 @@ body{min-height:100vh;background:
 
 /* header */
 header.hd{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
-.hd__logo{width:262px;height:auto;display:block;margin-left:-46px}
-@media(max-width:680px){.hd__logo{width:168px;margin-left:-28px}}
+.hd__logolink{display:block;border:none;line-height:0;margin-left:-46px;flex:0 0 auto}
+.hd__logo{width:262px;height:auto;display:block}
+@media(max-width:680px){.hd__logo{width:168px} .hd__logolink{margin-left:-28px}}
 .hd__t{font-family:"Anton",sans-serif;font-size:clamp(30px,6vw,52px);letter-spacing:.02em;line-height:.9;margin:0;
   text-transform:uppercase}
 .hd__t b{color:var(--lime)}
@@ -95,7 +96,7 @@ footer.ab-foot p{font-size:12px;color:#8a83b8;margin:6px 0}
 <div class="grain" aria-hidden="true"></div>
 <div class="wrap">
   <header class="hd">
-    <img class="hd__logo" src="/WMT-logo.svg" alt="World Mixtape" onerror="this.style.display='none'"/>
+    <a class="hd__logolink" href="/" aria-label="World Mixtape — home"><img class="hd__logo" src="/WMT-logo.svg" alt="World Mixtape" onerror="this.style.display='none'"/></a>
     <div>
       <h1 class="hd__t">The <b>Numbers</b></h1>
       <p class="hd__sub"><span class="live"></span>a century of local music, by the stats</p>
