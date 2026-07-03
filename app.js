@@ -1215,6 +1215,139 @@ document.getElementById("p-fav").onclick = () => {
 };
 document.getElementById("faves-btn").onclick = openFavorites;
 document.getElementById("search-btn").onclick = openSearch;
+
+/* ---------- language / translation (self-driven, ~108 languages) ----------
+   Google's old free Website Translator widget was retired — its per-string backend now 403s,
+   so the combo loaded but nothing translated. Instead we call Google's free `gtx` translate
+   endpoint directly (CORS-open, no key), walk the visible text nodes, and swap text in place.
+   A MutationObserver re-translates dynamically-rendered content (panels, dossiers, mixtapes). */
+const TR_LANGS = [
+  {code:"af",name:"Afrikaans"},{code:"sq",name:"Albanian"},{code:"am",name:"Amharic"},{code:"ar",name:"Arabic"},
+  {code:"hy",name:"Armenian"},{code:"az",name:"Azerbaijani"},{code:"eu",name:"Basque"},{code:"be",name:"Belarusian"},
+  {code:"bn",name:"Bengali"},{code:"bs",name:"Bosnian"},{code:"bg",name:"Bulgarian"},{code:"ca",name:"Catalan"},
+  {code:"ceb",name:"Cebuano"},{code:"ny",name:"Chichewa"},{code:"zh-CN",name:"Chinese (Simplified)"},{code:"zh-TW",name:"Chinese (Traditional)"},
+  {code:"co",name:"Corsican"},{code:"hr",name:"Croatian"},{code:"cs",name:"Czech"},{code:"da",name:"Danish"},
+  {code:"nl",name:"Dutch"},{code:"eo",name:"Esperanto"},{code:"et",name:"Estonian"},{code:"tl",name:"Filipino"},
+  {code:"fi",name:"Finnish"},{code:"fr",name:"French"},{code:"fy",name:"Frisian"},{code:"gl",name:"Galician"},
+  {code:"ka",name:"Georgian"},{code:"de",name:"German"},{code:"el",name:"Greek"},{code:"gu",name:"Gujarati"},
+  {code:"ht",name:"Haitian Creole"},{code:"ha",name:"Hausa"},{code:"haw",name:"Hawaiian"},{code:"iw",name:"Hebrew"},
+  {code:"hi",name:"Hindi"},{code:"hmn",name:"Hmong"},{code:"hu",name:"Hungarian"},{code:"is",name:"Icelandic"},
+  {code:"ig",name:"Igbo"},{code:"id",name:"Indonesian"},{code:"ga",name:"Irish"},{code:"it",name:"Italian"},
+  {code:"ja",name:"Japanese"},{code:"jw",name:"Javanese"},{code:"kn",name:"Kannada"},{code:"kk",name:"Kazakh"},
+  {code:"km",name:"Khmer"},{code:"rw",name:"Kinyarwanda"},{code:"ko",name:"Korean"},{code:"ku",name:"Kurdish"},
+  {code:"ky",name:"Kyrgyz"},{code:"lo",name:"Lao"},{code:"la",name:"Latin"},{code:"lv",name:"Latvian"},
+  {code:"lt",name:"Lithuanian"},{code:"lb",name:"Luxembourgish"},{code:"mk",name:"Macedonian"},{code:"mg",name:"Malagasy"},
+  {code:"ms",name:"Malay"},{code:"ml",name:"Malayalam"},{code:"mt",name:"Maltese"},{code:"mi",name:"Maori"},
+  {code:"mr",name:"Marathi"},{code:"mn",name:"Mongolian"},{code:"my",name:"Myanmar (Burmese)"},{code:"ne",name:"Nepali"},
+  {code:"no",name:"Norwegian"},{code:"or",name:"Odia (Oriya)"},{code:"ps",name:"Pashto"},{code:"fa",name:"Persian"},
+  {code:"pl",name:"Polish"},{code:"pt",name:"Portuguese"},{code:"pa",name:"Punjabi"},{code:"ro",name:"Romanian"},
+  {code:"ru",name:"Russian"},{code:"sm",name:"Samoan"},{code:"gd",name:"Scots Gaelic"},{code:"sr",name:"Serbian"},
+  {code:"st",name:"Sesotho"},{code:"sn",name:"Shona"},{code:"sd",name:"Sindhi"},{code:"si",name:"Sinhala"},
+  {code:"sk",name:"Slovak"},{code:"sl",name:"Slovenian"},{code:"so",name:"Somali"},{code:"es",name:"Spanish"},
+  {code:"su",name:"Sundanese"},{code:"sw",name:"Swahili"},{code:"sv",name:"Swedish"},{code:"tg",name:"Tajik"},
+  {code:"ta",name:"Tamil"},{code:"tt",name:"Tatar"},{code:"te",name:"Telugu"},{code:"th",name:"Thai"},
+  {code:"tr",name:"Turkish"},{code:"tk",name:"Turkmen"},{code:"uk",name:"Ukrainian"},{code:"ur",name:"Urdu"},
+  {code:"ug",name:"Uyghur"},{code:"uz",name:"Uzbek"},{code:"vi",name:"Vietnamese"},{code:"cy",name:"Welsh"},
+  {code:"xh",name:"Xhosa"},{code:"yi",name:"Yiddish"},{code:"yo",name:"Yoruba"},{code:"zu",name:"Zulu"}
+];
+let trLang = localStorage.getItem("wmx_lang") || "en";
+const trCache = new Map();          // `${lang} ${srcTrimmed}` -> translated
+let trObserver = null;
+function trName(code){ const l = TR_LANGS.find(x => x.code === code); return l ? l.name : code; }
+function trSkip(node){
+  const t = node.nodeValue;
+  if (!t || !t.trim()) return true;
+  if (!/[A-Za-zÀ-ɏ]/.test(t)) return true;             // no Latin letters → numbers/emoji/symbols, skip
+  let p = node.parentElement;
+  while (p){
+    const tag = p.tagName;
+    if (tag === "SCRIPT" || tag === "STYLE" || tag === "NOSCRIPT") return true;
+    if (p.classList && p.classList.contains("notranslate")) return true;
+    if (p.getAttribute && p.getAttribute("translate") === "no") return true;
+    p = p.parentElement;
+  }
+  return false;
+}
+function trCollect(root){
+  const nodes = [], w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+  let n; while (n = w.nextNode()){ if (!trSkip(n)) nodes.push(n); }
+  return nodes;
+}
+async function trChunkFetch(lines, tl){
+  const url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=" + tl + "&dt=t&q=" + encodeURIComponent(lines.join("\n"));
+  const r = await fetch(url); if (!r.ok) throw new Error("translate " + r.status);
+  const j = await r.json();
+  return ((j[0] || []).map(s => s[0]).join("")).split("\n");     // segments rejoined then re-split on our delimiters
+}
+async function trApply(root, tl){
+  const nodes = trCollect(root); if (!nodes.length) return;
+  for (const n of nodes){ if (n.__trOrig == null) n.__trOrig = n.nodeValue; }
+  const need = [], seen = new Set();
+  for (const n of nodes){ const src = n.__trOrig.trim(), key = tl + " " + src;
+    if (!trCache.has(key) && !seen.has(src)){ seen.add(src); need.push(src); } }
+  const chunks = []; let cur = [], len = 0;
+  for (const s of need){ if (len + s.length > 1200 && cur.length){ chunks.push(cur); cur = []; len = 0; } cur.push(s); len += s.length + 1; }
+  if (cur.length) chunks.push(cur);
+  const CONC = 6;
+  for (let i = 0; i < chunks.length; i += CONC){
+    const batch = chunks.slice(i, i + CONC);
+    const res = await Promise.all(batch.map(lines => trChunkFetch(lines, tl).catch(() => null)));
+    res.forEach((out, bi) => { if (!out) return; batch[bi].forEach((src, li) => { if (out[li] != null) trCache.set(tl + " " + src, out[li]); }); });
+  }
+  for (const n of nodes){ const src = n.__trOrig, tr = trCache.get(tl + " " + src.trim());
+    if (tr != null){ const lead = (src.match(/^\s*/) || [""])[0], tail = (src.match(/\s*$/) || [""])[0]; n.nodeValue = lead + tr + tail; } }
+}
+function trRestore(root){
+  const w = document.createTreeWalker(root || document.body, NodeFilter.SHOW_TEXT, null);
+  let n; while (n = w.nextNode()){ if (n.__trOrig != null) n.nodeValue = n.__trOrig; }
+}
+const trPending = new Set(); let trPendTimer = null;
+function trObserve(){
+  if (trObserver) trObserver.disconnect();
+  trObserver = new MutationObserver(muts => {
+    if (trLang === "en") return;
+    for (const m of muts){ m.addedNodes && m.addedNodes.forEach(nd => {          // accumulate across batches so a
+      if (nd.nodeType === 1) trPending.add(nd);                                   // burst of mutations never loses roots
+      else if (nd.nodeType === 3 && nd.parentElement) trPending.add(nd.parentElement); }); }
+    if (trPending.size){ clearTimeout(trPendTimer); trPendTimer = setTimeout(() => {
+      const roots = [...trPending]; trPending.clear();
+      roots.forEach(r => { if (r.isConnected) trApply(r, trLang); });
+    }, 150); }
+  });
+  trObserver.observe(document.body, { childList: true, subtree: true });
+}
+function updateLangBtn(code){ const b = document.getElementById("lang-btn"); if (b) b.classList.toggle("on", !!code && code !== "en"); }
+async function setLang(code){
+  trLang = code; localStorage.setItem("wmx_lang", code);
+  updateLangBtn(code); closeLangPop();
+  document.documentElement.setAttribute("lang", code);
+  if (code === "en"){ trRestore(document.body); if (trObserver) trObserver.disconnect(); return; }
+  await trApply(document.body, code); trObserve();
+}
+function openLangPop(){
+  const pop = document.getElementById("lang-pop"); if (!pop) return;
+  const cur = trLang;
+  pop.innerHTML = `<div class="lang-pop__hd">🌐 Translate this site</div>
+    <input class="lang-search" id="lang-search" type="search" placeholder="search ${TR_LANGS.length} languages…" autocomplete="off" autocapitalize="off" spellcheck="false" />
+    <div class="lang-scroll" id="lang-scroll">
+      <button class="lang-item${cur === "en" ? " on" : ""}" data-code="en">English <small>(original)</small></button>
+      ${TR_LANGS.map(l => `<button class="lang-item${cur === l.code ? " on" : ""}" data-code="${l.code}">${esc(l.name)}</button>`).join("")}
+    </div>
+    <div class="lang-note">machine-translated · song &amp; artist names may translate too</div>`;
+  pop.hidden = false;
+  pop.querySelectorAll(".lang-item").forEach(b => b.onclick = () => setLang(b.dataset.code));
+  const s = document.getElementById("lang-search");
+  s.oninput = () => { const q = s.value.toLowerCase(); pop.querySelectorAll(".lang-item").forEach(b => b.style.display = b.textContent.toLowerCase().includes(q) ? "" : "none"); };
+  setTimeout(() => s.focus(), 50);
+}
+function closeLangPop(){ const p = document.getElementById("lang-pop"); if (p) p.hidden = true; }
+document.getElementById("lang-btn").onclick = () => { const p = document.getElementById("lang-pop"); (p && !p.hidden) ? closeLangPop() : openLangPop(); };
+document.addEventListener("click", e => { const p = document.getElementById("lang-pop"); if (p && !p.hidden && !p.contains(e.target) && e.target.id !== "lang-btn") closeLangPop(); });
+updateLangBtn(trLang);
+if (trLang !== "en"){                                            // restore saved language on load
+  document.documentElement.setAttribute("lang", trLang);
+  trApply(document.body, trLang).then(trObserve);
+}
 updateFavCount();
 importFavsFromHash();   // if opened via a "sync devices" link, merge those favorites in
 

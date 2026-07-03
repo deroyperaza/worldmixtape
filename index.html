@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Anton&family=Permanent+Marker&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=145" />
+<link rel="stylesheet" href="styles.css?v=147" />
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=3" />
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=3" />
 <link rel="icon" type="image/svg+xml" href="WMT-Icon.svg" />
@@ -48,6 +48,7 @@
 
   <!-- top-right controls: favorites + shuffle -->
   <div class="topctrls">
+    <button class="lang-btn" id="lang-btn" aria-label="Translate this site">🌐</button>
     <button class="search-btn" id="search-btn" aria-label="Search songs">🔍</button>
     <button class="faves-btn" id="faves-btn" aria-label="Favorites"><span class="faves-btn__h" aria-hidden="true">♥</span><i id="fav-count">0</i></button>
     <!-- spin the globe: random tracks, optionally filtered by country / era / genre -->
@@ -59,6 +60,7 @@
     </div>
   </div>
   <div class="shuffle-pop" id="shuffle-pop" hidden></div>
+  <div class="lang-pop" id="lang-pop" hidden></div>
 
   <!-- the map = the navigation -->
   <main id="map-wrap" class="map-wrap">
@@ -145,7 +147,7 @@
   <!-- per-country history timelines (defines COUNTRY_TIMELINES; loaded before app.js) -->
   <script src="country_timelines.js?v=3"></script>
   <script src="country_music.js?v=1"></script>
-  <script src="app.js?v=163"></script>
+  <script src="app.js?v=165"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
