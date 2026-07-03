@@ -180,6 +180,9 @@ body{
 .brand__about:hover{transform:rotate(-1deg) translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
 /* desktop: tuck the about link into the bottom-left corner instead of floating in the header */
 @media(min-width:681px){ .brand__about{position:fixed;left:18px;bottom:18px;margin:0;z-index:46} }
+/* about pill: lower-left on mobile too */
+@media(max-width:680px){ .brand__about{position:fixed;left:14px;bottom:16px;margin:0;z-index:46} }
+
 
 /* map */
 .map-wrap{position:fixed;inset:26px 0 0 0;display:block}

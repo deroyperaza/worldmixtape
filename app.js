@@ -2431,6 +2431,10 @@ const COUNTRY_INFO = {
 const info = document.getElementById("info");
 const infoInner = document.getElementById("info-inner");
 
+// Prepend "the" for country names that read wrong without it (the United States, the Netherlands…)
+const TAKES_THE = new Set(["US","GB","AE","NL","PH","BS","MV","KM","SC","SB","GM","CD","CF","CG","DO","CI"]);
+function theName(code, name){ return TAKES_THE.has(code) ? "the " + name : name; }
+
 function openInfo(code){
   const d = COUNTRY_INFO[code]; if (!d) return;
   const c = COUNTRIES[code];
@@ -2486,7 +2490,7 @@ function openInfo(code){
   const tl = (typeof COUNTRY_TIMELINES !== "undefined" && COUNTRY_TIMELINES[code] && COUNTRY_TIMELINES[code].length) ? COUNTRY_TIMELINES[code] : null;
   const timelineHtml = (tl && tl.length) ? `
     <div class="info-timeline">
-      <h3>⏳ A short history of ${esc(c.name)}</h3>
+      <h3>⏳ A short history of ${esc(theName(code, c.name))}</h3>
       <ol class="tl">
         ${tl.map(e => `
           <li class="tl__row">
@@ -2505,7 +2509,7 @@ function openInfo(code){
   const mh = (typeof COUNTRY_MUSIC !== "undefined" && COUNTRY_MUSIC[code] && COUNTRY_MUSIC[code].length) ? COUNTRY_MUSIC[code] : null;
   const musicHtml = mh ? `
     <div class="info-music">
-      <h3>🎵 The sound of ${esc(c.name)}</h3>
+      <h3>🎵 The sound of ${esc(theName(code, c.name))}</h3>
       ${mh.map(p => `<p>${esc(p)}</p>`).join("")}
     </div>` : "";
 
