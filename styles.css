@@ -429,7 +429,7 @@ body.list-view::before{content:"";position:fixed;top:26px;left:0;right:0;height:
   background:linear-gradient(180deg,rgba(10,9,22,.98) 0%,rgba(10,9,22,.93) 30%,rgba(10,9,22,.74) 56%,rgba(10,9,22,.4) 80%,transparent 100%)}
 body.list-view .clist{display:block}
 body.list-view #map{display:none}
-.clist__sec{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+.clist__sec{display:flex;flex-wrap:wrap;column-gap:14px;row-gap:28px;align-items:flex-start}
 /* block (not flex) so the name is inline → its sticker background hugs each line when a long name wraps
    (e.g. "Central African Republic" becomes two hugging blocks instead of one full-width bar) */
 .clist__item{display:block;background:none;border:none;cursor:pointer;padding:0;text-align:left;width:max-content;max-width:100%;transform:rotate(-1deg)}
@@ -498,7 +498,7 @@ body.list-view #map{display:none}
 .clist__head{margin-bottom:22px}
 @media (max-width:680px){
   .view-toggle{display:none}
-  .clist__sec{flex-direction:column;flex-wrap:nowrap;align-items:center;text-align:center;gap:22px}
+  .clist__sec{flex-direction:column;flex-wrap:nowrap;align-items:center;text-align:center;gap:26px}
 }
 
 /* ===================== COUNTRY INFO / "DOSSIER" OVERLAY ===================== */
