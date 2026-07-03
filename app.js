@@ -418,7 +418,7 @@ function mixAccent(m){
   if (m.kind==="country" && COUNTRIES[m.key]) return COUNTRIES[m.key].color;
   const VC = {latenight:"#8B77F8",slowroast:"#2AABCC",dancefloor:"#FF4D00",windowsdown:"#c8e64f",cypher:"#ff2e92",carnival:"#12a58c",folkroots:"#f4a08a"};
   if (m.kind==="vibe" && VC[m.key]) return VC[m.key];
-  return ({passport:"#2AABCC",region:"#12a58c",diaspora:"#8B77F8",decade:"#FF4D00",crosscut:"#ff2e92",artist:"#c8e64f"})[m.kind] || "#ff2e92";
+  return ({passport:"#2AABCC",region:"#12a58c",diaspora:"#8B77F8",decade:"#FF4D00",crosscut:"#ff2e92",artist:"#c8e64f",saved:"#00e5ff"})[m.kind] || "#ff2e92";
 }
 const MIN_SEEDS = 3, MAX_SEEDS = 6, REC_RATIO = 3;   // per mixtape: detect ≥3 saved seeds, fill 3 recs per seed
 
@@ -539,13 +539,78 @@ function mixCollage(tracks){
   while (covers.length < 4) covers.push(null);
   return `<span class="mix-cov">${covers.map(c => c ? `<img loading="lazy" src="${esc(c)}" alt="">` : `<span class="mix-cov__x"></span>`).join("")}</span>`;
 }
+// ---- saved mixtapes (user-made from search) — persist in localStorage ----
+const MIX_KEY = "wmx_mixes_v1";
+let savedMixes = (() => { try { return JSON.parse(localStorage.getItem(MIX_KEY)) || []; } catch { return []; } })();
+function saveMixes(){ try { localStorage.setItem(MIX_KEY, JSON.stringify(savedMixes)); } catch {} }
+function addSavedMix(name, tracks){
+  const seen = new Set(), uniq = [];
+  tracks.forEach(t => { const id=String(t.trackId); if(!seen.has(id)){ seen.add(id); uniq.push(favRecord(t, t._cc)); } });
+  const m = { id:"saved_"+Date.now().toString(36), kind:"saved", emoji:"🔍", name:(name||"Search mix").slice(0,44),
+    sub:"saved from search", tracks:uniq.slice(0,50), createdAt:Date.now() };
+  savedMixes.unshift(m); saveMixes(); return m;
+}
+function deleteSavedMix(id){ savedMixes = savedMixes.filter(m => m.id !== id); saveMixes(); }
+
+// ---- search across the whole catalog: artist / title / genre / country / region / year / decade ----
+const _sfold = s => (s||"").normalize("NFKD").replace(/[̀-ͯ]/g,"").toLowerCase();
+function searchCatalog(q){
+  q = _sfold((q||"").trim()); if (q.length < 2) return { hits:[], total:0 };
+  const terms = q.split(/\s+/).filter(Boolean);
+  const hits = [], seen = new Set(); let total = 0;
+  for (const t of catalogFlat()){
+    const cc = t._cc, C = COUNTRIES[cc];
+    const hay = _sfold(t.artist+" "+t.title+" "+(t.genre||"")+" "+((C&&C.name)||"")+" "+(CODE_REGION[cc]||"")+" "+(t.year||"")+" "+(t.decade||""));
+    if (terms.every(term => hay.includes(term))){
+      total++;
+      const id = String(t.trackId); if (seen.has(id)) continue; seen.add(id);
+      if (hits.length < 200) hits.push(t);
+    }
+  }
+  return { hits, total };
+}
+let lastSearch = { q:"", hits:[] };
+function openSearch(){
+  activeCode = null; currentEra = null; currentGenre = null; viewingMix = null;
+  inner.innerHTML = `<div class="jhead jhead--search">
+      <div class="jhead__top"><div class="jhead__flag jhead__flag--ico" style="--accent:var(--cyan)">🔍</div>
+        <h2 class="jhead__name" style="--accent:var(--cyan)">Search</h2></div>
+      <input class="search-input" id="search-input" type="search" placeholder="artist · song · genre · country · region · year…" autocomplete="off" autocapitalize="off" spellcheck="false" />
+      <div class="search-meta" id="search-meta">search 22,000+ local songs across every country</div>
+      <div class="search-actions" id="search-actions"></div>
+    </div>
+    <div id="tracklist"></div>`;
+  const inp = inner.querySelector("#search-input");
+  const meta = inner.querySelector("#search-meta"), acts = inner.querySelector("#search-actions"), tl = () => inner.querySelector("#tracklist");
+  const run = () => {
+    const q = inp.value;
+    if (q.trim().length < 2){ meta.textContent = "search 22,000+ local songs across every country"; acts.innerHTML = ""; tl().innerHTML = ""; queue = []; lastSearch = {q:"", hits:[]}; return; }
+    const { hits, total } = searchCatalog(q); lastSearch = { q, hits };
+    meta.textContent = total ? (total + " result" + (total!==1?"s":"") + (total>hits.length ? " · showing first "+hits.length : "")) : "";
+    acts.innerHTML = hits.length ? `<button class="mix-btn mix-btn--make" id="search-make">🔍 Make mixtape</button>` : "";
+    const mk = inner.querySelector("#search-make"); if (mk) mk.onclick = () => makeMixFromSearch(q, hits);
+    if (hits.length){ queue = hits; qIndex = -1; renderTracks(hits); }
+    else tl().innerHTML = `<div class="empty">no matches for<br><em>${esc(q)}</em><small>try an artist, genre, country, region or year.</small></div>`;
+  };
+  inp.oninput = run;
+  openPanel(); setShuf(""); setTimeout(() => inp.focus(), 60);
+}
+function makeMixFromSearch(q, hits){
+  if (!hits || !hits.length) return;
+  const nm = q.trim().replace(/\s+/g, " ");
+  const m = addSavedMix(cap(nm), hits);
+  flashToast(`saved "${m.name}" to your mixtapes 🔍`);
+  openFavorites();
+}
+
 function renderMixStrip(){
   const el = inner.querySelector("#mixtapes"); if (!el) return;
-  currentMixes = buildMixtapes(favs);
+  currentMixes = savedMixes.concat(buildMixtapes(favs));   // user-saved (🔍) first, then auto-generated (✦)
   if (!currentMixes.length){ el.innerHTML = ""; return; }
-  el.innerHTML = `<div class="mix-head"><span class="mix-head__t">🎧 Your Mixtapes</span><span class="mix-head__s">auto-mixed from your favorites — tap to play, share to send</span></div>
+  el.innerHTML = `<div class="mix-head"><span class="mix-head__t">🎧 Your Mixtapes</span><span class="mix-head__s">🔍 saved from search · ✦ auto-mixed from your favorites</span></div>
     <div class="mix-row">${currentMixes.map((m,i)=>`
       <button class="mix-card" data-i="${i}" style="--accent:${mixAccent(m)}">
+        <span class="mix-card__sticker mix-card__sticker--${m.kind==="saved"?"search":"auto"}" title="${m.kind==="saved"?"Saved from a search":"Auto-generated from your favorites"}" aria-hidden="true">${m.kind==="saved"?"🔍":"✦"}</span>
         ${mixCollage(m.tracks)}
         <span class="mix-card__body"><span class="mix-card__name">${m.emoji} ${esc(m.name)}</span>
         <span class="mix-card__sub">${esc(m.sub)}</span>
@@ -566,6 +631,7 @@ function openMixtape(m){
       <button class="mix-btn mix-btn--play" id="mix-play">▶ Play</button>
       <button class="mix-btn" id="mix-shuf">🔀 Shuffle</button>
       ${shared ? `<button class="mix-btn" id="mix-save">♥ Save these</button>` : ``}
+      ${m.kind==="saved" ? `<button class="mix-btn mix-btn--del" id="mix-del">🗑 Remove</button>` : ``}
       <button class="mix-btn mix-btn--share" id="mix-share">✈️ Share</button>
     </div></div>
     <div id="tracklist"></div>`;
@@ -576,6 +642,8 @@ function openMixtape(m){
   inner.querySelector("#mix-play").onclick = () => { showList(m.tracks); play(0); };
   inner.querySelector("#mix-shuf").onclick = () => { showList(mixShuf(m.tracks)); play(0); };
   inner.querySelector("#mix-share").onclick = () => shareMixtape(m);
+  const del = inner.querySelector("#mix-del");
+  if (del) del.onclick = () => { deleteSavedMix(m.id); viewingMix = null; flashToast("mixtape removed"); openFavorites(); };
   const sv = inner.querySelector("#mix-save");
   if (sv) sv.onclick = () => { let n=0; m.tracks.forEach(t => { if(!isFav(t.trackId)){ toggleFav(t, t._cc); n++; } }); refreshFavHearts(); flashToast(n ? (n+" track"+(n>1?"s":"")+" saved to your favorites ♥") : "already in your favorites"); };
   showList(m.tracks);
@@ -1131,6 +1199,7 @@ document.getElementById("p-fav").onclick = () => {
   toggleFav(queue[qIndex], queue[qIndex]._cc || activeCode); refreshFavHearts();
 };
 document.getElementById("faves-btn").onclick = openFavorites;
+document.getElementById("search-btn").onclick = openSearch;
 updateFavCount();
 importFavsFromHash();   // if opened via a "sync devices" link, merge those favorites in
 
@@ -1384,6 +1453,250 @@ const wmFile = f => `https://commons.wikimedia.org/wiki/Special:FilePath/${encod
 const wmFace = f => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=320`;   // small headshots
 
 const COUNTRY_INFO = {
+  NC: {
+    tagline: "Le Caillou · a Kanak-French archipelago wrapped in the world's largest lagoon",
+    photos: [
+      { f: "View_over_Noumea.jpg",                                  cap: "Nouméa · the territory's capital" },
+      { f: "Isle_of_Pines.jpg",                                     cap: "Île des Pins · the 'closest island to paradise'" },
+      { f: "Lagoons_and_Reefs_of_New_Caledonia_May_10,_2001.jpg",   cap: "The lagoon · a UNESCO World Heritage reef" },
+      { f: "Nouméa_Phare_Amédée.JPG",                               cap: "Amédée Lighthouse · off Nouméa" },
+      { f: "Lifou_falaises_Xodre.JPG",                              cap: "The cliffs of Xodre · Lifou" },
+      { f: "Le_pont_de_mouli.jpg",                                  cap: "Mouli Bridge · Ouvéa" },
+      { f: "Plagepoindimié.JPG",                                    cap: "Poindimié · the east coast" },
+      { f: "Vue_aérienne_Bourail.JPG",                              cap: "Bourail · rural Grande Terre" },
+      { f: "LeMont-DoreGrandeRue.jpg",                              cap: "Le Mont-Dore · greater Nouméa" },
+    ],
+    video: { id: "Wqxgn0zMqkg", title: "New Caledonia: The Island Paradise You've Never Heard Of", by: "Best Travel" },
+    cities: [
+      { name: "Nouméa",     lng: 166.46, lat: -22.28, capital: true },
+      { name: "Dumbéa",     lng: 166.45, lat: -22.15 },
+      { name: "Bourail",    lng: 165.49, lat: -21.57 },
+      { name: "Koné",       lng: 164.86, lat: -21.06 },
+      { name: "Poindimié",  lng: 165.33, lat: -20.93 },
+      { name: "Wé (Lifou)", lng: 167.27, lat: -20.91 },
+      { name: "Vao",        lng: 167.48, lat: -22.67 },
+    ],
+    maps: "https://www.google.com/maps/place/New+Caledonia/@-21.3,165.5,6z",
+    facts: {
+      capital:    "Nouméa",
+      population: "≈ 271,000 (2019)",
+      languages:  "French (official) · 28 Kanak languages (Drehu, Nengone, Paicî…)",
+      langCount:  "≈ 40 languages spoken in total",
+      independence:"None — a 'sui generis' collectivity of France; three votes on independence (2018, 2020, 2021) all narrowly said no",
+      government: "Overseas territory of France, with its own Congress and government",
+      etymology:  "Named by Captain James Cook in 1774 — <em>Caledonia</em> is the old Latin name for Scotland, which the island's hills reminded him of.",
+    },
+    people: [
+      { n: "Ataï",              r: "Kanak high chief who led the great 1878 revolt against French rule" },
+      { n: "Jean-Marie Tjibaou", r: "Kanak independence leader; signed the peace accords, killed in 1989" },
+      { n: "Louise Michel",     r: "French revolutionary exiled here in 1873; took the side of the Kanak", img: "Louise_Michel2.jpg" },
+      { n: "Éloi Machoro",      r: "fiery Kanak independence figure of the 1980s struggle" },
+      { n: "Jacques Lafleur",   r: "loyalist leader who signed the 1998 Nouméa Accord" },
+    ],
+    writer: { n: "Déwé Gorodé", r: "first major Kanak woman writer; former vice-president" },
+    sports: { n: "Christian Karembeu", r: "Kanak footballer — 1998 World Cup winner with France", img: "Christian_Karembeu_in_2017.jpg" },
+    timeline: [
+      { y: "c.1000 BC", t: "The first islanders",     d: "Seafaring Lapita people settle these islands. Their descendants, the Kanak, live here for thousands of years before any European arrives." },
+      { y: "1774",      t: "Cook names it",            d: "British explorer James Cook sails past and names the main island 'New Caledonia' because its hills remind him of Scotland." },
+      { y: "1853",      t: "France takes over",        d: "France annexes New Caledonia and soon turns it into a prison colony, shipping in thousands of convicts from Europe." },
+      { y: "1864",      t: "The nickel rush",          d: "Huge deposits of nickel are found. Mining makes the colony rich — but the wealth mostly bypasses the Kanak, who are pushed off their land." },
+      { y: "1878",      t: "The great Kanak revolt",   d: "Chief Ataï leads an uprising against the loss of Kanak land. It is crushed, Ataï is killed, and the Kanak are confined to small reserves." },
+      { y: "1940s–60s", t: "A wider world",            d: "The harsh 'indigénat' rules are lifted, the Kanak win the vote, and New Caledonia becomes an overseas territory of France." },
+      { y: "1980s",     t: "'Les Événements'",         d: "A violent struggle over independence — 'the Events' — grips the islands, peaking in the deadly 1988 Ouvéa cave hostage crisis." },
+      { y: "1988–98",   t: "Peace accords",            d: "The Matignon and Nouméa Accords end the fighting and promise future votes on independence, plus more power for the Kanak." },
+      { y: "2018–2021", t: "Three referendums",        d: "New Caledonians vote three times on leaving France. Each time 'no' wins, but the last vote is boycotted by many Kanak, leaving the question unsettled." },
+      { y: "2024",      t: "Riots over voting rights", d: "A French plan to change who can vote sparks deadly riots in Nouméa, causing billions in damage and reopening the wound over the islands' future." },
+    ],
+    sources: [
+      { label: "Photos",           detail: "Wikimedia Commons — CC-licensed, individual contributors", url: "https://commons.wikimedia.org/wiki/Category:New_Caledonia" },
+      { label: "Facts & figures",  detail: "Wikipedia — \"New Caledonia\" & related articles",          url: "https://en.wikipedia.org/wiki/New_Caledonia" },
+      { label: "History timeline", detail: "Wikipedia — \"History of New Caledonia\"",                  url: "https://en.wikipedia.org/wiki/History_of_New_Caledonia" },
+      { label: "Travel film",      detail: "YouTube — \"New Caledonia: The Island Paradise…\" · Best Travel", url: "https://www.youtube.com/watch?v=Wqxgn0zMqkg" },
+      { label: "Map outline",      detail: "Natural Earth via world-atlas — public domain",             url: "https://www.naturalearthdata.com/" },
+      { label: "Location",         detail: "Google Maps",                                               url: "https://www.google.com/maps/place/New+Caledonia/@-21.3,165.5,6z" },
+    ],
+  },
+  EH: {
+    tagline: "Africa's last colony · desert, Atlantic wind, and a people still waiting",
+    photos: [
+      { f: "El_Aaiún-Laâyoune_Collage.png",   cap: "Laâyoune (El Aaiún) · the largest city" },
+      { f: "Dakhla,_Western_Sahara_(11).jpg", cap: "Dakhla · a peninsula between desert and ocean" },
+      { f: "Boujdour.jpg",                    cap: "Boujdour · on the Atlantic coast" },
+      { f: "Smara,rooftopE.jpg",              cap: "Smara · the old desert caravan town" },
+      { f: "Tifariti_2005.jpg",               cap: "Tifariti · in the Polisario-held 'Free Zone'" },
+      { f: "Bir_Lehlu_school.jpg",            cap: "Bir Lehlou · seat of the Sahrawi republic-in-exile" },
+      { f: "ElAiounrefugeecamp.jpg",          cap: "A Sahrawi refugee camp near Tindouf, Algeria" },
+      { f: "Laguera_view.jpg",                cap: "La Güera · an abandoned town at the far south" },
+    ],
+    video: { id: "Z_5pr4Ya6qc", title: "Exploring Dakhla — the Western Sahara's coast", by: "Drifter Dave" },
+    cities: [
+      { name: "Laâyoune",   lng: -13.20, lat: 27.15, capital: true },
+      { name: "Dakhla",     lng: -15.93, lat: 23.68 },
+      { name: "Smara",      lng: -11.67, lat: 26.74 },
+      { name: "Boujdour",   lng: -14.48, lat: 26.13 },
+      { name: "Tifariti",   lng: -10.61, lat: 26.16 },
+      { name: "Bir Lehlou", lng:  -9.62, lat: 26.34 },
+    ],
+    maps: "https://www.google.com/maps/place/Western+Sahara/@24.5,-13.0,6z",
+    facts: {
+      capital:    "Laâyoune (El Aaiún) — largest city; the exiled Sahrawi republic runs from Tifariti",
+      population: "≈ 600,000",
+      languages:  "Hassaniya Arabic · Modern Standard Arabic & Spanish also used",
+      langCount:  "≈ 4 languages spoken in total",
+      independence:"Disputed — Spain left in 1975; claimed by Morocco (which controls ~80%) and by the Sahrawi Arab Democratic Republic, declared 1976",
+      government: "Split between a Moroccan-run zone and a Polisario-run 'Free Zone'; the UN calls it a 'non-self-governing territory'",
+      etymology:  "'Sahara' is Arabic for 'desert' (<em>ṣaḥrāʾ</em>) — this is simply the western part of the great desert.",
+    },
+    people: [
+      { n: "Ma al-Aynayn",            r: "sheikh who founded Smara and fought the European colonists" },
+      { n: "El-Ouali Mustapha Sayed", r: "founder of the Polisario Front independence movement" },
+      { n: "Mohamed Abdelaziz",       r: "led the Sahrawi republic for 40 years (1976–2016)", img: "Mohamed_Abdelaziz,_2005.jpg" },
+      { n: "Brahim Ghali",            r: "Polisario leader and Sahrawi president", img: "Brahim_Ghali.jpg" },
+      { n: "Aminatou Haidar",         r: "nonviolent activist — the 'Sahrawi Gandhi'", img: "Aminatou_Haidar_meeting_an_old_friend_on_her_departure_from_prison_(2006)..jpg" },
+    ],
+    music:  { n: "Mariem Hassan",     r: "the singing voice of Western Sahara", img: "Mariem_Hassan.jpg" },
+    writer: { n: "Bahia Mahmud Awah", r: "Sahrawi poet and scholar writing from exile", img: "Bahia_Mahmud_Awah.JPG" },
+    timeline: [
+      { y: "old times", t: "People of the desert",         d: "For centuries, nomadic Sahrawi tribes cross this stretch of the Sahara with their camels, living by herding and trade." },
+      { y: "1884",      t: "Spain claims the coast",       d: "During Europe's 'scramble for Africa', Spain takes the coast and calls it Spanish Sahara." },
+      { y: "1934",      t: "Full Spanish control",         d: "With French help, Spain finally controls the whole interior after decades of Sahrawi resistance." },
+      { y: "1973",      t: "The Polisario Front",          d: "Sahrawi fighters form the Polisario Front to win independence — first from Spain, then from their neighbours." },
+      { y: "1975",      t: "The Green March",              d: "As Spain pulls out, Morocco sends 350,000 people marching in to claim the land. Most Sahrawi flee into the desert, and war begins." },
+      { y: "1976",      t: "A republic in exile",          d: "The Polisario declares the Sahrawi Arab Democratic Republic. Tens of thousands settle in refugee camps in Algeria, where many still live today." },
+      { y: "1991",      t: "Ceasefire and a promise",      d: "A UN ceasefire ends the war with a promise of a vote on independence. That vote has still never happened." },
+      { y: "2020",      t: "The war restarts",             d: "After 29 years, fighting flares again along the giant sand wall Morocco built across the desert." },
+      { y: "2020–today",t: "Big powers pick a side",       d: "The U.S., then Spain and France, back Morocco's plan for control — while the Sahrawi keep waiting for the vote they were promised." },
+    ],
+    sources: [
+      { label: "Photos",           detail: "Wikimedia Commons — CC-licensed, individual contributors", url: "https://commons.wikimedia.org/wiki/Category:Western_Sahara" },
+      { label: "Facts & figures",  detail: "Wikipedia — \"Western Sahara\" & related articles",         url: "https://en.wikipedia.org/wiki/Western_Sahara" },
+      { label: "History timeline", detail: "Wikipedia — \"History of Western Sahara\"",                 url: "https://en.wikipedia.org/wiki/History_of_Western_Sahara" },
+      { label: "Travel film",      detail: "YouTube — \"Exploring Dakhla\" · Drifter Dave",             url: "https://www.youtube.com/watch?v=Z_5pr4Ya6qc" },
+      { label: "Map outline",      detail: "Natural Earth via world-atlas — public domain",            url: "https://www.naturalearthdata.com/" },
+      { label: "Location",         detail: "Google Maps",                                              url: "https://www.google.com/maps/place/Western+Sahara/@24.5,-13.0,6z" },
+    ],
+  },
+  XK: {
+    tagline: "Europe's youngest country · a new flag over ancient valleys",
+    photos: [
+      { f: "Prishtina_seen_from_Mother_Theresa_Cathedral.jpg",                cap: "Pristina · the capital" },
+      { f: "NEWBORN_Monument.jpg",                                            cap: "The NEWBORN monument · unveiled at independence, 2008" },
+      { f: "37_Prizreni_-_Xhamia_e_Sinan_Pashës_-_The_Sinan_Pasha_Moscue.JPG", cap: "Prizren · the Sinan Pasha Mosque" },
+      { f: "Gračanica_Monastery,_2013-1.jpg",                                 cap: "Gračanica · a Serbian Orthodox monastery (UNESCO)" },
+      { f: "Manastir_Visoki_Dečani_(Манастир_Високи_Дечани)_-_by_Pudelek..jpg", cap: "Visoki Dečani Monastery (UNESCO)" },
+      { f: "Peja_from_Veljak_Peak_-2014_m_alt.JPG",                           cap: "Peja · beneath the Accursed Mountains" },
+      { f: "Rugova_Canyon.jpg",                                               cap: "Rugova Canyon" },
+      { f: "07_Gjakova_Naten_Gjakova_at_Night.jpg",                           cap: "Gjakova's old bazaar at night" },
+      { f: "Ferizaj_Church_and_Mosque.JPG",                                   cap: "Ferizaj · a church and mosque side by side" },
+    ],
+    video: { id: "gf52I3aVfyg", title: "The ultimate tour of Kosovo — Pristina to Prizren", by: "Autour du monde" },
+    cities: [
+      { name: "Pristina",  lng: 21.17, lat: 42.67, capital: true },
+      { name: "Prizren",   lng: 20.74, lat: 42.21 },
+      { name: "Peja",      lng: 20.30, lat: 42.66 },
+      { name: "Gjakova",   lng: 20.43, lat: 42.38 },
+      { name: "Ferizaj",   lng: 21.16, lat: 42.37 },
+      { name: "Mitrovica", lng: 20.87, lat: 42.89 },
+      { name: "Gjilan",    lng: 21.47, lat: 42.46 },
+    ],
+    maps: "https://www.google.com/maps/place/Kosovo/@42.6,20.9,8z",
+    facts: {
+      capital:    "Pristina",
+      population: "≈ 1.6 million",
+      languages:  "Albanian & Serbian (both official) · Bosnian, Turkish & Romani too",
+      langCount:  "≈ 5 languages spoken in total",
+      independence:"February 17, 2008 — from Serbia (recognised by about 100 countries, but not all)",
+      government: "Unitary parliamentary republic",
+      etymology:  "From the Serbian <em>kos</em> ('blackbird') — 'Kosovo Polje' means 'field of blackbirds', the plain of the famous 1389 battle.",
+    },
+    people: [
+      { n: "Isa Boletini",    r: "guerrilla hero of the Albanian independence struggle", img: "Isa_Boletini,_Dutch_Military_Mission_(1914)_(cropped).jpg" },
+      { n: "Hasan Prishtina", r: "early-1900s statesman of the Albanian national cause", img: "Hasan_Prishtina_(portrait).jpg" },
+      { n: "Ibrahim Rugova",  r: "first president — the pacifist 'Gandhi of the Balkans'", img: "Dr._Ibrahim_Rugova.jpg" },
+      { n: "Adem Jashari",    r: "KLA founder killed in 1998 — a symbol of the war", img: "Adem_Jashari.jpg" },
+      { n: "Fehmi Agani",     r: "scholar and peace negotiator, killed in the 1999 war", img: "Fehmi_Agani.jpg" },
+    ],
+    music:  { n: "Dua Lipa",          r: "global pop superstar of Kosovar-Albanian roots", img: "Dua_Lipa-69798_(cropped).jpg" },
+    stage:  { n: "Bekim Fehmiu",      r: "acclaimed actor — a Balkan screen legend", img: "Odissea_Bekim_Fehmiu.jpg" },
+    sports: { n: "Majlinda Kelmendi", r: "judoka — won Kosovo's first-ever Olympic gold, 2016", img: "Memli_Krasniqi_meeting_Majlinda_Kelmendi_(cropped).JPG" },
+    timeline: [
+      { y: "1389",       t: "The Battle of Kosovo",       d: "Serbian and Ottoman armies clash on the 'field of blackbirds'. It becomes the most famous moment in Serbian history, and the Ottomans go on to rule for 500 years." },
+      { y: "1455–1912",  t: "Ottoman centuries",          d: "Kosovo is part of the Ottoman Empire. Over time most people become Muslim, and it becomes home to both Albanians and Serbs." },
+      { y: "1912–13",    t: "Handed to Serbia",           d: "The Balkan Wars end Ottoman rule, and Kosovo becomes part of Serbia — and later of Yugoslavia." },
+      { y: "1974",       t: "A taste of self-rule",       d: "Inside Yugoslavia, Kosovo — now mostly ethnic Albanian — is granted wide autonomy." },
+      { y: "1989",       t: "Autonomy stripped away",     d: "Serbian leader Slobodan Milošević removes Kosovo's self-rule, and tensions between Albanians and Serbs boil over." },
+      { y: "1998–99",    t: "War and ethnic cleansing",   d: "War erupts between Serbian forces and Albanian fighters. Thousands are killed and hundreds of thousands driven from their homes, until NATO bombing forces Serbia out." },
+      { y: "1999",       t: "Under UN protection",        d: "Kosovo is placed under United Nations administration while its future is decided." },
+      { y: "2008",       t: "Independence declared",      d: "Kosovo declares itself an independent country. Many nations recognise it; Serbia and some others still do not." },
+      { y: "2013–today", t: "Slowly normalising",         d: "Kosovo and Serbia begin EU-backed talks to ease tensions, but flare-ups in the Serb-majority north keep the peace fragile." },
+    ],
+    sources: [
+      { label: "Photos",           detail: "Wikimedia Commons — CC-licensed, individual contributors", url: "https://commons.wikimedia.org/wiki/Category:Kosovo" },
+      { label: "Facts & figures",  detail: "Wikipedia — \"Kosovo\" & related articles",                url: "https://en.wikipedia.org/wiki/Kosovo" },
+      { label: "History timeline", detail: "Wikipedia — \"History of Kosovo\"",                        url: "https://en.wikipedia.org/wiki/History_of_Kosovo" },
+      { label: "Travel film",      detail: "YouTube — \"The ultimate tour of Kosovo\" · Autour du monde", url: "https://www.youtube.com/watch?v=gf52I3aVfyg" },
+      { label: "Map outline",      detail: "Natural Earth via world-atlas — public domain",            url: "https://www.naturalearthdata.com/" },
+      { label: "Location",         detail: "Google Maps",                                              url: "https://www.google.com/maps/place/Kosovo/@42.6,20.9,8z" },
+    ],
+  },
+  XG: {
+    tagline: "The Horn's quiet success · a country the world won't name",
+    photos: [
+      { f: "HargeisaDrone.jpg",                        cap: "Hargeisa · the capital" },
+      { f: "Laas_Geel.jpg",                            cap: "Laas Geel · rock art up to 5,000 years old" },
+      { f: "Berbera_6666.png",                         cap: "Berbera · the Gulf of Aden port" },
+      { f: "Zeila,_Somaliland.jpg",                    cap: "Zeila · an ancient trading port" },
+      { f: "Burao,_Somaliland.jpg",                    cap: "Burao · where independence was declared" },
+      { f: "Virgins_Breast_Mountain_(3948855428).jpg", cap: "The Naasa Hablood hills near Hargeisa" },
+      { f: "Sheikh_mountain,_Somaliland.jpg",          cap: "The Sheikh mountains" },
+      { f: "Borama_2.jpg",                             cap: "Borama · in the green west" },
+    ],
+    video: { id: "M6j4o2slkPw", title: "Somaliland: The Way We See It", by: "BBC Travel Show" },
+    cities: [
+      { name: "Hargeisa", lng: 44.07, lat: 9.56, capital: true },
+      { name: "Berbera",  lng: 45.01, lat: 10.44 },
+      { name: "Burao",    lng: 45.53, lat: 9.52 },
+      { name: "Borama",   lng: 43.18, lat: 9.94 },
+      { name: "Erigavo",  lng: 47.36, lat: 10.62 },
+      { name: "Zeila",    lng: 43.47, lat: 11.35 },
+    ],
+    maps: "https://www.google.com/maps/place/Somaliland/@9.4,46.0,6z",
+    facts: {
+      capital:    "Hargeisa",
+      population: "≈ 5.7 million (estimate)",
+      languages:  "Somali (official) · Arabic also used",
+      langCount:  "≈ 3 languages spoken in total",
+      independence:"Declared May 18, 1991 — broke away from Somalia; no country officially recognises it (it was briefly independent in 1960 before uniting with Somalia)",
+      government: "De-facto republic with a president and a clan-elder upper house (the Guurti)",
+      etymology:  "'Land of the Somali people' — the name 'Somali' may come from <em>soo maal</em>, 'go and milk', a nod to a herding life.",
+    },
+    people: [
+      { n: "Mohammed Abdullah Hassan",   r: "the 'Mad Mullah' — led a 20-year revolt against British rule", img: "Sayyid_Mohammed_Abdullah_Hassan.jpeg" },
+      { n: "Muhammad Haji Ibrahim Egal", r: "PM of Somalia, later the president who rebuilt Somaliland", img: "Muhammad_Haji_Ibrahim_Egal_1968_(3x4_cropped).jpg" },
+      { n: "Abdirahman Ahmed Ali Tuur",  r: "Somaliland's first president after the 1991 break", img: "Abdirahman_Ahmed_Ali_Tuur.jpg" },
+      { n: "Edna Adan Ismail",           r: "midwife and ex-foreign minister; built a landmark hospital", img: "Edna_Adan.jpg" },
+    ],
+    writer: { n: "Hadraawi",     r: "beloved poet — the 'Somali Shakespeare'", img: "Hadrawi.jpg" },
+    music:  { n: "Sahra Halgan", r: "singer and activist — a nurse in the independence war", img: "Sahra_Halgan.jpg" },
+    timeline: [
+      { y: "old times",     t: "Rock art and trade",       d: "Long ago, herders paint cattle on the rocks at Laas Geel. Later, ports like Zeila trade with Arabia, Egypt and beyond." },
+      { y: "1888",          t: "British Somaliland",       d: "Britain makes the northern Somali coast a protectorate to guard its sea route to India." },
+      { y: "1900–1920",     t: "The Dervish revolt",       d: "Sayyid Mohammed Abdullah Hassan leads a 20-year fight against British rule before it is finally crushed from the air." },
+      { y: "1960",          t: "Five days of freedom",     d: "British Somaliland becomes independent on 26 June — then, just five days later, joins former Italian Somalia to form one big Somalia." },
+      { y: "1980s",         t: "Crackdown and war",        d: "Somalia's dictator Siad Barre brutally attacks the north; Hargeisa is bombed almost to rubble and tens of thousands die." },
+      { y: "1991",          t: "Somaliland breaks away",   d: "As Somalia collapses into chaos, the north declares independence again as the Republic of Somaliland." },
+      { y: "1990s–2000s",   t: "Building a country",       d: "While southern Somalia stays at war, Somaliland quietly makes peace among its clans, holds elections, and prints its own money." },
+      { y: "2010s–today",   t: "Still unrecognised",       d: "Somaliland runs like a real country — safe, with voting and its own army — yet not one nation officially recognises it. It keeps knocking on the world's door." },
+    ],
+    sources: [
+      { label: "Photos",           detail: "Wikimedia Commons — CC-licensed, individual contributors", url: "https://commons.wikimedia.org/wiki/Category:Somaliland" },
+      { label: "Facts & figures",  detail: "Wikipedia — \"Somaliland\" & related articles",            url: "https://en.wikipedia.org/wiki/Somaliland" },
+      { label: "History timeline", detail: "Wikipedia — \"History of Somaliland\"",                    url: "https://en.wikipedia.org/wiki/History_of_Somaliland" },
+      { label: "Travel film",      detail: "YouTube — \"Somaliland: The Way We See It\" · BBC Travel Show", url: "https://www.youtube.com/watch?v=M6j4o2slkPw" },
+      { label: "Map outline",      detail: "Natural Earth via world-atlas — public domain",            url: "https://www.naturalearthdata.com/" },
+      { label: "Location",         detail: "Google Maps",                                              url: "https://www.google.com/maps/place/Somaliland/@9.4,46.0,6z" },
+    ],
+  },
   CU: {
     tagline: "Isla Grande · the Caribbean's beating heart",
     // verified free photos (Wikimedia Commons) — major cities, landmarks, landscapes
@@ -2279,6 +2592,7 @@ function drawCountryOutline(code, svgEl){
   if (insetWrap) insetWrap.innerHTML = "";
   const iso = COUNTRIES[code] && +COUNTRIES[code].iso;
   let feat = features.find(f => +f.id === iso);
+  if (!feat && COUNTRIES[code]) feat = features.find(f => f.properties && f.properties.name === COUNTRIES[code].name);   // disputed / no-ISO territories (Kosovo, Somaliland) match the atlas by name
   if (!feat){ svgEl.innerHTML = `<text x="180" y="104" text-anchor="middle" fill="#8a83b8" font-family="Space Mono,monospace" font-size="11">map loading…</text>`; return; }
   // "Palestine" in the world-atlas outline is only the West Bank — graft on a rough Gaza Strip so it shows as land, not a lone dot
   if (code === "PS"){

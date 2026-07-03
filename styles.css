@@ -51,6 +51,28 @@ body{
 .faves-btn__h{color:var(--pink);font-size:18px;line-height:1}
 .faves-btn i{font-style:normal;font-family:"Space Mono",monospace;font-size:12px;font-weight:700;
   background:var(--pink);color:#0a0916;border-radius:8px;padding:0 6px;min-width:14px;text-align:center}
+/* search button (loop icon) */
+.search-btn{cursor:pointer;font-size:17px;line-height:1;color:var(--paper);background:#0a0916;border:3px solid var(--cyan);
+  border-radius:30px;padding:7px 12px;box-shadow:4px 4px 0 var(--cyan);transform:rotate(-2deg);transition:transform .12s}
+.search-btn:hover{transform:rotate(-2deg) scale(1.05)}
+/* search panel */
+.jhead--search .jhead__name{--accent:var(--cyan)}
+.search-input{width:100%;font-family:"Space Mono",monospace;font-size:15px;font-weight:700;padding:11px 14px;margin-top:10px;
+  border-radius:12px;border:2.5px solid var(--cyan);background:#16123a;color:#fff;box-shadow:3px 3px 0 var(--cyan)}
+.search-input::placeholder{color:#8a84b0;font-weight:400}
+.search-input:focus{outline:none;border-color:var(--pink);box-shadow:3px 3px 0 var(--pink)}
+.search-meta{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.03em;text-transform:uppercase;color:var(--cyan);opacity:.9;margin:8px 2px 0}
+.search-actions{margin-top:8px}
+.mix-btn--make{background:var(--cyan);color:#0a0916;border-color:var(--cyan)}
+.mix-btn--del{border-color:var(--pink);color:var(--pink)}
+.mix-btn--del:hover{background:var(--pink);color:#0a0916}
+/* mixtape card type stickers */
+.mix-card{position:relative}
+.mix-card__sticker{position:absolute;top:-8px;right:-8px;z-index:3;width:26px;height:26px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;line-height:1;border-radius:50%;border:2.5px solid #0a0916;transform:rotate(10deg);
+  box-shadow:1.5px 1.5px 0 rgba(0,0,0,.5)}
+.mix-card__sticker--search{background:var(--cyan);color:#0a0916}
+.mix-card__sticker--auto{background:var(--yellow);color:#0a0916;font-size:14px}
 
 /* shuffle the world — global control + filters */
 .shuffle-wrap{display:inline-flex;align-items:stretch;background:var(--yellow);border:3px solid #0a0916;
