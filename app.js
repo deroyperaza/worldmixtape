@@ -1256,8 +1256,10 @@ function buildCountryList(){
   const have = Object.entries(COUNTRIES).map(([code, c]) => ({ code, name: c.name, color: c.color }))
     .sort((a, b) => a.name.localeCompare(b.name));
   const builtNames = new Set(Object.values(COUNTRIES).map(c => c.name));   // built countries with a null TopoJSON id (Kosovo, Somaliland) drop off "coming soon" by name
+  // hide territories with no distinct streaming catalog (uninhabited / already covered elsewhere) — don't list as "coming soon"
+  const SOON_HIDE = new Set(["Falkland Is.", "Fr. S. Antarctic Lands", "N. Cyprus"]);
   const soon = [...new Set(features
-    .filter(f => +f.id !== 10 && !isoToCode[+f.id] && f.properties && f.properties.name && !builtNames.has(f.properties.name))
+    .filter(f => +f.id !== 10 && !isoToCode[+f.id] && f.properties && f.properties.name && !builtNames.has(f.properties.name) && !SOON_HIDE.has(f.properties.name))
     .map(f => f.properties.name))].sort((a, b) => a.localeCompare(b));
   clist.innerHTML =
     '<div class="clist__sec">' +
