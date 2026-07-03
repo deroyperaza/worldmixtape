@@ -638,7 +638,7 @@ body.list-view #map{display:none}
   background:var(--accent);border:3px solid #0a0916;box-shadow:0 0 0 2px var(--accent)}
 .tl__yr{display:block;font-family:"Anton",sans-serif;font-size:18px;line-height:1;color:var(--accent);
   margin-bottom:4px}
-.tl__body{min-width:0}
+.tl__body{min-width:0;max-width:600px}
 .tl__t{font-family:"Anton",sans-serif;font-size:15px;letter-spacing:.01em;color:var(--paper);line-height:1.15}
 .tl__d{margin-top:4px;font-family:"Space Mono",monospace;font-size:11.5px;line-height:1.45;color:var(--paper);opacity:.82}
 .tl__src{margin-top:12px;padding-left:28px;font-family:"Space Mono",monospace;font-size:10px;color:#8a83b8}

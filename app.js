@@ -2266,8 +2266,14 @@ function drawCountryOutline(code, svgEl){
   const insetWrap = document.getElementById("info-insets");
   if (insetWrap) insetWrap.innerHTML = "";
   const iso = COUNTRIES[code] && +COUNTRIES[code].iso;
-  const feat = features.find(f => +f.id === iso);
+  let feat = features.find(f => +f.id === iso);
   if (!feat){ svgEl.innerHTML = `<text x="180" y="104" text-anchor="middle" fill="#8a83b8" font-family="Space Mono,monospace" font-size="11">map loading…</text>`; return; }
+  // "Palestine" in the world-atlas outline is only the West Bank — graft on a rough Gaza Strip so it shows as land, not a lone dot
+  if (code === "PS"){
+    const gaza = [[34.46,31.60],[34.57,31.55],[34.29,31.23],[34.20,31.28],[34.46,31.60]];
+    const wb = feat.geometry, wbPolys = wb.type === "MultiPolygon" ? wb.coordinates : [wb.coordinates];
+    feat = { type:"Feature", id:feat.id, geometry:{ type:"MultiPolygon", coordinates:[...wbPolys, [gaza]] } };
+  }
   const color = COUNTRIES[code].color;
   const cities = (COUNTRY_INFO[code] && COUNTRY_INFO[code].cities) || [];
 
