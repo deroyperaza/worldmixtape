@@ -1,5 +1,5 @@
 /* ===== COUNTRY_TIMELINES — honest per-country history timelines (auto-assembled from scripts/timelines/*.json) =====
-   196 countries. Cuba (CU) stays inline in COUNTRY_INFO.CU.timeline; render prefers d.timeline, then this map. */
+   201 countries/territories — the SINGLE source for dossier timelines (COUNTRY_INFO no longer carries an inline timeline). */
 const COUNTRY_TIMELINES = {
   AD: [
     {y:"800s", t:"Charlemagne's legend", d:"Legend says Charlemagne freed these Pyrenees valleys from the Moors, and Andorra traces its birth to his empire."},
@@ -611,6 +611,22 @@ const COUNTRY_TIMELINES = {
     {y:"2010s", t:"A green-energy pioneer", d:"The country runs almost entirely on renewable energy and pledges to go carbon-neutral."},
     {y:"2020s–today", t:"Prosperous but pressured", d:"Costa Rica stays one of Latin America's most stable, green democracies, though rising drug-trade violence tests it."}
   ],
+  CU: [
+    {y:"1492", t:"Columbus arrives", d:"Christopher Columbus lands in Cuba and claims the island for Spain — even though the native Taíno people have already lived here for centuries."},
+    {y:"1510s", t:"Spain takes over", d:"Spanish soldiers conquer Cuba. Within a few decades, war, forced labor, and European diseases wipe out almost all of the Taíno."},
+    {y:"1500s–1800s", t:"The slave trade", d:"Spain ships hundreds of thousands of enslaved Africans to Cuba to work and die on its sugar and tobacco plantations. Slavery becomes the engine of the economy."},
+    {y:"1868", t:"First war for freedom", d:"Plantation owner Carlos Manuel de Céspedes frees his own slaves and declares war on Spain, launching Cuba's long fight for independence."},
+    {y:"1886", t:"Slavery abolished", d:"After nearly 400 years, Cuba finally ends slavery — one of the very last countries in the Americas to do so."},
+    {y:"1895", t:"Martí's independence war", d:"Poet José Martí and generals like Antonio Maceo lead a new revolt. Martí is killed in his first battle and becomes Cuba's greatest national hero."},
+    {y:"1898", t:"The U.S. steps in", d:"After the American warship USS Maine blows up in Havana's harbor, the U.S. joins the war and defeats Spain — then takes control of Cuba itself."},
+    {y:"1902", t:"Republic of Cuba", d:"Cuba becomes its own country, but the U.S. keeps the right to interfere in its affairs and holds onto the Guantánamo Bay naval base."},
+    {y:"1952", t:"Batista's dictatorship", d:"Fulgencio Batista seizes power in a coup and rules as a corrupt dictator while most Cubans stay poor."},
+    {y:"1959", t:"Castro's Revolution", d:"Fidel Castro overthrows Batista and turns Cuba into a communist state allied with the Soviet Union. He rules for nearly 50 years, and hundreds of thousands of Cubans flee the island."},
+    {y:"1962", t:"The Missile Crisis", d:"The Soviet Union secretly places nuclear missiles in Cuba. For 13 tense days the world stands on the edge of nuclear war, until the missiles are removed."},
+    {y:"1991", t:"The “Special Period”", d:"When the Soviet Union collapses, Cuba loses its biggest ally. Food, fuel, and electricity run desperately short, and the hard years drag on through the 1990s."},
+    {y:"2016", t:"Fidel Castro dies", d:"The revolution's leader dies at 90. His brother Raúl had already begun small openings, and for a brief moment Cuba and the U.S. reopened relations."},
+    {y:"2021–today", t:"Protests & exodus", d:"Cubans hold the largest protests in generations, demanding freedom and food. The economy crumbles, the power grid fails in nationwide blackouts, and record numbers of people flee the island — the biggest exodus in Cuban history."}
+  ],
   CV: [
     {y:"1456", t:"Uninhabited islands", d:"Portuguese sailors find the volcanic islands empty of people, far off West Africa's coast."},
     {y:"1462", t:"First settlement", d:"The Portuguese settle Cabo Verde, the first European colony in the tropics."},
@@ -813,6 +829,17 @@ const COUNTRY_TIMELINES = {
     {y:"1952–1956", t:"Nasser's revolution", d:"Army officers overthrow the king, and Nasser seizes the Suez Canal, becoming a hero of Arab independence."},
     {y:"2011", t:"The Arab Spring", d:"Millions fill Cairo's Tahrir Square and topple dictator Hosni Mubarak after 30 years in power."},
     {y:"2013–today", t:"The military returns", d:"General el-Sisi seizes power in a coup, crushes protest and jails thousands, while ordinary Egyptians struggle through a severe economic crisis."}
+  ],
+  EH: [
+    {y:"old times", t:"People of the desert", d:"For centuries, nomadic Sahrawi tribes cross this stretch of the Sahara with their camels, living by herding and trade."},
+    {y:"1884", t:"Spain claims the coast", d:"During Europe's 'scramble for Africa', Spain takes the coast and calls it Spanish Sahara."},
+    {y:"1934", t:"Full Spanish control", d:"With French help, Spain finally controls the whole interior after decades of Sahrawi resistance."},
+    {y:"1973", t:"The Polisario Front", d:"Sahrawi fighters form the Polisario Front to win independence — first from Spain, then from their neighbours."},
+    {y:"1975", t:"The Green March", d:"As Spain pulls out, Morocco sends 350,000 people marching in to claim the land. Most Sahrawi flee into the desert, and war begins."},
+    {y:"1976", t:"A republic in exile", d:"The Polisario declares the Sahrawi Arab Democratic Republic. Tens of thousands settle in refugee camps in Algeria, where many still live today."},
+    {y:"1991", t:"Ceasefire and a promise", d:"A UN ceasefire ends the war with a promise of a vote on independence. That vote has still never happened."},
+    {y:"2020", t:"The war restarts", d:"After 29 years, fighting flares again along the giant sand wall Morocco built across the desert."},
+    {y:"2020–today", t:"Big powers pick a side", d:"The U.S., then Spain and France, back Morocco's plan for control — while the Sahrawi keep waiting for the vote they were promised."}
   ],
   ER: [
     {y:"Ancient", t:"The Aksum kingdom", d:"The Red Sea coast is part of the ancient Christian kingdom of Aksum, a great trading power."},
@@ -1965,6 +1992,18 @@ const COUNTRY_TIMELINES = {
     {y:"2021", t:"Germany admits genocide", d:"Germany officially acknowledges the genocide and pledges aid, though many Namibians say it is not enough."},
     {y:"2024", t:"First woman president", d:"Namibia elects Netumbo Nandi-Ndaitwah as its first woman president."}
   ],
+  NC: [
+    {y:"c.1000 BC", t:"The first islanders", d:"Seafaring Lapita people settle these islands. Their descendants, the Kanak, live here for thousands of years before any European arrives."},
+    {y:"1774", t:"Cook names it", d:"British explorer James Cook sails past and names the main island 'New Caledonia' because its hills remind him of Scotland."},
+    {y:"1853", t:"France takes over", d:"France annexes New Caledonia and soon turns it into a prison colony, shipping in thousands of convicts from Europe."},
+    {y:"1864", t:"The nickel rush", d:"Huge deposits of nickel are found. Mining makes the colony rich — but the wealth mostly bypasses the Kanak, who are pushed off their land."},
+    {y:"1878", t:"The great Kanak revolt", d:"Chief Ataï leads an uprising against the loss of Kanak land. It is crushed, Ataï is killed, and the Kanak are confined to small reserves."},
+    {y:"1940s–60s", t:"A wider world", d:"The harsh 'indigénat' rules are lifted, the Kanak win the vote, and New Caledonia becomes an overseas territory of France."},
+    {y:"1980s", t:"'Les Événements'", d:"A violent struggle over independence — 'the Events' — grips the islands, peaking in the deadly 1988 Ouvéa cave hostage crisis."},
+    {y:"1988–98", t:"Peace accords", d:"The Matignon and Nouméa Accords end the fighting and promise future votes on independence, plus more power for the Kanak."},
+    {y:"2018–2021", t:"Three referendums", d:"New Caledonians vote three times on leaving France. Each time 'no' wins, but the last vote is boycotted by many Kanak, leaving the question unsettled."},
+    {y:"2024", t:"Riots over voting rights", d:"A French plan to change who can vote sparks deadly riots in Nouméa, causing billions in damage and reopening the wound over the islands' future."}
+  ],
   NE: [
     {y:"Pre-1800s", t:"Empires and trade", d:"The region is crossed by great empires and trans-Saharan caravans trading salt, gold, and enslaved people."},
     {y:"1800s", t:"Tuareg and Hausa states", d:"Tuareg confederations and Hausa city-states control the desert and savanna."},
@@ -2986,6 +3025,27 @@ const COUNTRY_TIMELINES = {
     {y:"2019", t:"A measles tragedy", d:"A measles epidemic kills scores of Samoan children, mostly infants."},
     {y:"2021", t:"First woman leader", d:"Fiamē Naomi Mataʻafa becomes Samoa's first woman prime minister after a tense political standoff."}
   ],
+  XG: [
+    {y:"old times", t:"Rock art and trade", d:"Long ago, herders paint cattle on the rocks at Laas Geel. Later, ports like Zeila trade with Arabia, Egypt and beyond."},
+    {y:"1888", t:"British Somaliland", d:"Britain makes the northern Somali coast a protectorate to guard its sea route to India."},
+    {y:"1900–1920", t:"The Dervish revolt", d:"Sayyid Mohammed Abdullah Hassan leads a 20-year fight against British rule before it is finally crushed from the air."},
+    {y:"1960", t:"Five days of freedom", d:"British Somaliland becomes independent on 26 June — then, just five days later, joins former Italian Somalia to form one big Somalia."},
+    {y:"1980s", t:"Crackdown and war", d:"Somalia's dictator Siad Barre brutally attacks the north; Hargeisa is bombed almost to rubble and tens of thousands die."},
+    {y:"1991", t:"Somaliland breaks away", d:"As Somalia collapses into chaos, the north declares independence again as the Republic of Somaliland."},
+    {y:"1990s–2000s", t:"Building a country", d:"While southern Somalia stays at war, Somaliland quietly makes peace among its clans, holds elections, and prints its own money."},
+    {y:"2010s–today", t:"Still unrecognised", d:"Somaliland runs like a real country — safe, with voting and its own army — yet not one nation officially recognises it. It keeps knocking on the world's door."}
+  ],
+  XK: [
+    {y:"1389", t:"The Battle of Kosovo", d:"Serbian and Ottoman armies clash on the 'field of blackbirds'. It becomes the most famous moment in Serbian history, and the Ottomans go on to rule for 500 years."},
+    {y:"1455–1912", t:"Ottoman centuries", d:"Kosovo is part of the Ottoman Empire. Over time most people become Muslim, and it becomes home to both Albanians and Serbs."},
+    {y:"1912–13", t:"Handed to Serbia", d:"The Balkan Wars end Ottoman rule, and Kosovo becomes part of Serbia — and later of Yugoslavia."},
+    {y:"1974", t:"A taste of self-rule", d:"Inside Yugoslavia, Kosovo — now mostly ethnic Albanian — is granted wide autonomy."},
+    {y:"1989", t:"Autonomy stripped away", d:"Serbian leader Slobodan Milošević removes Kosovo's self-rule, and tensions between Albanians and Serbs boil over."},
+    {y:"1998–99", t:"War and ethnic cleansing", d:"War erupts between Serbian forces and Albanian fighters. Thousands are killed and hundreds of thousands driven from their homes, until NATO bombing forces Serbia out."},
+    {y:"1999", t:"Under UN protection", d:"Kosovo is placed under United Nations administration while its future is decided."},
+    {y:"2008", t:"Independence declared", d:"Kosovo declares itself an independent country. Many nations recognise it; Serbia and some others still do not."},
+    {y:"2013–today", t:"Slowly normalising", d:"Kosovo and Serbia begin EU-backed talks to ease tensions, but flare-ups in the Serb-majority north keep the peace fragile."}
+  ],
   YE: [
     {y:"Ancient", t:"Arabia Felix", d:"Ancient kingdoms like Sheba grow rich on the frankincense trade; Romans call it 'Happy Arabia.'"},
     {y:"600s", t:"Embracing Islam", d:"Yemen adopts Islam early during the Prophet Muhammad's lifetime."},
@@ -3048,5 +3108,5 @@ const COUNTRY_TIMELINES = {
     {y:"2008", t:"Hyperinflation", d:"Zimbabwe suffers history's second-worst hyperinflation, printing 100-trillion-dollar banknotes."},
     {y:"2017", t:"Mugabe falls", d:"The army forces Mugabe from power after 37 years, to national jubilation."},
     {y:"2020s–today", t:"Struggling on", d:"Under his successor, the hoped-for recovery stalls amid repression, inflation, and mass emigration."}
-  ],
+  ]
 };

@@ -1311,9 +1311,12 @@ function highlightRow(){
 }
 
 document.addEventListener("keydown", e => {
-  if (e.code === "Space"){ e.preventDefault(); togglePlay(); }
-  if (e.code === "ArrowRight") next();
-  if (e.code === "ArrowLeft") prev();
+  const el = e.target, editable = el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT" || el.isContentEditable);
+  if (!editable){   // don't hijack space/arrows while typing (e.g. the search box)
+    if (e.code === "Space"){ e.preventDefault(); togglePlay(); }
+    if (e.code === "ArrowRight") next();
+    if (e.code === "ArrowLeft") prev();
+  }
   if (e.code === "Escape"){ const am = document.getElementById("art-modal"); if (am && !am.hidden) closeArt(); else backToMap(); }
 });
 
