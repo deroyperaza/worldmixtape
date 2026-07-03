@@ -616,7 +616,7 @@ function renderMixStrip(){
   el.innerHTML = `<div class="mix-head"><span class="mix-head__t">🎧 Your Mixtapes</span><span class="mix-head__s">🔍 saved from search · ✦ auto-mixed from your favorites</span></div>
     <div class="mix-row">${currentMixes.map((m,i)=>`
       <div class="mix-card" data-i="${i}" role="button" tabindex="0" style="--accent:${mixAccent(m)}">
-        <button class="mix-card__del" data-i="${i}" aria-label="Delete this mixtape" title="Delete mixtape">✕</button>
+        <button class="mix-card__del" data-i="${i}" aria-label="Delete this mixtape" title="Delete mixtape">🗑</button>
         <span class="mix-card__sticker mix-card__sticker--${m.kind==="saved"?"search":"auto"}" title="${m.kind==="saved"?"Saved from a search":"Auto-generated from your favorites"}" aria-hidden="true">${m.kind==="saved"?"🔍":"✦"}</span>
         ${mixCollage(m.tracks)}
         <span class="mix-card__body"><span class="mix-card__name">${m.emoji} ${esc(m.name)}</span>
