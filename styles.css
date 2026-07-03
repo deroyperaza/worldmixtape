@@ -498,7 +498,7 @@ body.list-view #map{display:none}
 .clist__head{margin-bottom:22px}
 @media (max-width:680px){
   .view-toggle{display:none}
-  .clist__sec{flex-direction:column;flex-wrap:nowrap;align-items:center;text-align:center}
+  .clist__sec{flex-direction:column;flex-wrap:nowrap;align-items:center;text-align:center;gap:22px}
 }
 
 /* ===================== COUNTRY INFO / "DOSSIER" OVERLAY ===================== */

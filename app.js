@@ -1273,7 +1273,7 @@ function buildCountryList(){
 function setView(list){
   document.body.classList.toggle("list-view", list);
   document.getElementById("view-toggle").innerHTML = list
-    ? '<svg class="vt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.3"/><line x1="2.7" y1="12" x2="21.3" y2="12"/><line x1="12" y1="2.7" x2="12" y2="21.3"/><path d="M12 2.7c2.7 2.6 4.2 5.9 4.2 9.3S14.7 18.7 12 21.3C9.3 18.7 7.8 15.4 7.8 12S9.3 5.3 12 2.7z"/></svg>map view'
+    ? '<svg class="vt-ic" viewBox="0 0 50 26" fill="currentColor" aria-hidden="true"><path d="M3 4c3-1 7-1 10 0 0 2-2 3-4 3 1 1 3 2 1 4-2 1-5 0-6-2-1-2-1-4-1-5z"/><path d="M11 13c2-1 4 0 4 2 0 3-1 6-3 8-2 0-3-3-2-6 0-2 0-3 1-4z"/><path d="M22 4c3-1 6-1 8 1-1 2-3 2-2 4 1 3 0 7-2 9-2 1-3-2-3-4-1-4-1-7-1-10z"/><path d="M31 3c5-1 11 0 15 2-2 2-5 3-9 3-3 0-5-2-6-5z"/><path d="M38 16c3 0 6 1 7 3-2 2-5 2-7 1-2-1-2-3 0-4z"/></svg>map view'
     : "☰ all countries";
   if (list && (!listBuilt || !document.querySelector(".clist__item"))){ buildCountryList(); listBuilt = features.length > 0; }
 }
