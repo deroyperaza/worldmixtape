@@ -1673,12 +1673,6 @@ const COUNTRY_INFO = {
   },
   CU: {
     tagline: "Isla Grande · the Caribbean's beating heart",
-    // 2–3 paragraph, 12-year-old-readable story of how the country's music grew and changed
-    musicHistory: [
-      "Cuban music was born when two worlds collided. Enslaved Africans brought powerful drumming and call-and-response singing; Spanish settlers brought guitars and sing-along melodies. On the island's farms and in its port cities those traditions blended into a whole family of rhythms — the son, the rumba, the danzón — all built around the clave, a simple five-beat pattern you can clap that is the heartbeat of nearly every Cuban song.",
-      "In the early 1900s the son cubano traveled from the eastern hills to Havana's dance halls and then out to the world. Big bands turned it into the mambo and the cha-cha-chá, and by the 1950s Cuba was one of the planet's dance-music capitals. When many musicians left the island after the 1959 revolution, the rhythms traveled with them — becoming a main ingredient of salsa, the sound that lit up New York and all of Latin America.",
-      "Back home, the music never stopped changing. Cuban bands invented timba, a fast, funky, super-danceable update of salsa, and today young Cubans fold in hip-hop and reggaeton to make \"cubatón.\" From the old-timers of Buena Vista Social Club charming the world in the 1990s to today's reggaeton stars, this one small island keeps inventing sounds that make the whole planet dance.",
-    ],
     // verified free photos (Wikimedia Commons) — major cities, landmarks, landscapes
     photos: [
       { f: "DJI_0197_crp_wiki.jpg",                       cap: "Havana skyline from the sea" },
@@ -2368,11 +2362,12 @@ function openInfo(code){
       <div class="tl__src">Timeline compiled from <a href="${wikiLink("History of " + c.name)}" target="_blank" rel="noopener">Wikipedia — History of ${esc(c.name)} ↗</a></div>
     </div>` : "";
 
-  // "The sound of X" — short, kid-readable music-history narrative (only renders when the entry has it)
-  const musicHtml = (d.musicHistory && d.musicHistory.length) ? `
+  // "The sound of X" — short, kid-readable music-history narrative (from the shared COUNTRY_MUSIC map)
+  const mh = (typeof COUNTRY_MUSIC !== "undefined" && COUNTRY_MUSIC[code] && COUNTRY_MUSIC[code].length) ? COUNTRY_MUSIC[code] : null;
+  const musicHtml = mh ? `
     <div class="info-music">
       <h3>🎵 The sound of ${esc(c.name)}</h3>
-      ${d.musicHistory.map(p => `<p>${esc(p)}</p>`).join("")}
+      ${mh.map(p => `<p>${esc(p)}</p>`).join("")}
     </div>` : "";
 
   infoInner.innerHTML = `
