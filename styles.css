@@ -425,16 +425,19 @@ body.list-view::before{content:"";position:fixed;top:26px;left:0;right:0;height:
 body.list-view .clist{display:block}
 body.list-view #map{display:none}
 .clist__sec{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
-.clist__item{display:flex;align-items:center;gap:12px;background:none;border:none;cursor:pointer;padding:0;text-align:left;width:max-content;max-width:100%}
-.clist__item .flag{height:26px;width:auto;border-radius:3px;box-shadow:0 0 0 1.5px #0a0916;flex:0 0 auto}
+/* block (not flex) so the name is inline → its sticker background hugs each line when a long name wraps
+   (e.g. "Central African Republic" becomes two hugging blocks instead of one full-width bar) */
+.clist__item{display:block;background:none;border:none;cursor:pointer;padding:0;text-align:left;width:max-content;max-width:100%;transform:rotate(-1deg)}
+.clist__item .flag{height:26px;width:auto;border-radius:3px;box-shadow:0 0 0 1.5px #0a0916;vertical-align:middle;margin-right:10px}
 .clist__name{font-family:"Anton",sans-serif;font-size:33px;text-transform:uppercase;color:#0a0916;
-  background:var(--accent,var(--pink));padding:3px 12px 5px;border-radius:2px;transform:rotate(-1deg);
+  background:var(--accent,var(--pink));padding:3px 12px 5px;border-radius:2px;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone;
   box-shadow:3px 3px 0 #0a0916;letter-spacing:.01em;line-height:.95;position:relative}
 .wc-ball--list{font-size:19px;top:-12px;right:-7px}
 @media(max-width:680px){.wc-ball--list{font-size:17px;top:-11px;right:-6px}}
 /* continents icon for the map-view toggle */
 .vt-ic{height:20px;width:auto;vertical-align:-4px;margin-right:8px}
-.clist__item:hover .clist__name{transform:rotate(-1deg) scale(1.03)}
+.clist__item:hover{transform:rotate(-1deg) scale(1.03)}
 .clist__soonhdr{font-family:"Permanent Marker",cursive;color:var(--yellow);font-size:15px;margin:26px 0 12px;transform:rotate(-1deg)}
 .clist__soon{display:flex;flex-wrap:wrap;gap:7px 16px}
 .clist__soon-item{font-family:"Anton",sans-serif;font-size:18px;text-transform:uppercase;color:#4a4470;letter-spacing:.02em}

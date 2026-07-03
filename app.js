@@ -2248,15 +2248,27 @@ function localBounds(feat, cities){
     rings.forEach(r => { const b=ringBounds(r); if(!b) return;
       // keep the host + neighbours within 3° (e.g. the rest of the Hawaiian chain); drop the far mainland
       if(r===host || (b[0]<hb[2]+3 && b[2]>hb[0]-3 && b[1]<hb[3]+3 && b[3]>hb[1]-3)) boxes.push(b); });
-  } else {
-    rings.forEach(r => { const b=ringBounds(r); if(b){ let dl=Math.abs((b[0]+b[2])/2 - cx); if(dl>180)dl=360-dl; if(dl<15) boxes.push(b); } });
   }
+  // no host ring (a small island absent from the 110m atlas, e.g. Rhodes/Madeira) → leave `boxes`
+  // empty so we zoom tight to the city markers below, instead of grabbing the distant mainland
   let w=Infinity,s=Infinity,e=-Infinity,n=-Infinity;
   boxes.forEach(b=>{ if(b[0]<w)w=b[0]; if(b[1]<s)s=b[1]; if(b[2]>e)e=b[2]; if(b[3]>n)n=b[3]; });
   cities.forEach(c=>{ if(c.lng<w)w=c.lng; if(c.lng>e)e=c.lng; if(c.lat<s)s=c.lat; if(c.lat>n)n=c.lat; });
   if(!isFinite(w)){ const p=3; return [[cx-p,cy-p],[cx+p,cy+p]]; }
   const pad = Math.max(e-w, n-s, 2)*0.06 + 0.5;
   return [[w-pad, s-pad], [e+pad, n+pad]];
+}
+
+// is [lng,lat] inside any polygon of this feature? (the atlas has the landmass under it)
+function onLand(feat, lng, lat){
+  const g = feat.geometry;
+  const rings = (g.type === "MultiPolygon" ? g.coordinates : [g.coordinates]).map(p => p[0]);
+  return rings.some(ring => { let inside = false;
+    for (let i=0, j=ring.length-1; i<ring.length; j=i++){
+      const xi=ring[i][0], yi=ring[i][1], xj=ring[j][0], yj=ring[j][1];
+      if (((yi>lat)!==(yj>lat)) && (lng < (xj-xi)*(lat-yi)/(yj-yi)+xi)) inside = !inside;
+    }
+    return inside; });
 }
 
 /* draw a country: main map fitted to the MAINLAND (ignoring far territories), with far islands/
@@ -2305,17 +2317,33 @@ function drawCountryOutline(code, svgEl){
     return;
   }
 
+  // far cities → cluster within ~8°
+  const clusters = [];
+  farCities.forEach(ci => {
+    const cl = clusters.find(k => k.some(c => Math.hypot(c.lng-ci.lng, c.lat-ci.lat) < 8));
+    if (cl) cl.push(ci); else clusters.push([ci]);
+  });
+  // a cluster gets its own inset only if the atlas has the landmass under it (Alaska, Hawaii). A small
+  // island missing from the low-res atlas (e.g. Rhodes) would just repeat the whole country, so instead
+  // show it on the MAIN map when it's near the mainland, or a tight pin-inset when it's far out (Madeira).
+  const clusterCtr = cl => [cl.reduce((a,c)=>a+c.lng,0)/cl.length, cl.reduce((a,c)=>a+c.lat,0)/cl.length];
+  const nearMainland = cl => { const [cx,cy]=clusterCtr(cl);
+    const dx=Math.max(0, mb[0][0]-cx, cx-mb[1][0]), dy=Math.max(0, mb[0][1]-cy, cy-mb[1][1]); return Math.hypot(dx,dy) < 4; };
+  const insetClusters = [];
+  clusters.forEach(cl => {
+    const hasLand = cl.some(c => onLand(feat, c.lng, c.lat));
+    if (hasLand || !nearMainland(cl)) { insetClusters.push(cl); return; }
+    // near-shore island not in the atlas → draw its cities on the main map for context (grows mb)
+    cl.forEach(c => { mb[0][0]=Math.min(mb[0][0],c.lng); mb[0][1]=Math.min(mb[0][1],c.lat);
+      mb[1][0]=Math.max(mb[1][0],c.lng); mb[1][1]=Math.max(mb[1][1],c.lat); mainCities.push(c); });
+  });
+
   renderMap(svgEl, feat, color, mainCities, mb);
 
-  // far cities → cluster within ~8° → one zoomable inset box each (Alaska, Hawaii, …)
-  if (insetWrap && farCities.length){
-    const clusters = [];
-    farCities.forEach(ci => {
-      const cl = clusters.find(k => k.some(c => Math.hypot(c.lng-ci.lng, c.lat-ci.lat) < 8));
-      if (cl) cl.push(ci); else clusters.push([ci]);
-    });
-    clusters.forEach(cl => {
-      const ib = localBounds(feat, cl);   // fit to the WHOLE nearby landmass (all of Alaska / Hawaii), not just the city
+  // one zoomable inset box per remaining cluster (Alaska, Hawaii, distant islands…)
+  if (insetWrap && insetClusters.length){
+    insetClusters.forEach(cl => {
+      const ib = localBounds(feat, cl);   // fit to the WHOLE nearby landmass, or tight to the markers if the atlas has no polygon there
       const box = document.createElement("div");
       box.className = "info-inset";
       box.innerHTML = `<svg viewBox="0 0 150 112" role="img" aria-label="${esc(cl[0].name)} inset map"></svg>`;
