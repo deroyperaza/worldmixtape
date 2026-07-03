@@ -1433,9 +1433,27 @@ const COUNTRY_INFO = {
       stage:{n:"Andy García",r:"Oscar-nominated Cuban-American actor",img:"Andy_Garcia_at_the_2026_Cannes_Film_Festival_03.jpg"},
       music:  { n: "Celia Cruz",       r: "the “Queen of Salsa” — ¡Azúcar!", img: "Celia_Cruz_1957_color.jpg" },
     sports: { n: "Teófilo Stevenson", r: "3× Olympic heavyweight boxing champion (1972·76·80)", img: "Bundesarchiv_Bild_183-1985-1004-023,_Teofilo_Stevenson_cropped.jpg" },
+    // A short, honest history — good and bad — written to be understood by a 12-year-old.
+    timeline: [
+      { y: "1492",        t: "Columbus arrives",       d: "Christopher Columbus lands in Cuba and claims the island for Spain — even though the native Taíno people have already lived here for centuries." },
+      { y: "1510s",       t: "Spain takes over",        d: "Spanish soldiers conquer Cuba. Within a few decades, war, forced labor, and European diseases wipe out almost all of the Taíno." },
+      { y: "1500s–1800s", t: "The slave trade",         d: "Spain ships hundreds of thousands of enslaved Africans to Cuba to work and die on its sugar and tobacco plantations. Slavery becomes the engine of the economy." },
+      { y: "1868",        t: "First war for freedom",   d: "Plantation owner Carlos Manuel de Céspedes frees his own slaves and declares war on Spain, launching Cuba's long fight for independence." },
+      { y: "1886",        t: "Slavery abolished",       d: "After nearly 400 years, Cuba finally ends slavery — one of the very last countries in the Americas to do so." },
+      { y: "1895",        t: "Martí's independence war", d: "Poet José Martí and generals like Antonio Maceo lead a new revolt. Martí is killed in his first battle and becomes Cuba's greatest national hero." },
+      { y: "1898",        t: "The U.S. steps in",        d: "After the American warship USS Maine blows up in Havana's harbor, the U.S. joins the war and defeats Spain — then takes control of Cuba itself." },
+      { y: "1902",        t: "Republic of Cuba",         d: "Cuba becomes its own country, but the U.S. keeps the right to interfere in its affairs and holds onto the Guantánamo Bay naval base." },
+      { y: "1952",        t: "Batista's dictatorship",   d: "Fulgencio Batista seizes power in a coup and rules as a corrupt dictator while most Cubans stay poor." },
+      { y: "1959",        t: "Castro's Revolution",      d: "Fidel Castro overthrows Batista and turns Cuba into a communist state allied with the Soviet Union. He rules for nearly 50 years, and hundreds of thousands of Cubans flee the island." },
+      { y: "1962",        t: "The Missile Crisis",       d: "The Soviet Union secretly places nuclear missiles in Cuba. For 13 tense days the world stands on the edge of nuclear war, until the missiles are removed." },
+      { y: "1991",        t: "The “Special Period”", d: "When the Soviet Union collapses, Cuba loses its biggest ally. Food, fuel, and electricity run desperately short, and the hard years drag on through the 1990s." },
+      { y: "2016",        t: "Fidel Castro dies",        d: "The revolution's leader dies at 90. His brother Raúl had already begun small openings, and for a brief moment Cuba and the U.S. reopened relations." },
+      { y: "2021–today",  t: "Protests & exodus",        d: "Cubans hold the largest protests in generations, demanding freedom and food. The economy crumbles, the power grid fails in nationwide blackouts, and record numbers of people flee the island — the biggest exodus in Cuban history." },
+    ],
     sources: [
       { label: "Photos",            detail: "Wikimedia Commons — CC-licensed, individual contributors", url: "https://commons.wikimedia.org/wiki/Category:Cuba" },
       { label: "Facts & figures",   detail: "Wikipedia — “Cuba” & related articles",                    url: "https://en.wikipedia.org/wiki/Cuba" },
+      { label: "History timeline",  detail: "Wikipedia — “History of Cuba”",                            url: "https://en.wikipedia.org/wiki/History_of_Cuba" },
       { label: "Travel film",       detail: "YouTube — “The Best of Cuba in 10 days” · Journeys with LeJune", url: "https://www.youtube.com/watch?v=TX-dYjafzX8" },
       { label: "Map outline",       detail: "Natural Earth via world-atlas — public domain",             url: "https://www.naturalearthdata.com/" },
       { label: "Location",          detail: "Google Maps",                                               url: "https://www.google.com/maps/place/Cuba/@21.6,-79.5,6z" },
@@ -1907,6 +1925,23 @@ function openInfo(code){
   };
   const starsHtml = STARS.map(starCard).join("");
 
+  // Vertical history timeline — rendered only for countries that have `timeline` data (Cuba pilot).
+  const timelineHtml = (d.timeline && d.timeline.length) ? `
+    <div class="info-timeline">
+      <h3>⏳ A short history of ${esc(c.name)}</h3>
+      <ol class="tl">
+        ${d.timeline.map(e => `
+          <li class="tl__row">
+            <span class="tl__dot" aria-hidden="true"></span>
+            <span class="tl__yr">${esc(e.y)}</span>
+            <div class="tl__body">
+              <div class="tl__t">${esc(e.t)}</div>
+              <div class="tl__d">${esc(e.d)}</div>
+            </div>
+          </li>`).join("")}
+      </ol>
+    </div>` : "";
+
   infoInner.innerHTML = `
     <div class="info-head">
       <div class="jhead__flag">${flagImg(code)}</div>
@@ -1949,6 +1984,8 @@ function openInfo(code){
       </div>
       ${starsHtml}
     </div>
+
+    ${timelineHtml}
 
     <div class="info-sources">
       <h3>Data sources</h3>

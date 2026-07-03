@@ -624,6 +624,24 @@ body.list-view #map{display:none}
 .info-star{font-family:"Anton",sans-serif;font-size:22px;color:var(--paper);line-height:1}
 .info-star__r{margin-top:6px;font-family:"Space Mono",monospace;font-size:12px;line-height:1.4;color:var(--paper);opacity:.85}
 
+/* vertical history timeline */
+.info-timeline{margin-top:14px;background:#0a0916;border:3px solid #3a2f63;border-radius:14px;padding:16px 18px 18px}
+.info-timeline h3{margin:0 0 14px;font-family:"Anton",sans-serif;font-size:16px;letter-spacing:.02em;
+  text-transform:uppercase;color:var(--accent)}
+.tl{list-style:none;margin:0;padding:0 0 0 4px;position:relative}
+.tl::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:3px;border-radius:2px;
+  background:var(--accent);opacity:.45}
+/* year always on its own line → body text indents identically no matter how long the year label is */
+.tl__row{position:relative;padding:0 0 18px 28px}
+.tl__row:last-child{padding-bottom:0}
+.tl__dot{position:absolute;left:2px;top:3px;width:15px;height:15px;border-radius:50%;
+  background:var(--accent);border:3px solid #0a0916;box-shadow:0 0 0 2px var(--accent)}
+.tl__yr{display:block;font-family:"Anton",sans-serif;font-size:18px;line-height:1;color:var(--accent);
+  margin-bottom:4px}
+.tl__body{min-width:0}
+.tl__t{font-family:"Anton",sans-serif;font-size:15px;letter-spacing:.01em;color:var(--paper);line-height:1.15}
+.tl__d{margin-top:4px;font-family:"Space Mono",monospace;font-size:11.5px;line-height:1.45;color:var(--paper);opacity:.82}
+
 /* data sources list */
 .info-sources{margin-top:18px;border-top:2px solid #3a2f63;padding-top:14px}
 .info-sources h3{margin:0 0 10px;font-family:"Space Mono",monospace;font-size:10px;font-weight:700;
