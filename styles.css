@@ -73,6 +73,13 @@ body{
   box-shadow:1.5px 1.5px 0 rgba(0,0,0,.5)}
 .mix-card__sticker--search{background:var(--cyan);color:#0a0916}
 .mix-card__sticker--auto{background:var(--yellow);color:#0a0916;font-size:14px}
+/* delete a mixtape card (top-left corner) */
+.mix-card__del{position:absolute;top:-8px;left:-8px;z-index:4;width:24px;height:24px;padding:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;line-height:1;
+  color:var(--paper);background:#0a0916;border:2.5px solid var(--pink);border-radius:50%;
+  box-shadow:1.5px 1.5px 0 rgba(0,0,0,.5);opacity:.55;transition:opacity .12s,transform .12s}
+.mix-card:hover .mix-card__del{opacity:1}
+.mix-card__del:hover{opacity:1;background:var(--pink);color:#0a0916;transform:scale(1.12)}
 
 /* shuffle the world — global control + filters */
 .shuffle-wrap{display:inline-flex;align-items:stretch;background:var(--yellow);border:3px solid #0a0916;

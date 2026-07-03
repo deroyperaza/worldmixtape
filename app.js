@@ -551,6 +551,12 @@ function addSavedMix(name, tracks){
   savedMixes.unshift(m); saveMixes(); return m;
 }
 function deleteSavedMix(id){ savedMixes = savedMixes.filter(m => m.id !== id); saveMixes(); }
+// auto-generated mixtapes are recomputed each render — "deleting" one hides it (until faves change enough to not produce it)
+const DISM_KEY = "wmx_mix_dismissed_v1";
+let dismissedMixes = (() => { try { return new Set(JSON.parse(localStorage.getItem(DISM_KEY)) || []); } catch { return new Set(); } })();
+function dismissMix(id){ dismissedMixes.add(id); try { localStorage.setItem(DISM_KEY, JSON.stringify([...dismissedMixes])); } catch {} }
+// remove a mixtape card: saved → delete for good; auto → dismiss from the strip
+function deleteMixCard(m){ if (m.kind === "saved") deleteSavedMix(m.id); else dismissMix(m.id); }
 
 // ---- search across the whole catalog: artist / title / genre / country / region / year / decade ----
 const _sfold = s => (s||"").normalize("NFKD").replace(/[̀-ͯ]/g,"").toLowerCase();
@@ -605,18 +611,27 @@ function makeMixFromSearch(q, hits){
 
 function renderMixStrip(){
   const el = inner.querySelector("#mixtapes"); if (!el) return;
-  currentMixes = savedMixes.concat(buildMixtapes(favs));   // user-saved (🔍) first, then auto-generated (✦)
+  currentMixes = savedMixes.concat(buildMixtapes(favs).filter(m => !dismissedMixes.has(m.id)));   // saved (🔍) first, then auto (✦), minus dismissed
   if (!currentMixes.length){ el.innerHTML = ""; return; }
   el.innerHTML = `<div class="mix-head"><span class="mix-head__t">🎧 Your Mixtapes</span><span class="mix-head__s">🔍 saved from search · ✦ auto-mixed from your favorites</span></div>
     <div class="mix-row">${currentMixes.map((m,i)=>`
-      <button class="mix-card" data-i="${i}" style="--accent:${mixAccent(m)}">
+      <div class="mix-card" data-i="${i}" role="button" tabindex="0" style="--accent:${mixAccent(m)}">
+        <button class="mix-card__del" data-i="${i}" aria-label="Delete this mixtape" title="Delete mixtape">✕</button>
         <span class="mix-card__sticker mix-card__sticker--${m.kind==="saved"?"search":"auto"}" title="${m.kind==="saved"?"Saved from a search":"Auto-generated from your favorites"}" aria-hidden="true">${m.kind==="saved"?"🔍":"✦"}</span>
         ${mixCollage(m.tracks)}
         <span class="mix-card__body"><span class="mix-card__name">${m.emoji} ${esc(m.name)}</span>
         <span class="mix-card__sub">${esc(m.sub)}</span>
         <span class="mix-card__ct">${m.tracks.length} tracks${m.recCount?` · ${m.recCount} new`:``} →</span></span>
-      </button>`).join("")}</div>`;
-  el.querySelectorAll(".mix-card").forEach(b => b.onclick = () => openMixtape(currentMixes[+b.dataset.i]));
+      </div>`).join("")}</div>`;
+  el.querySelectorAll(".mix-card").forEach(b => {
+    b.onclick = () => openMixtape(currentMixes[+b.dataset.i]);
+    b.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); openMixtape(currentMixes[+b.dataset.i]); } };
+  });
+  el.querySelectorAll(".mix-card__del").forEach(x => x.onclick = e => {
+    e.stopPropagation();
+    const m = currentMixes[+x.dataset.i];
+    deleteMixCard(m); flashToast((m.kind==="saved"?"mixtape deleted":"mixtape hidden")); renderMixStrip();
+  });
 }
 function openMixtape(m){
   viewingMix = m; activeCode = null; currentEra = null; currentGenre = null;
