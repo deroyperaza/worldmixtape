@@ -777,15 +777,15 @@ const REGIONS = {
   "Nordic": ["SE","NO","DK","FI","IS","GL"],
   "Western Europe": ["FR","DE","AT","CH","NL","BE","LU","LI","MC"],
   "Iberia & Mediterranean": ["ES","IT","GR","AD","MT","SM","VA"],
-  "The Balkans": ["RS","BA","HR","SI","BG","RO","AL","MK","ME"],
+  "The Balkans": ["RS","BA","HR","SI","BG","RO","AL","MK","ME","XK"],
   "Eastern Europe & Baltics": ["PL","CZ","SK","HU","UA","BY","RU","MD","LT","LV","EE"],
-  "Maghreb": ["DZ","MA","TN","LY"],
+  "Maghreb": ["DZ","MA","TN","LY","EH"],
   "Levant & Eastern Mediterranean": ["EG","LB","SY","JO","PS","IQ","IL","CY"],
   "Arabian Gulf": ["SA","KW","AE","QA","OM","BH","YE"],
   "West Africa": ["NG","GH","SN","ML","GN","CI","BJ","NE","BF","TG","SL","GM","LR","MR"],
   "Central Africa": ["CD","CM","CF","TD","GA","CG","GQ"],
   "East Africa": ["KE","TZ","UG","RW","BI","SS"],
-  "Horn of Africa": ["ET","SO","ER","DJ","SD"],
+  "Horn of Africa": ["ET","SO","ER","DJ","SD","XG"],
   "Southern Africa": ["ZA","ZW","ZM","MG","BW","NA","LS","SZ","MW"],
   "Indian Ocean": ["MU","RE","SC","KM","MV"],
   "Anatolia & Caucasus": ["TR","AM","AZ","GE"],
@@ -793,7 +793,7 @@ const REGIONS = {
   "South Asia": ["IN","PK","BD","NP","LK","BT"],
   "Southeast Asia": ["ID","MY","PH","TH","VN","KH","MM","LA","BN","SG","TL"],
   "East Asia": ["CN","TW","JP","KR","KP"],
-  "Pacific Islands": ["FJ","PG","WS","TO","SB","VU","KI","TV","FM"],
+  "Pacific Islands": ["FJ","PG","WS","TO","SB","VU","KI","TV","FM","NC"],
   "Oceania": ["AU","NZ"],
 };
 const CODE_REGION = {};   // country code -> region name
@@ -1255,8 +1255,9 @@ function buildCountryList(){
   const clist = document.getElementById("clist"); if (!clist) return;
   const have = Object.entries(COUNTRIES).map(([code, c]) => ({ code, name: c.name, color: c.color }))
     .sort((a, b) => a.name.localeCompare(b.name));
+  const builtNames = new Set(Object.values(COUNTRIES).map(c => c.name));   // built countries with a null TopoJSON id (Kosovo, Somaliland) drop off "coming soon" by name
   const soon = [...new Set(features
-    .filter(f => +f.id !== 10 && !isoToCode[+f.id] && f.properties && f.properties.name)
+    .filter(f => +f.id !== 10 && !isoToCode[+f.id] && f.properties && f.properties.name && !builtNames.has(f.properties.name))
     .map(f => f.properties.name))].sort((a, b) => a.localeCompare(b));
   clist.innerHTML =
     '<div class="clist__sec">' +

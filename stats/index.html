@@ -133,7 +133,7 @@ firebase.initializeApp({
 const db = firebase.firestore();
 
 /* ---- inline catalog summary → KPIs + bars render INSTANTLY (no 7MB data.js dependency) ---- */
-const WMT_STATS = {"countries":197,"songs":22827,"hours":1560,"byDecade":[349,404,725,1478,2097,2288,3122,3329,3726,3714,1595],"topCountries":[["United States",480],["United Kingdom",410],["Brazil",259],["France",255],["Cuba",255],["Greece",247],["Argentina",245],["Trinidad & Tobago",242],["Spain",236],["Colombia",229],["Italy",226],["Mexico",221],["Puerto Rico",216],["Israel",210]]};
+const WMT_STATS = {"countries": 201, "songs": 22961, "hours": 1569, "byDecade": [349, 404, 725, 1478, 2097, 2291, 3136, 3334, 3788, 3748, 1611], "topCountries": [["United States", 480], ["United Kingdom", 410], ["Brazil", 259], ["France", 255], ["Cuba", 255], ["Greece", 247], ["Argentina", 245], ["Trinidad & Tobago", 242], ["Spain", 236], ["Colombia", 229], ["Italy", 226], ["Mexico", 221], ["Puerto Rico", 216], ["Israel", 210]]};
 const ERA_LABELS = ["pre-40s","40s","50s","60s","70s","80s","90s","00s","10s","20s","NOW"];
 
 function fmt(n){ return (n||0).toLocaleString(); }
