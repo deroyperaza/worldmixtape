@@ -1221,34 +1221,35 @@ document.getElementById("search-btn").onclick = openSearch;
    so the combo loaded but nothing translated. Instead we call Google's free `gtx` translate
    endpoint directly (CORS-open, no key), walk the visible text nodes, and swap text in place.
    A MutationObserver re-translates dynamically-rendered content (panels, dossiers, mixtapes). */
+// endo = the language's own native name (endonym) — always shown as-is; name = English label, shown translated in parens
 const TR_LANGS = [
-  {code:"af",name:"Afrikaans"},{code:"sq",name:"Albanian"},{code:"am",name:"Amharic"},{code:"ar",name:"Arabic"},
-  {code:"hy",name:"Armenian"},{code:"az",name:"Azerbaijani"},{code:"eu",name:"Basque"},{code:"be",name:"Belarusian"},
-  {code:"bn",name:"Bengali"},{code:"bs",name:"Bosnian"},{code:"bg",name:"Bulgarian"},{code:"ca",name:"Catalan"},
-  {code:"ceb",name:"Cebuano"},{code:"ny",name:"Chichewa"},{code:"zh-CN",name:"Chinese (Simplified)"},{code:"zh-TW",name:"Chinese (Traditional)"},
-  {code:"co",name:"Corsican"},{code:"hr",name:"Croatian"},{code:"cs",name:"Czech"},{code:"da",name:"Danish"},
-  {code:"nl",name:"Dutch"},{code:"eo",name:"Esperanto"},{code:"et",name:"Estonian"},{code:"tl",name:"Filipino"},
-  {code:"fi",name:"Finnish"},{code:"fr",name:"French"},{code:"fy",name:"Frisian"},{code:"gl",name:"Galician"},
-  {code:"ka",name:"Georgian"},{code:"de",name:"German"},{code:"el",name:"Greek"},{code:"gu",name:"Gujarati"},
-  {code:"ht",name:"Haitian Creole"},{code:"ha",name:"Hausa"},{code:"haw",name:"Hawaiian"},{code:"iw",name:"Hebrew"},
-  {code:"hi",name:"Hindi"},{code:"hmn",name:"Hmong"},{code:"hu",name:"Hungarian"},{code:"is",name:"Icelandic"},
-  {code:"ig",name:"Igbo"},{code:"id",name:"Indonesian"},{code:"ga",name:"Irish"},{code:"it",name:"Italian"},
-  {code:"ja",name:"Japanese"},{code:"jw",name:"Javanese"},{code:"kn",name:"Kannada"},{code:"kk",name:"Kazakh"},
-  {code:"km",name:"Khmer"},{code:"rw",name:"Kinyarwanda"},{code:"ko",name:"Korean"},{code:"ku",name:"Kurdish"},
-  {code:"ky",name:"Kyrgyz"},{code:"lo",name:"Lao"},{code:"la",name:"Latin"},{code:"lv",name:"Latvian"},
-  {code:"lt",name:"Lithuanian"},{code:"lb",name:"Luxembourgish"},{code:"mk",name:"Macedonian"},{code:"mg",name:"Malagasy"},
-  {code:"ms",name:"Malay"},{code:"ml",name:"Malayalam"},{code:"mt",name:"Maltese"},{code:"mi",name:"Maori"},
-  {code:"mr",name:"Marathi"},{code:"mn",name:"Mongolian"},{code:"my",name:"Myanmar (Burmese)"},{code:"ne",name:"Nepali"},
-  {code:"no",name:"Norwegian"},{code:"or",name:"Odia (Oriya)"},{code:"ps",name:"Pashto"},{code:"fa",name:"Persian"},
-  {code:"pl",name:"Polish"},{code:"pt",name:"Portuguese"},{code:"pa",name:"Punjabi"},{code:"ro",name:"Romanian"},
-  {code:"ru",name:"Russian"},{code:"sm",name:"Samoan"},{code:"gd",name:"Scots Gaelic"},{code:"sr",name:"Serbian"},
-  {code:"st",name:"Sesotho"},{code:"sn",name:"Shona"},{code:"sd",name:"Sindhi"},{code:"si",name:"Sinhala"},
-  {code:"sk",name:"Slovak"},{code:"sl",name:"Slovenian"},{code:"so",name:"Somali"},{code:"es",name:"Spanish"},
-  {code:"su",name:"Sundanese"},{code:"sw",name:"Swahili"},{code:"sv",name:"Swedish"},{code:"tg",name:"Tajik"},
-  {code:"ta",name:"Tamil"},{code:"tt",name:"Tatar"},{code:"te",name:"Telugu"},{code:"th",name:"Thai"},
-  {code:"tr",name:"Turkish"},{code:"tk",name:"Turkmen"},{code:"uk",name:"Ukrainian"},{code:"ur",name:"Urdu"},
-  {code:"ug",name:"Uyghur"},{code:"uz",name:"Uzbek"},{code:"vi",name:"Vietnamese"},{code:"cy",name:"Welsh"},
-  {code:"xh",name:"Xhosa"},{code:"yi",name:"Yiddish"},{code:"yo",name:"Yoruba"},{code:"zu",name:"Zulu"}
+  {code:"af",name:"Afrikaans",endo:"Afrikaans"},{code:"sq",name:"Albanian",endo:"Shqip"},{code:"am",name:"Amharic",endo:"አማርኛ"},{code:"ar",name:"Arabic",endo:"العربية"},
+  {code:"hy",name:"Armenian",endo:"Հայերեն"},{code:"az",name:"Azerbaijani",endo:"Azərbaycan dili"},{code:"eu",name:"Basque",endo:"Euskara"},{code:"be",name:"Belarusian",endo:"Беларуская"},
+  {code:"bn",name:"Bengali",endo:"বাংলা"},{code:"bs",name:"Bosnian",endo:"Bosanski"},{code:"bg",name:"Bulgarian",endo:"Български"},{code:"ca",name:"Catalan",endo:"Català"},
+  {code:"ceb",name:"Cebuano",endo:"Cebuano"},{code:"ny",name:"Chichewa",endo:"Chichewa"},{code:"zh-CN",name:"Chinese (Simplified)",endo:"简体中文"},{code:"zh-TW",name:"Chinese (Traditional)",endo:"繁體中文"},
+  {code:"co",name:"Corsican",endo:"Corsu"},{code:"hr",name:"Croatian",endo:"Hrvatski"},{code:"cs",name:"Czech",endo:"Čeština"},{code:"da",name:"Danish",endo:"Dansk"},
+  {code:"nl",name:"Dutch",endo:"Nederlands"},{code:"eo",name:"Esperanto",endo:"Esperanto"},{code:"et",name:"Estonian",endo:"Eesti"},{code:"tl",name:"Filipino",endo:"Filipino"},
+  {code:"fi",name:"Finnish",endo:"Suomi"},{code:"fr",name:"French",endo:"Français"},{code:"fy",name:"Frisian",endo:"Frysk"},{code:"gl",name:"Galician",endo:"Galego"},
+  {code:"ka",name:"Georgian",endo:"ქართული"},{code:"de",name:"German",endo:"Deutsch"},{code:"el",name:"Greek",endo:"Ελληνικά"},{code:"gu",name:"Gujarati",endo:"ગુજરાતી"},
+  {code:"ht",name:"Haitian Creole",endo:"Kreyòl Ayisyen"},{code:"ha",name:"Hausa",endo:"Hausa"},{code:"haw",name:"Hawaiian",endo:"ʻŌlelo Hawaiʻi"},{code:"iw",name:"Hebrew",endo:"עברית"},
+  {code:"hi",name:"Hindi",endo:"हिन्दी"},{code:"hmn",name:"Hmong",endo:"Hmoob"},{code:"hu",name:"Hungarian",endo:"Magyar"},{code:"is",name:"Icelandic",endo:"Íslenska"},
+  {code:"ig",name:"Igbo",endo:"Igbo"},{code:"id",name:"Indonesian",endo:"Bahasa Indonesia"},{code:"ga",name:"Irish",endo:"Gaeilge"},{code:"it",name:"Italian",endo:"Italiano"},
+  {code:"ja",name:"Japanese",endo:"日本語"},{code:"jw",name:"Javanese",endo:"Basa Jawa"},{code:"kn",name:"Kannada",endo:"ಕನ್ನಡ"},{code:"kk",name:"Kazakh",endo:"Қазақ тілі"},
+  {code:"km",name:"Khmer",endo:"ខ្មែរ"},{code:"rw",name:"Kinyarwanda",endo:"Ikinyarwanda"},{code:"ko",name:"Korean",endo:"한국어"},{code:"ku",name:"Kurdish",endo:"Kurdî"},
+  {code:"ky",name:"Kyrgyz",endo:"Кыргызча"},{code:"lo",name:"Lao",endo:"ລາວ"},{code:"la",name:"Latin",endo:"Latina"},{code:"lv",name:"Latvian",endo:"Latviešu"},
+  {code:"lt",name:"Lithuanian",endo:"Lietuvių"},{code:"lb",name:"Luxembourgish",endo:"Lëtzebuergesch"},{code:"mk",name:"Macedonian",endo:"Македонски"},{code:"mg",name:"Malagasy",endo:"Malagasy"},
+  {code:"ms",name:"Malay",endo:"Bahasa Melayu"},{code:"ml",name:"Malayalam",endo:"മലയാളം"},{code:"mt",name:"Maltese",endo:"Malti"},{code:"mi",name:"Maori",endo:"Te Reo Māori"},
+  {code:"mr",name:"Marathi",endo:"मराठी"},{code:"mn",name:"Mongolian",endo:"Монгол"},{code:"my",name:"Myanmar (Burmese)",endo:"မြန်မာ"},{code:"ne",name:"Nepali",endo:"नेपाली"},
+  {code:"no",name:"Norwegian",endo:"Norsk"},{code:"or",name:"Odia (Oriya)",endo:"ଓଡ଼ିଆ"},{code:"ps",name:"Pashto",endo:"پښتو"},{code:"fa",name:"Persian",endo:"فارسی"},
+  {code:"pl",name:"Polish",endo:"Polski"},{code:"pt",name:"Portuguese",endo:"Português"},{code:"pa",name:"Punjabi",endo:"ਪੰਜਾਬੀ"},{code:"ro",name:"Romanian",endo:"Română"},
+  {code:"ru",name:"Russian",endo:"Русский"},{code:"sm",name:"Samoan",endo:"Gagana Samoa"},{code:"gd",name:"Scots Gaelic",endo:"Gàidhlig"},{code:"sr",name:"Serbian",endo:"Српски"},
+  {code:"st",name:"Sesotho",endo:"Sesotho"},{code:"sn",name:"Shona",endo:"ChiShona"},{code:"sd",name:"Sindhi",endo:"سنڌي"},{code:"si",name:"Sinhala",endo:"සිංහල"},
+  {code:"sk",name:"Slovak",endo:"Slovenčina"},{code:"sl",name:"Slovenian",endo:"Slovenščina"},{code:"so",name:"Somali",endo:"Soomaali"},{code:"es",name:"Spanish",endo:"Español"},
+  {code:"su",name:"Sundanese",endo:"Basa Sunda"},{code:"sw",name:"Swahili",endo:"Kiswahili"},{code:"sv",name:"Swedish",endo:"Svenska"},{code:"tg",name:"Tajik",endo:"Тоҷикӣ"},
+  {code:"ta",name:"Tamil",endo:"தமிழ்"},{code:"tt",name:"Tatar",endo:"Татарча"},{code:"te",name:"Telugu",endo:"తెలుగు"},{code:"th",name:"Thai",endo:"ไทย"},
+  {code:"tr",name:"Turkish",endo:"Türkçe"},{code:"tk",name:"Turkmen",endo:"Türkmençe"},{code:"uk",name:"Ukrainian",endo:"Українська"},{code:"ur",name:"Urdu",endo:"اردو"},
+  {code:"ug",name:"Uyghur",endo:"ئۇيغۇرچە"},{code:"uz",name:"Uzbek",endo:"Oʻzbekcha"},{code:"vi",name:"Vietnamese",endo:"Tiếng Việt"},{code:"cy",name:"Welsh",endo:"Cymraeg"},
+  {code:"xh",name:"Xhosa",endo:"isiXhosa"},{code:"yi",name:"Yiddish",endo:"ייִדיש"},{code:"yo",name:"Yoruba",endo:"Yorùbá"},{code:"zu",name:"Zulu",endo:"isiZulu"}
 ];
 let trLang = localStorage.getItem("wmx_lang") || "en";
 const trCache = new Map();          // `${lang} ${srcTrimmed}` -> translated
@@ -1327,17 +1328,19 @@ async function setLang(code){
 function openLangPop(){
   const pop = document.getElementById("lang-pop"); if (!pop) return;
   const cur = trLang;
+  // endonym (.notranslate → always native) + English name in parens (the parens' inner text translates to the current language)
+  const item = (code, endo, name) => `<button class="lang-item${cur === code ? " on" : ""}" data-code="${code}" data-search="${esc((endo + " " + name).toLowerCase())}"><span class="notranslate">${esc(endo)}</span> <small>(<span>${esc(name)}</span>)</small></button>`;
   pop.innerHTML = `<div class="lang-pop__hd">🌐 Translate this site</div>
     <input class="lang-search" id="lang-search" type="search" placeholder="search ${TR_LANGS.length} languages…" autocomplete="off" autocapitalize="off" spellcheck="false" />
     <div class="lang-scroll" id="lang-scroll">
-      <button class="lang-item${cur === "en" ? " on" : ""}" data-code="en">English <small>(original)</small></button>
-      ${TR_LANGS.map(l => `<button class="lang-item${cur === l.code ? " on" : ""}" data-code="${l.code}">${esc(l.name)}</button>`).join("")}
+      ${item("en", "English", "original")}
+      ${TR_LANGS.map(l => item(l.code, l.endo, l.name)).join("")}
     </div>
     <div class="lang-note">machine-translated · song &amp; artist names may translate too</div>`;
   pop.hidden = false;
   pop.querySelectorAll(".lang-item").forEach(b => b.onclick = () => setLang(b.dataset.code));
   const s = document.getElementById("lang-search");
-  s.oninput = () => { const q = s.value.toLowerCase(); pop.querySelectorAll(".lang-item").forEach(b => b.style.display = b.textContent.toLowerCase().includes(q) ? "" : "none"); };
+  s.oninput = () => { const q = s.value.toLowerCase(); pop.querySelectorAll(".lang-item").forEach(b => b.style.display = ((b.dataset.search || "").includes(q) || b.textContent.toLowerCase().includes(q)) ? "" : "none"); };
   setTimeout(() => s.focus(), 50);
 }
 function closeLangPop(){ const p = document.getElementById("lang-pop"); if (p) p.hidden = true; }
