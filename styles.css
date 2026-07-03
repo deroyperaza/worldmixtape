@@ -711,7 +711,7 @@ body.list-view #map{display:none}
 .lang-btn{cursor:pointer;font-size:17px;line-height:1;color:var(--paper);background:#0a0916;border:3px solid var(--violet);
   border-radius:30px;padding:7px 12px;box-shadow:4px 4px 0 var(--violet);transform:rotate(-2deg);transition:transform .12s}
 .lang-btn:hover{transform:rotate(-2deg) scale(1.05)}
-.lang-btn.on{background:var(--violet);color:#0a0916}
+.lang-btn.on{background:#0a0916;color:var(--violet)}
 .lang-pop{position:fixed;top:90px;right:14px;z-index:49;width:250px;max-width:82vw;
   background:#0a0916;border:3px solid var(--violet);border-radius:16px;box-shadow:5px 5px 0 var(--pink);padding:12px;transform:rotate(-1deg)}
 .lang-pop[hidden]{display:none}
