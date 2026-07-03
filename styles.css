@@ -151,6 +151,8 @@ body{
   background:var(--lime);padding:3px 10px 4px;border-radius:20px;border:2px solid var(--ink);
   box-shadow:2px 2px 0 var(--ink);text-decoration:none;transform:rotate(-1deg)}
 .brand__about:hover{transform:rotate(-1deg) translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+/* desktop: tuck the about link into the bottom-left corner instead of floating in the header */
+@media(min-width:681px){ .brand__about{position:fixed;left:18px;bottom:18px;margin:0;z-index:46} }
 
 /* map */
 .map-wrap{position:fixed;inset:26px 0 0 0;display:block}
