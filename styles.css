@@ -734,3 +734,4 @@ html.wmx-rtl .info__inner,
 html.wmx-rtl .player__meta,
 html.wmx-rtl .mix-card,
 html.wmx-rtl .lang-item{text-align:right}
+html.wmx-rtl .ticker__track{animation-direction:reverse}   /* scroll the marquee the other way for RTL */
