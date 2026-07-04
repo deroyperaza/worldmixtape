@@ -81,8 +81,7 @@ footer p{font-size:12px;color:#8a83b8;margin:6px 0}
       <p class="g-intro">Four daily games built from the same world of music. <b>Listen close</b> — every song is a clue to a place and a time.</p>
       <div class="g-stats">
         <div class="g-stat"><div class="n" id="stat-streak">0</div><div class="l">Day streak</div></div>
-        <div class="g-stat"><div class="n" id="stat-passport">0</div><div class="l">Countries collected</div></div>
-        <div class="g-stat"><div class="n" id="stat-total">197</div><div class="l">Out there to find</div></div>
+        <div class="g-stat"><div class="n" id="stat-passport">0 / 201</div><div class="l">Countries collected</div></div>
       </div>
       <div class="g-cards" id="g-cards"></div>
     </div>
@@ -154,7 +153,7 @@ footer p{font-size:12px;color:#8a83b8;margin:6px 0}
     });
   } catch (e) { console.warn("Firebase init failed (games still work offline):", e); }
 </script>
-<script src="games.js?v=5"></script>
+<script src="games.js?v=6"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

@@ -149,8 +149,7 @@ function renderHub(){
   renderAccount();
   var pc=Object.keys(STATE.passport).length;
   document.getElementById("stat-streak").textContent=STATE.streak||0;
-  document.getElementById("stat-passport").textContent=pc;
-  document.getElementById("stat-total").textContent="197";
+  document.getElementById("stat-passport").textContent=pc+" / 201";
   var cards=[
     {em:"🎧",bg:"#ff2e92",h:"Sound Trip",p:"Hear a song — guess the country it's from.",game:"soundtrip"},
     {em:"🕰️",bg:"#00e5ff",h:"Time Machine",p:"Hear a song — guess the decade.",game:"timemachine"},
