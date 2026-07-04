@@ -300,25 +300,39 @@ window.WMTG.tmShare=function(){copyShare(window.WMTG._tmShareText||"");};
    ================================================================== */
 var CL={};
 var CL_COLORS=["🟩","🟪","🟦","🟧"];
+function artistsWithTrack(c){var seen={},out=[];tracksOf(c).forEach(function(t){var a=(t.artist||"").trim(),k=a.toLowerCase();if(a&&!seen[k]){seen[k]=1;out.push({a:a,genre:t.genre||"",ytId:t.ytId,title:t.title||""});}});return out;}
 function startClusters(){
   var rng=rngFor("clusters");
   var codes=Object.keys(window.COUNTRIES).filter(function(c){return artistsOf(c).length>=4;}).sort();
-  var chosen=shuffle(codes,rng).slice(0,4);
-  var groups=chosen.map(function(c){return {cc:c,artists:shuffle(artistsOf(c),rng).slice(0,4)};});
-  var tiles=[];groups.forEach(function(g,gi){g.artists.forEach(function(a){tiles.push({a:a,g:gi,cc:g.cc});});});
+  // spread the 4 countries across different continents so they're distinguishable
+  var byCont={};codes.forEach(function(c){var k=CONT[c]||"??";(byCont[k]=byCont[k]||[]).push(c);});
+  var chosen=[];shuffle(Object.keys(byCont),rng).forEach(function(k){if(chosen.length<4)chosen.push(pick(byCont[k],rng));});
+  if(chosen.length<4)shuffle(codes,rng).forEach(function(c){if(chosen.length<4&&chosen.indexOf(c)<0)chosen.push(c);});
+  var groups=chosen.map(function(c){var arts=shuffle(artistsWithTrack(c),rng).slice(0,4);return {cc:c,artists:arts.map(function(x){return x.a;}),tracks:arts};});
+  var tiles=[];groups.forEach(function(g,gi){g.tracks.forEach(function(x){tiles.push({a:x.a,genre:x.genre,ytId:x.ytId,g:gi,cc:g.cc});});});
   tiles=shuffle(tiles,rng);
-  CL={groups:groups,tiles:tiles,sel:[],solved:[],lives:4,done:false,history:[]};
+  CL={groups:groups,tiles:tiles,sel:[],solved:[],lives:4,done:false,history:[],hearing:-1};
   var pt=playedToday("clusters");
   if(pt){CL.done=true;renderCLReveal(pt.summary);return;}
   renderCL();
 }
 function renderCL(){
   var body=document.getElementById("cl-body");
+  var targets=CL.groups.map(function(g,gi){var done=CL.solved.indexOf(gi)>=0;return '<span class="cl-target'+(done?" done":"")+'">'+flagImg(g.cc)+'<span>'+esc(cname(g.cc))+'</span>'+(done?' ✓':'')+'</span>';}).join("");
   var solvedHtml=CL.solved.map(function(gi){var g=CL.groups[gi];var col=["#c6ff00","#b388ff","#00e5ff","#ff6d00"][gi%4];return '<div class="g-solved" style="background:'+col+'"><h4>'+flagImg(g.cc)+esc(cname(g.cc))+'</h4><p>'+g.artists.map(esc).join(" · ")+'</p></div>';}).join("");
-  var grid=CL.tiles.map(function(t,i){if(CL.solved.indexOf(t.g)>=0)return "";var sel=CL.sel.indexOf(i)>=0;return '<button class="g-tile'+(sel?" sel":"")+'" onclick="WMTG.clTap('+i+')">'+esc(t.a)+'</button>';}).join("");
+  var grid=CL.tiles.map(function(t,i){
+    if(CL.solved.indexOf(t.g)>=0)return "";
+    var sel=CL.sel.indexOf(i)>=0,hearing=CL.hearing===i;
+    return '<button class="g-tile'+(sel?" sel":"")+(hearing?" hearing":"")+'" onclick="WMTG.clTap('+i+')">'+
+      '<span class="g-tile-art">'+esc(t.a)+'</span>'+
+      (t.genre?'<span class="g-tile-genre">'+esc(t.genre)+'</span>':'')+
+      '<span class="g-tile-play" onclick="event.stopPropagation();WMTG.clHear('+i+')" aria-label="Hear a clip">'+(hearing?"♪":"▶")+'</span>'+
+      '</button>';
+  }).join("");
   var lives="";for(var i=0;i<4;i++)lives+=i<CL.lives?"🟢":"⚫";
   body.innerHTML=
-    '<p class="g-intro" style="margin:0 0 12px">Find the <b>4 countries</b> hiding here. Tap 4 artists you think share a homeland, then submit.</p>'+
+    '<p class="g-intro" style="margin:0 0 10px">Sort 16 artists into their homelands — <b>4 per country</b>. Not sure? <b>Tap ▶ to hear one</b> or read its genre for a clue.</p>'+
+    '<div class="cl-targets">'+targets+'</div>'+
     solvedHtml+
     '<div class="g-grid">'+grid+'</div>'+
     '<div class="g-lives">Guesses left: '+lives+'</div>'+
@@ -326,13 +340,20 @@ function renderCL(){
 }
 window.WMTG.clTap=function(i){if(CL.done)return;var k=CL.sel.indexOf(i);if(k>=0)CL.sel.splice(k,1);else if(CL.sel.length<4)CL.sel.push(i);renderCL();};
 window.WMTG.clClear=function(){CL.sel=[];renderCL();};
+window.WMTG.clHear=function(i){if(CL.done)return;var t=CL.tiles[i];if(!t||!t.ytId)return;CL.hearing=i;playVid(t.ytId,20);renderCL();};
 window.WMTG.clSubmit=function(){
   if(CL.done||CL.sel.length!==4)return;
   var gs=CL.sel.map(function(i){return CL.tiles[i].g;});
   CL.history.push(gs.slice());
   var g0=gs[0],all=gs.every(function(g){return g===g0;});
-  if(all){CL.solved.push(g0);CL.sel=[];if(CL.solved.length===4)finishCL(true);else renderCL();}
-  else{CL.lives--;toast("Not quite — "+CL.lives+" left");CL.sel=[];if(CL.lives<=0)finishCL(false);else renderCL();}
+  if(all){CL.solved.push(g0);CL.sel=[];CL.hearing=-1;pauseVid();if(CL.solved.length===4)finishCL(true);else{toast("Yes — that's "+cname(CL.groups[g0].cc)+"!");renderCL();}}
+  else{
+    var counts={};gs.forEach(function(g){counts[g]=(counts[g]||0)+1;});
+    var maxc=Math.max.apply(null,Object.keys(counts).map(function(k){return counts[k];}));
+    CL.lives--;CL.sel=[];
+    toast((maxc===3?"So close — 3 of these 4 match! ":"Not quite. ")+(CL.lives>0?CL.lives+" left":""));
+    if(CL.lives<=0)finishCL(false);else renderCL();
+  }
 };
 function clGrid(){return CL.history.map(function(row){return row.map(function(g){return CL_COLORS[g%4];}).join("");}).join("\n");}
 function finishCL(win){CL.done=true;var s={win:win,solved:CL.solved.length,grid:clGrid(),groups:CL.groups.map(function(g){return {cc:g.cc,artists:g.artists};})};CL.solved.forEach(function(gi){stamp(CL.groups[gi].cc);});recordPlay("clusters",s);renderCLReveal(s);}
