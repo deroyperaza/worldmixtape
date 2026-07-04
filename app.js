@@ -711,6 +711,23 @@ function closePanel(){ panel.classList.remove("show"); scrim.classList.remove("s
 function backToMap(){ closePanel(); setShuf(""); }   // leaving for the map resets shuffle scope to the world
 document.getElementById("panel-close").onclick = backToMap;
 scrim.onclick = backToMap;
+/* mobile: swipe down (from the top of the sheet) to close the country panel */
+(function(){
+  let sy=0, sx=0, sTop=0, on=false;
+  const scroller = () => inner.querySelector("#fav-scroll") || inner.querySelector("#tracklist");
+  panel.addEventListener("touchstart", e => {
+    on = window.innerWidth <= 680 && e.touches.length === 1;
+    if(!on) return;
+    sy = e.touches[0].clientY; sx = e.touches[0].clientX;
+    const sc = scroller(); sTop = sc ? sc.scrollTop : 0;
+  }, {passive:true});
+  panel.addEventListener("touchend", e => {
+    if(!on) return; on=false;
+    const t = e.changedTouches[0]; if(!t) return;
+    const dy = t.clientY - sy, dx = t.clientX - sx;
+    if(dy > 70 && Math.abs(dy) > Math.abs(dx) && sTop <= 0) backToMap();
+  }, {passive:true});
+})();
 
 function openEmpty(name){
   activeCode = null; queue = []; qIndex = -1;
