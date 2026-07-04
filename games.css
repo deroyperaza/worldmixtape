@@ -16,7 +16,8 @@
 .g-stat{flex:1;min-width:110px;background:var(--card);border:1.5px solid var(--card-edge);border-radius:14px;padding:12px 14px}
 .g-stat .n{font-family:"Anton",sans-serif;font-size:30px;line-height:1;color:var(--lime)}
 .g-stat .l{font-size:11px;text-transform:uppercase;letter-spacing:.12em;opacity:.7;margin-top:6px}
-.g-cards{display:grid;grid-template-columns:1fr;gap:14px}
+.g-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:400px){.g-cards{grid-template-columns:1fr}}
 
 /* account / cloud-save row */
 .g-account:empty{display:none}
@@ -32,12 +33,21 @@
 .g-acct-meta span{font-size:11px;color:var(--lime)}
 .g-acct-out{background:none;border:1.5px solid var(--card-edge);color:var(--paper);font-family:"Space Mono",monospace;font-size:12px;padding:6px 12px;border-radius:20px;cursor:pointer;flex:0 0 auto}
 .g-acct-out:hover{border-color:var(--pink)}
-.g-card{display:block;text-align:left;width:100%;cursor:pointer;background:var(--card);border:2px solid var(--card-edge);border-radius:18px;padding:18px 20px;color:var(--paper);transition:transform .12s,border-color .12s}
-.g-card:hover{transform:translateY(-2px);border-color:var(--accent,var(--pink))}
-.g-card h3{font-family:"Anton",sans-serif;font-weight:400;font-size:26px;letter-spacing:.02em;margin:0 0 4px;color:var(--accent,var(--pink))}
-.g-card p{margin:0;font-size:13px;line-height:1.5;opacity:.82}
-.g-card .g-cardfoot{margin-top:12px;font-size:11px;text-transform:uppercase;letter-spacing:.1em;opacity:.6;display:flex;justify-content:space-between;align-items:center}
-.g-emoji{font-size:26px}
+.g-card{display:flex;flex-direction:column;text-align:left;width:100%;cursor:pointer;border:3px solid var(--ink);border-radius:16px;padding:15px 15px 13px;color:var(--ink);box-shadow:5px 5px 0 rgba(10,9,22,.5);transition:transform .1s,box-shadow .1s;min-height:150px}
+.g-card:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 rgba(10,9,22,.5)}
+.g-card:active{transform:translate(1px,1px);box-shadow:3px 3px 0 rgba(10,9,22,.5)}
+.g-card h3{font-family:"Anton",sans-serif;font-weight:400;font-size:22px;letter-spacing:.01em;margin:0 0 6px;color:var(--ink);display:flex;align-items:center;gap:8px;line-height:1.05}
+.g-card h3 .em{font-size:24px;line-height:1;flex:0 0 auto}
+.g-card p{margin:0;font-size:12.5px;line-height:1.4;color:var(--ink);opacity:.85;flex:1}
+.g-card .g-cardfoot{margin-top:12px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);opacity:.72;font-weight:700}
+
+/* cover up — album tiles */
+.cu-frame{position:relative;width:min(300px,78vw);aspect-ratio:1;margin:0 auto 14px;border-radius:14px;overflow:hidden;border:2px solid var(--card-edge);background:var(--ink2)}
+.cu-frame img{width:100%;height:100%;object-fit:cover;display:block}
+.cu-tiles{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr)}
+.cu-tile{background:var(--ink2);border:.5px solid rgba(10,9,22,.55);transition:opacity .45s ease,transform .45s ease}
+.cu-tile.gone{opacity:0;transform:scale(.4);pointer-events:none}
+.cu-frame--done{border-color:var(--violet)}
 
 /* ---- generic game shell ---- */
 .g-view{display:none}

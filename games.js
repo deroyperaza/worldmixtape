@@ -129,7 +129,7 @@ function copyShare(text){var done=function(){toast("Copied — go paste it!");};
 function fallbackCopy(text){var ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");}catch(e){}document.body.removeChild(ta);}
 
 /* ---------------- router ---------------- */
-function show(id){["hub","soundtrip","timemachine","clusters"].forEach(function(v){document.getElementById("view-"+v).classList.toggle("on",v===id);});pauseVid();window.scrollTo(0,0);if(id==="hub")renderHub();}
+function show(id){["hub","soundtrip","timemachine","clusters","coverup"].forEach(function(v){document.getElementById("view-"+v).classList.toggle("on",v===id);});pauseVid();window.scrollTo(0,0);if(id==="hub")renderHub();}
 window.WMTG={show:show};
 
 /* ---------------- HUB ---------------- */
@@ -152,18 +152,19 @@ function renderHub(){
   document.getElementById("stat-passport").textContent=pc;
   document.getElementById("stat-total").textContent="197";
   var cards=[
-    {id:"soundtrip",em:"🎧",ac:"var(--pink)",h:"Sound Trip",p:"Hear a song. Guess the country it comes from. Every clue pulls you closer.",game:"soundtrip"},
-    {id:"timemachine",em:"🕰️",ac:"var(--cyan)",h:"Time Machine",p:"Same music, different question: what decade is this from? Earlier or later?",game:"timemachine"},
-    {id:"clusters",em:"🧩",ac:"var(--lime)",h:"Culture Clusters",p:"16 artists, 4 countries. Sort them into their homelands — but watch your guesses.",game:"clusters"}
+    {em:"🎧",bg:"#ff2e92",h:"Sound Trip",p:"Hear a song — guess the country it's from.",game:"soundtrip"},
+    {em:"🕰️",bg:"#00e5ff",h:"Time Machine",p:"Hear a song — guess the decade.",game:"timemachine"},
+    {em:"🧩",bg:"#c6ff00",h:"Culture Clusters",p:"Sort 16 artists into their 4 countries.",game:"clusters"},
+    {em:"💿",bg:"#b388ff",h:"Cover Up",p:"Uncover the album art — name the country.",game:"coverup"}
   ];
   document.getElementById("g-cards").innerHTML=cards.map(function(c){
     var pt=playedToday(c.game);
-    return '<button class="g-card" style="--accent:'+c.ac+'" onclick="WMTG.open(\''+c.game+'\')">'+
-      '<h3>'+c.h+'</h3><p>'+c.p+'</p>'+
-      '<div class="g-cardfoot"><span>'+(pt?"✓ played today":"Daily · tap to play")+'</span><span class="g-emoji">'+c.em+'</span></div></button>';
+    return '<button class="g-card" style="background:'+c.bg+'" onclick="WMTG.open(\''+c.game+'\')">'+
+      '<h3><span class="em">'+c.em+'</span>'+c.h+'</h3><p>'+c.p+'</p>'+
+      '<div class="g-cardfoot">'+(pt?"✓ played today":"Daily · tap to play")+'</div></button>';
   }).join("");
 }
-window.WMTG.open=function(game){show(game);if(game==="soundtrip")startSoundTrip();else if(game==="timemachine")startTimeMachine();else startClusters();};
+window.WMTG.open=function(game){show(game);if(game==="soundtrip")startSoundTrip();else if(game==="timemachine")startTimeMachine();else if(game==="clusters")startClusters();else startCoverUp();};
 
 /* ==================================================================
    GAME 1 — SOUND TRIP
@@ -346,6 +347,71 @@ function renderCLReveal(s){
   window.WMTG._clShareText="🧩 Culture Clusters #"+dayNumber()+"\n"+s.grid+"\nworldmixtape.com/games";
 }
 window.WMTG.clShare=function(){copyShare(window.WMTG._clShareText||"");};
+
+/* ==================================================================
+   GAME 4 — COVER UP  (visual: uncover the album art, name the country)
+   ================================================================== */
+var CU={},CU_TILES=16,CU_REVEAL=5,CU_MAX=3;
+function tracksWithCover(c){return tracksOf(c).filter(function(t){return t.cover;});}
+function coverPool(){return Object.keys(window.COUNTRIES).filter(function(c){return tracksWithCover(c).length>0;}).sort();}
+function cuChoices(){
+  var ans=CU.ans,cont=CONT[ans];
+  var same=CU.pool.filter(function(c){return c!==ans&&CONT[c]===cont;});
+  var other=CU.pool.filter(function(c){return c!==ans&&CONT[c]!==cont;});
+  var d=shuffle(same,CU.rng).slice(0,2).concat(shuffle(other,CU.rng).slice(0,2)).slice(0,3);
+  return shuffle([ans].concat(d),CU.rng);
+}
+function startCoverUp(){
+  var rng=rngFor("coverup");
+  var pool=coverPool();
+  var ans=pick(pool,rng);
+  var track=pick(tracksWithCover(ans),rng);
+  var order=[];for(var i=0;i<CU_TILES;i++)order.push(i);order=shuffle(order,rng);
+  CU={ans:ans,track:track,rng:rng,pool:pool,order:order,guesses:[],revealed:0,done:false};
+  CU.choiceSet=cuChoices();
+  var pt=playedToday("coverup");
+  if(pt){CU.done=true;renderCUReveal(pt.summary);return;}
+  renderCU();
+}
+function cuFrame(revealCount,full){
+  var tiles="";
+  for(var i=0;i<CU_TILES;i++){var gone=full||CU.order.indexOf(i)<revealCount;tiles+='<div class="cu-tile'+(gone?" gone":"")+'"></div>';}
+  return '<div class="cu-frame"><img src="'+esc(CU.track.cover)+'" alt="mystery album cover" referrerpolicy="no-referrer"><div class="cu-tiles">'+tiles+'</div></div>';
+}
+function renderCU(){
+  var body=document.getElementById("cu-body");
+  var choices='<div class="g-choices">'+CU.choiceSet.map(function(c){var used=CU.guesses.indexOf(c)>=0;var cls=used?(c===CU.ans?" right":" wrong"):"";return '<button class="g-choice'+cls+'" '+(used?"disabled":"")+' onclick="WMTG.cuGuess(\''+c+'\')">'+flagImg(c)+esc(cname(c))+'</button>';}).join("")+'</div>';
+  var left=CU_MAX-CU.guesses.length;
+  body.innerHTML=
+    cuFrame(CU.revealed,false)+
+    '<div class="g-hint" style="text-align:center;margin-bottom:10px">Which country is this album from? <b>Each wrong guess uncovers more.</b></div>'+
+    choices+
+    '<div class="g-hint" style="text-align:center">'+left+' guess'+(left===1?"":"es")+' left</div>';
+}
+window.WMTG.cuGuess=function(c){
+  if(CU.done||CU.guesses.indexOf(c)>=0)return;
+  CU.guesses.push(c);
+  if(c===CU.ans){finishCU(true);return;}
+  CU.revealed=Math.min(CU_TILES,CU.revealed+CU_REVEAL);
+  if(CU.guesses.length>=CU_MAX)finishCU(false);else renderCU();
+};
+function cuGrid(){return CU.guesses.map(function(c){return c===CU.ans?"🟩":"🟪";}).join("");}
+function finishCU(win){CU.done=true;var s={win:win,ans:CU.ans,tries:CU.guesses.length,grid:cuGrid(),cover:CU.track.cover,artist:CU.track.artist,title:CU.track.title,decade:CU.track.decade};if(win)stamp(CU.ans);recordPlay("coverup",s);renderCUReveal(s);}
+function renderCUReveal(s){
+  CU.track=CU.track||{cover:s.cover};
+  var lesson=(window.COUNTRY_MUSIC&&window.COUNTRY_MUSIC[s.ans]&&window.COUNTRY_MUSIC[s.ans][0])||"";
+  var body=document.getElementById("cu-body");
+  body.innerHTML=
+    '<div class="g-reveal" style="border-color:var(--violet)"><div class="badge'+(s.win?"":" miss")+'" style="color:var(--violet)">'+(s.win?"✓ Uncovered in "+s.tries+"!":"Today\'s answer")+'</div>'+
+    '<div class="cu-frame cu-frame--done"><img src="'+esc(s.cover)+'" alt="album cover" referrerpolicy="no-referrer"></div>'+
+    '<div class="g-answer">'+flagImg(s.ans)+'<div><div class="a-nm">'+esc(cname(s.ans))+'</div><div class="a-sub">'+esc(s.title)+' · '+esc(s.artist)+' · '+decLabel(s.decade)+'</div></div></div>'+
+    (lesson?'<div class="g-lesson"><span class="k">🎵 The sound of '+esc(cname(s.ans))+'</span>'+esc(lesson)+'</div>':"")+
+    '<div class="g-sharegrid">'+s.grid+'</div><div class="g-sharecap">Cover Up #'+dayNumber()+' · '+s.tries+'/'+CU_MAX+'</div>'+
+    '<div class="g-btns"><button class="g-btn p" style="background:var(--violet)" onclick="WMTG.cuShare()">Share</button><a class="g-btn s" href="/">Explore '+esc(cname(s.ans))+' →</a></div></div>'+
+    '<div class="g-done">Come back tomorrow for a new cover.</div>';
+  window.WMTG._cuShareText="💿 Cover Up #"+dayNumber()+"\n"+s.grid+" "+(s.win?s.tries+"/"+CU_MAX:"X/"+CU_MAX)+"\nworldmixtape.com/games";
+}
+window.WMTG.cuShare=function(){copyShare(window.WMTG._cuShareText||"");};
 
 /* ---------------- boot ---------------- */
 function boot(){loadAtlas();renderHub();var dn=document.querySelectorAll(".g-dn");for(var i=0;i<dn.length;i++)dn[i].textContent=dayNumber();}

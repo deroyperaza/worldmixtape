@@ -56,7 +56,7 @@ footer p{font-size:12px;color:#8a83b8;margin:6px 0}
 .hk-logo:hover{transform:scale(1.08)}
 .hk-ic{height:26px;width:auto;display:block}
 </style>
-<link rel="stylesheet" href="games.css?v=3">
+<link rel="stylesheet" href="games.css?v=4">
 </head>
 <body>
 
@@ -78,7 +78,7 @@ footer p{font-size:12px;color:#8a83b8;margin:6px 0}
     <!-- HUB -->
     <div id="view-hub" class="g-view on">
       <div id="g-account"></div>
-      <p class="g-intro">Three daily games built from the same world of music. <b>Listen close</b> — every song is a clue to a place and a time.</p>
+      <p class="g-intro">Four daily games built from the same world of music. <b>Listen close</b> — every song is a clue to a place and a time.</p>
       <div class="g-stats">
         <div class="g-stat"><div class="n" id="stat-streak">0</div><div class="l">Day streak</div></div>
         <div class="g-stat"><div class="n" id="stat-passport">0</div><div class="l">Countries collected</div></div>
@@ -106,6 +106,13 @@ footer p{font-size:12px;color:#8a83b8;margin:6px 0}
       <button class="g-back" onclick="WMTG.show('hub')">← All games</button>
       <div class="g-head"><span class="g-title" style="color:var(--lime)">Culture Clusters</span><span class="g-daylabel">Daily #<span class="g-dn"></span></span></div>
       <div id="cl-body"></div>
+    </div>
+
+    <!-- COVER UP -->
+    <div id="view-coverup" class="g-view">
+      <button class="g-back" onclick="WMTG.show('hub')">← All games</button>
+      <div class="g-head"><span class="g-title" style="color:var(--violet)">Cover Up</span><span class="g-daylabel">Daily #<span class="g-dn"></span></span></div>
+      <div id="cu-body"></div>
     </div>
 
   </div>
@@ -147,7 +154,7 @@ footer p{font-size:12px;color:#8a83b8;margin:6px 0}
     });
   } catch (e) { console.warn("Firebase init failed (games still work offline):", e); }
 </script>
-<script src="games.js?v=3"></script>
+<script src="games.js?v=4"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
