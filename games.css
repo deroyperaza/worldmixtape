@@ -127,9 +127,12 @@
 .g-tile-genre{font-size:10px;line-height:1;opacity:.55;text-transform:lowercase}
 .g-tile-play{position:absolute;bottom:2px;right:4px;font-size:9.5px;opacity:.5;padding:2px 6px;border-radius:10px;line-height:1.4}
 .g-tile-play:hover{opacity:1;color:var(--cyan)}
-.g-tile.sel{border-color:var(--cyan);background:var(--ink2);transform:scale(.97)}
+.g-tile.sel{background:var(--cyan);border-color:var(--cyan);color:var(--ink);transform:scale(.97)}
+.g-tile.sel .g-tile-genre{opacity:.75}
+.g-tile.sel .g-tile-play{color:var(--ink);opacity:.85}
 .g-tile.hearing{border-color:var(--cyan)}
 .g-tile.hearing .g-tile-play{opacity:1;color:var(--cyan)}
+.g-tile.sel.hearing .g-tile-play{color:var(--ink)}
 .g-tile.gone{display:none}
 .g-solved{border-radius:12px;padding:12px 14px;margin-bottom:8px;color:var(--ink)}
 .g-solved h4{margin:0 0 4px;font-family:"Anton",sans-serif;font-weight:400;font-size:18px;display:flex;align-items:center;gap:8px}
