@@ -56,7 +56,7 @@ footer p{font-size:12px;color:#8a83b8;margin:6px 0}
 .hk-logo:hover{transform:scale(1.08)}
 .hk-ic{height:26px;width:auto;display:block}
 </style>
-<link rel="stylesheet" href="games.css?v=2">
+<link rel="stylesheet" href="games.css?v=3">
 </head>
 <body>
 
@@ -77,6 +77,7 @@ footer p{font-size:12px;color:#8a83b8;margin:6px 0}
 
     <!-- HUB -->
     <div id="view-hub" class="g-view on">
+      <div id="g-account"></div>
       <p class="g-intro">Three daily games built from the same world of music. <b>Listen close</b> — every song is a clue to a place and a time.</p>
       <div class="g-stats">
         <div class="g-stat"><div class="n" id="stat-streak">0</div><div class="l">Day streak</div></div>
@@ -129,7 +130,24 @@ footer p{font-size:12px;color:#8a83b8;margin:6px 0}
   try{ window.COUNTRIES = COUNTRIES; }catch(e){}
   try{ window.COUNTRY_MUSIC = COUNTRY_MUSIC; }catch(e){}
 </script>
-<script src="games.js?v=2"></script>
+<!-- Firebase: reuse the site's world-mix-tape project for Google sign-in + cloud-saved progress -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+  try {
+    firebase.initializeApp({
+      apiKey: "AIzaSyBbWFFtd5t9XtW0ksNdcw4Z65NuxYuYpoU",
+      authDomain: "world-mix-tape.firebaseapp.com",
+      projectId: "world-mix-tape",
+      storageBucket: "world-mix-tape.firebasestorage.app",
+      messagingSenderId: "162520484749",
+      appId: "1:162520484749:web:01633111371f1fd1f0cbc4",
+      measurementId: "G-M3RPZPB9ZN"
+    });
+  } catch (e) { console.warn("Firebase init failed (games still work offline):", e); }
+</script>
+<script src="games.js?v=3"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
