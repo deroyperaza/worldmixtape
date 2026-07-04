@@ -371,7 +371,7 @@ window.WMTG.clShare=function(){copyShare(window.WMTG._clShareText||"");};
 /* ==================================================================
    GAME 4 — COVER UP  (visual: uncover the album art, name the country)
    ================================================================== */
-var CU={},CU_TILES=16,CU_REVEAL=5,CU_MAX=3;
+var CU={},CU_TILES=16,CU_REVEAL=5,CU_MAX=3,CU_START=3;
 function tracksWithCover(c){return tracksOf(c).filter(function(t){return t.cover;});}
 function coverPool(){return Object.keys(window.COUNTRIES).filter(function(c){return tracksWithCover(c).length>0;}).sort();}
 function cuChoices(){
@@ -387,7 +387,7 @@ function startCoverUp(){
   var ans=pick(pool,rng);
   var track=pick(tracksWithCover(ans),rng);
   var order=[];for(var i=0;i<CU_TILES;i++)order.push(i);order=shuffle(order,rng);
-  CU={ans:ans,track:track,rng:rng,pool:pool,order:order,guesses:[],revealed:0,done:false};
+  CU={ans:ans,track:track,rng:rng,pool:pool,order:order,guesses:[],revealed:CU_START,done:false};
   CU.choiceSet=cuChoices();
   var pt=playedToday("coverup");
   if(pt){CU.done=true;renderCUReveal(pt.summary);return;}
@@ -403,10 +403,10 @@ function renderCU(){
   var choices='<div class="g-choices">'+CU.choiceSet.map(function(c){var used=CU.guesses.indexOf(c)>=0;var cls=used?(c===CU.ans?" right":" wrong"):"";return '<button class="g-choice'+cls+'" '+(used?"disabled":"")+' onclick="WMTG.cuGuess(\''+c+'\')">'+flagImg(c)+esc(cname(c))+'</button>';}).join("")+'</div>';
   var left=CU_MAX-CU.guesses.length;
   body.innerHTML=
+    '<p class="g-intro" style="margin:0 0 12px">Behind these tiles is a real <b>album cover</b> from somewhere in the world. Guess which <b>country</b> the music is from — every wrong guess peels away more of the art.</p>'+
     cuFrame(CU.revealed,false)+
-    '<div class="g-hint" style="text-align:center;margin-bottom:10px">Which country is this album from? <b>Each wrong guess uncovers more.</b></div>'+
-    choices+
-    '<div class="g-hint" style="text-align:center">'+left+' guess'+(left===1?"":"es")+' left</div>';
+    '<div class="g-hint" style="text-align:center;margin:-2px 0 10px">👇 Tap the country you think it\'s from · <b>'+left+' guess'+(left===1?"":"es")+' left</b></div>'+
+    choices;
 }
 window.WMTG.cuGuess=function(c){
   if(CU.done||CU.guesses.indexOf(c)>=0)return;
