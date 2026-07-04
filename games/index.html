@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<base href="/">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Games — WORLD MIXTAPE</title>
+<meta name="description" content="Daily music games from World Mixtape — guess the country from a song, place it in time, and sort artists into their homelands. A century of local music, played." />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=3" />
+<link rel="icon" type="image/svg+xml" href="WMT-Icon.svg" />
+<meta property="og:title" content="Games — WORLD MIXTAPE" />
+<meta property="og:description" content="Daily music games: guess the country from a song, place it in time, sort artists into their homelands." />
+<meta property="og:image" content="https://worldmixtape.com/og-image.png?v=5" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0916; --paper:#fff7e6; --pink:#ff2e92; --lime:#c6ff00; --cyan:#00e5ff;
+  --tang:#ff6d00; --violet:#b388ff; --yellow:#ffe600; --land:#221c3f; --edge:#3a2f63;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--ink); color:var(--paper);
+  font-family:"Space Mono",monospace; line-height:1.6;
+  background-image:radial-gradient(1200px 700px at 15% -5%, rgba(179,136,255,.18), transparent 60%),
+                   radial-gradient(1000px 600px at 100% 0%, rgba(0,229,255,.12), transparent 55%);
+  background-attachment:fixed;
+}
+a{color:var(--cyan);text-decoration:none;border-bottom:1.5px solid rgba(0,229,255,.35);transition:color .12s,border-color .12s}
+a:hover{color:var(--lime);border-color:var(--lime)}
+.wrap{max-width:760px;margin:0 auto;padding:26px 22px 0}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:60;mix-blend-mode:overlay;opacity:.35;
+  background-image:radial-gradient(rgba(255,255,255,.5) .5px, transparent .6px);background-size:3px 3px}
+header.hd{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.hd__logolink{display:block;border:none;line-height:0;margin-left:-46px;flex:0 0 auto}
+.hd__logo{width:262px;height:auto;display:block}
+@media(max-width:680px){.hd__logo{width:168px} .hd__logolink{margin-left:-28px}}
+.hd__t{font-family:"Anton",sans-serif;font-size:clamp(30px,6vw,52px);letter-spacing:.02em;line-height:.9;margin:0;text-transform:uppercase}
+.hd__t b{color:var(--lime)}
+.hd__sub{font-size:13px;color:var(--violet);margin:2px 0 0}
+.back{position:fixed;top:16px;right:16px;z-index:50;display:inline-flex;align-items:center;gap:5px;font-weight:700;font-size:19px;line-height:1;
+  color:#0a0916;background:var(--lime);border:3px solid #0a0916;border-radius:20px;padding:4px 9px 4px 12px;
+  text-decoration:none;box-shadow:3px 3px 0 var(--pink);transform:rotate(-2deg)}
+.back:hover{transform:rotate(-2deg) scale(1.06);color:#0a0916;border-color:#0a0916}
+.back__ic{width:36px;height:36px;border-radius:7px;display:block}
+footer{border-top:1px solid var(--edge);padding:26px 0 40px;text-align:center;margin-top:20px}
+footer p{font-size:12px;color:#8a83b8;margin:6px 0}
+.hk{color:#fff7e6;border:none;font-weight:700}
+.hk:hover{color:var(--lime)}
+.ft-logolink{display:block;width:140px;margin:0 auto 12px;line-height:0;transition:transform .12s}
+.ft-logolink:hover{transform:scale(1.04)}
+.ft-logo{display:block;width:140px;height:auto}
+.hk-logo{display:inline-block;border:none;margin-top:12px;transition:transform .12s}
+.hk-logo:hover{transform:scale(1.08)}
+.hk-ic{height:26px;width:auto;display:block}
+</style>
+<link rel="stylesheet" href="games.css?v=2">
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<a class="back" href="/" title="Back to the map" aria-label="Back to the map">←<img class="back__ic" src="WMT-Icon.svg" alt=""></a>
+
+<div class="wrap">
+
+  <header class="hd">
+    <a class="hd__logolink" href="/" aria-label="World Mixtape — home"><img class="hd__logo" src="WMT-logo.svg" alt="World Mixtape" onerror="this.style.display='none'"/></a>
+    <div>
+      <h1 class="hd__t"><b>Games</b></h1>
+      <p class="hd__sub">a century of local music — now guess it, place it, sort it</p>
+    </div>
+  </header>
+
+  <div class="g-wrap">
+
+    <!-- HUB -->
+    <div id="view-hub" class="g-view on">
+      <p class="g-intro">Three daily games built from the same world of music. <b>Listen close</b> — every song is a clue to a place and a time.</p>
+      <div class="g-stats">
+        <div class="g-stat"><div class="n" id="stat-streak">0</div><div class="l">Day streak</div></div>
+        <div class="g-stat"><div class="n" id="stat-passport">0</div><div class="l">Countries collected</div></div>
+        <div class="g-stat"><div class="n" id="stat-total">197</div><div class="l">Out there to find</div></div>
+      </div>
+      <div class="g-cards" id="g-cards"></div>
+    </div>
+
+    <!-- SOUND TRIP -->
+    <div id="view-soundtrip" class="g-view">
+      <button class="g-back" onclick="WMTG.show('hub')">← All games</button>
+      <div class="g-head"><span class="g-title" style="color:var(--pink)">Sound Trip</span><span class="g-daylabel">Daily #<span class="g-dn"></span></span></div>
+      <div id="st-body"></div>
+    </div>
+
+    <!-- TIME MACHINE -->
+    <div id="view-timemachine" class="g-view">
+      <button class="g-back" onclick="WMTG.show('hub')">← All games</button>
+      <div class="g-head"><span class="g-title" style="color:var(--cyan)">Time Machine</span><span class="g-daylabel">Daily #<span class="g-dn"></span></span></div>
+      <div id="tm-body"></div>
+    </div>
+
+    <!-- CULTURE CLUSTERS -->
+    <div id="view-clusters" class="g-view">
+      <button class="g-back" onclick="WMTG.show('hub')">← All games</button>
+      <div class="g-head"><span class="g-title" style="color:var(--lime)">Culture Clusters</span><span class="g-daylabel">Daily #<span class="g-dn"></span></span></div>
+      <div id="cl-body"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <a class="ft-logolink" href="/" aria-label="World Mixtape — home"><img class="ft-logo" src="WMT-logo-cream.svg" alt="World Mixtape"></a>
+  <p>a century of local music, decade by decade</p>
+  <p>An experiment by <a class="hk" href="https://hyperakt.com" target="_blank" rel="noopener">Hyperakt</a>.</p>
+  <a class="hk-logo" href="https://hyperakt.com" target="_blank" rel="noopener" aria-label="Hyperakt"><img class="hk-ic" src="hyperakt-h.svg?v=3" alt="Hyperakt"></a>
+</footer>
+
+<div id="yt-audio"></div>
+<div class="g-toast" id="g-toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script src="data.js?v=98"></script>
+<script src="country_music.js?v=2"></script>
+<script>
+  try{ window.COUNTRIES = COUNTRIES; }catch(e){}
+  try{ window.COUNTRY_MUSIC = COUNTRY_MUSIC; }catch(e){}
+</script>
+<script src="games.js?v=2"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>

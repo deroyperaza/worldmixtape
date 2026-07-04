@@ -183,6 +183,15 @@ body{
 /* about pill: lower-left on mobile too */
 @media(max-width:680px){ .brand__about{position:fixed;left:14px;bottom:16px;margin:0;z-index:46} }
 
+/* play pill: sits just above the info pill, pink to stand apart */
+.brand__play{display:inline-block;pointer-events:auto;font-family:"Space Mono",monospace;font-size:11px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--paper);background:var(--pink);padding:3px 10px 4px;
+  border-radius:20px;border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);text-decoration:none;
+  transform:rotate(1deg);position:fixed;left:18px;bottom:54px;z-index:46}
+.brand__play:hover{transform:rotate(1deg) translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);color:var(--paper)}
+@media(max-width:680px){ .brand__play{left:14px;bottom:52px} }
+body.panel-open .brand__play{opacity:0}
+
 
 /* map */
 .map-wrap{position:fixed;inset:26px 0 0 0;display:block}
