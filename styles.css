@@ -473,12 +473,12 @@ body.list-view #map{display:none}
 .clist__sec{display:flex;flex-wrap:wrap;column-gap:14px;row-gap:28px;align-items:flex-start}
 /* block (not flex) so the name is inline → its sticker background hugs each line when a long name wraps
    (e.g. "Central African Republic" becomes two hugging blocks instead of one full-width bar) */
-.clist__item{display:block;background:none;border:none;cursor:pointer;padding:0;text-align:left;width:max-content;max-width:100%;transform:rotate(-1deg)}
+.clist__item{display:block;background:none;border:none;cursor:pointer;padding:0;text-align:center;width:max-content;max-width:100%;transform:rotate(-1deg)}
 .clist__item .flag{height:26px;width:auto;border-radius:3px;box-shadow:0 0 0 1.5px #0a0916;vertical-align:middle;margin-right:10px}
 .clist__name{font-family:"Anton",sans-serif;font-size:33px;text-transform:uppercase;color:#0a0916;
   background:var(--accent,var(--pink));padding:3px 12px 5px;border-radius:2px;
   -webkit-box-decoration-break:clone;box-decoration-break:clone;
-  box-shadow:3px 3px 0 #0a0916;letter-spacing:.01em;line-height:.95;position:relative}
+  box-shadow:3px 3px 0 #0a0916;letter-spacing:.01em;line-height:1.28;position:relative}
 .wc-ball--list{font-size:19px;top:-12px;right:-7px}
 @media(max-width:680px){.wc-ball--list{font-size:17px;top:-11px;right:-6px}}
 /* continents icon for the map-view toggle */
