@@ -299,6 +299,7 @@ window.WMTG.tmShare=function(){copyShare(window.WMTG._tmShareText||"");};
    ================================================================== */
 var CL={};
 var CL_COLORS=["🟩","🟪","🟦","🟧"];
+function clArtistList(items){return '<div class="cl-r-list">'+(items||[]).map(function(x){return '<span class="cl-r-item">'+esc(x.a)+(x.genre?' <em>'+esc(x.genre)+'</em>':'')+'</span>';}).join("")+'</div>';}
 function artistsWithTrack(c){var seen={},out=[];tracksOf(c).forEach(function(t){var a=(t.artist||"").trim(),k=a.toLowerCase();if(a&&!seen[k]){seen[k]=1;out.push({a:a,genre:t.genre||"",ytId:t.ytId,title:t.title||""});}});return out;}
 function startClusters(){
   var rng=rngFor("clusters");
@@ -318,7 +319,7 @@ function startClusters(){
 function renderCL(){
   var body=document.getElementById("cl-body");
   var targets=CL.groups.map(function(g,gi){var done=CL.solved.indexOf(gi)>=0;return '<span class="cl-target'+(done?" done":"")+'">'+flagImg(g.cc)+'<span>'+esc(cname(g.cc))+'</span>'+(done?' ✓':'')+'</span>';}).join("");
-  var solvedHtml=CL.solved.map(function(gi){var g=CL.groups[gi];var col=["#c6ff00","#b388ff","#00e5ff","#ff6d00"][gi%4];return '<div class="g-solved" style="background:'+col+'"><h4>'+flagImg(g.cc)+esc(cname(g.cc))+'</h4><p>'+g.artists.map(esc).join(" · ")+'</p></div>';}).join("");
+  var solvedHtml=CL.solved.map(function(gi){var g=CL.groups[gi];var col=["#c6ff00","#b388ff","#00e5ff","#ff6d00"][gi%4];return '<div class="g-solved" style="background:'+col+'"><h4>'+flagImg(g.cc)+esc(cname(g.cc))+'</h4>'+clArtistList(g.tracks)+'</div>';}).join("");
   var grid=CL.tiles.map(function(t,i){
     if(CL.solved.indexOf(t.g)>=0)return "";
     var sel=CL.sel.indexOf(i)>=0,hearing=CL.hearing===i;
@@ -355,10 +356,10 @@ window.WMTG.clSubmit=function(){
   }
 };
 function clGrid(){return CL.history.map(function(row){return row.map(function(g){return CL_COLORS[g%4];}).join("");}).join("\n");}
-function finishCL(win){CL.done=true;var s={win:win,solved:CL.solved.length,grid:clGrid(),groups:CL.groups.map(function(g){return {cc:g.cc,artists:g.artists};})};CL.solved.forEach(function(gi){stamp(CL.groups[gi].cc);});recordPlay("clusters",s);renderCLReveal(s);}
+function finishCL(win){CL.done=true;var s={win:win,solved:CL.solved.length,grid:clGrid(),groups:CL.groups.map(function(g){return {cc:g.cc,artists:g.artists,items:g.tracks.map(function(x){return {a:x.a,genre:x.genre};})};})};CL.solved.forEach(function(gi){stamp(CL.groups[gi].cc);});recordPlay("clusters",s);renderCLReveal(s);}
 function renderCLReveal(s){
   var body=document.getElementById("cl-body");
-  var cards=s.groups.map(function(g,gi){var col=["#c6ff00","#b388ff","#00e5ff","#ff6d00"][gi%4];var lesson=(window.COUNTRY_MUSIC&&window.COUNTRY_MUSIC[g.cc]&&window.COUNTRY_MUSIC[g.cc][0])||"";var snip=lesson.split(". ").slice(0,1).join(". ");if(snip&&!/[.!?]$/.test(snip))snip+=".";return '<div class="g-solved" style="background:'+col+';margin-bottom:10px"><h4>'+flagImg(g.cc)+esc(cname(g.cc))+'</h4><p>'+g.artists.map(esc).join(" · ")+'</p>'+(snip?'<p style="margin-top:6px;opacity:.85">'+esc(snip)+'</p>':"")+'</div>';}).join("");
+  var cards=s.groups.map(function(g,gi){var col=["#c6ff00","#b388ff","#00e5ff","#ff6d00"][gi%4];var lesson=(window.COUNTRY_MUSIC&&window.COUNTRY_MUSIC[g.cc]&&window.COUNTRY_MUSIC[g.cc][0])||"";var snip=lesson.split(". ").slice(0,1).join(". ");if(snip&&!/[.!?]$/.test(snip))snip+=".";var items=g.items||(g.artists||[]).map(function(a){return {a:a,genre:""};});return '<div class="g-solved" style="background:'+col+';margin-bottom:10px"><h4>'+flagImg(g.cc)+esc(cname(g.cc))+'</h4>'+clArtistList(items)+(snip?'<p style="margin-top:6px;opacity:.85">'+esc(snip)+'</p>':"")+'</div>';}).join("");
   body.innerHTML=
     '<div class="g-reveal" style="border-color:var(--lime)"><div class="badge'+(s.win?"":" miss")+'">'+(s.win?"✓ All four! Perfect trip.":"You found "+s.solved+" of 4")+'</div>'+cards+
     '<div class="g-sharegrid" style="font-size:18px;letter-spacing:2px;white-space:pre">'+esc(s.grid)+'</div><div class="g-sharecap">Culture Clusters #'+dayNumber()+'</div>'+

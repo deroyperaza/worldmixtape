@@ -138,6 +138,9 @@
 .g-solved h4{margin:0 0 4px;font-family:"Anton",sans-serif;font-weight:400;font-size:18px;display:flex;align-items:center;gap:8px}
 .g-solved p{margin:0;font-size:12px;line-height:1.4}
 .g-solved img{width:22px;border-radius:2px}
+.cl-r-list{display:flex;flex-direction:column;gap:1px}
+.cl-r-item{font-size:12px;line-height:1.45}
+.cl-r-item em{font-style:normal;opacity:.6;text-transform:lowercase;margin-left:5px}
 .g-lives{font-size:13px;letter-spacing:3px;margin-bottom:10px}
 
 /* reveal */
