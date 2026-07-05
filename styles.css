@@ -179,17 +179,21 @@ body{
   box-shadow:2px 2px 0 var(--ink);text-decoration:none;transform:rotate(-1deg)}
 .brand__about:hover{transform:rotate(-1deg) translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
 /* desktop: tuck the about link into the bottom-left corner instead of floating in the header */
-@media(min-width:681px){ .brand__about{position:fixed;left:18px;bottom:18px;margin:0;z-index:46} }
+@media(min-width:681px){ .brand__about{position:fixed;left:18px;bottom:18px;margin:0;z-index:52} }
 /* about pill: lower-left on mobile too */
-@media(max-width:680px){ .brand__about{position:fixed;left:14px;bottom:16px;margin:0;z-index:46} }
+@media(max-width:680px){ .brand__about{position:fixed;left:14px;bottom:16px;margin:0;z-index:52} }
 
 /* play pill: sits just above the info pill, pink to stand apart */
 .brand__play{display:inline-block;pointer-events:auto;font-family:"Space Mono",monospace;font-size:11px;font-weight:700;
   letter-spacing:.06em;text-transform:uppercase;color:var(--paper);background:var(--pink);padding:3px 10px 4px;
   border-radius:20px;border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);text-decoration:none;
-  transform:rotate(1deg);position:fixed;left:18px;bottom:54px;z-index:46}
+  transform:rotate(1deg);position:fixed;left:18px;bottom:54px;z-index:52}
 .brand__play:hover{transform:rotate(1deg) translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);color:var(--paper)}
 @media(max-width:680px){ .brand__play{left:14px;bottom:52px} }
+/* when a song is playing, the 78px player bar covers the corner — lift both pills above it */
+body.has-player .brand__about{bottom:96px}
+body.has-player .brand__play{bottom:132px}
+@media(max-width:680px){ body.has-player .brand__about{bottom:86px} body.has-player .brand__play{bottom:122px} }
 
 
 /* map */
@@ -201,6 +205,9 @@ body{
 .country.feat:hover{filter:brightness(1.25) drop-shadow(0 0 12px currentColor)}
 .country.dim{opacity:.9}
 .country.active{stroke:var(--paper);stroke-width:1.6px;filter:brightness(1.35) drop-shadow(0 0 16px currentColor)}
+/* when one country is highlighted (playing / shuffle), dim the rest so it stands out */
+#map.focus .country{opacity:.32;transition:opacity .3s}
+#map.focus .country.active{opacity:1}
 
 .map-hint{position:fixed;bottom:152px;left:50%;transform:translateX(-50%) rotate(-1deg);z-index:30;
   background:var(--tang);color:#0a0916;font-weight:700;font-size:12px;text-transform:uppercase;

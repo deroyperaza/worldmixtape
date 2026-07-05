@@ -91,10 +91,46 @@ if(FB){
   gAuth.getRedirectResult().catch(function(e){if(e&&e.code)console.warn("redirect",e);});
   gAuth.onAuthStateChanged(function(u){
     authUser=u||null;
-    if(u){pullAndMerge(u.uid).then(function(){renderHub();});}
-    else{cloudReady=false;renderHub();}
+    if(u){pullAndMerge(u.uid).then(function(){renderHub();});loadCloudFavs(u.uid);}
+    else{cloudReady=false;FAVS=loadFavs();refreshFavBtns();renderHub();}
   });
 }
+
+/* ---------------- favorites (shared with the main site: localStorage wmx_favs_v1 + users/{uid}/favorites) ---------------- */
+var FAV_KEY="wmx_favs_v1";
+function loadFavs(){try{return JSON.parse(localStorage.getItem(FAV_KEY))||[];}catch(e){return [];}}
+var FAVS=loadFavs();
+function isFaved(id){return FAVS.some(function(f){return String(f.trackId)===String(id);});}
+// mirror the main app's favRecord shape exactly so games favorites appear on the site (and vice-versa)
+function favRec(t){return {trackId:t.trackId,artist:t.artist||"",title:t.title||"",cover:t.cover||"",year:t.year||null,genre:t.genre||"",album:t.album||"",artistId:t.artistId||null,decade:t.decade||"",diaspora:!!t.diaspora,ytId:t.ytId||null,_cc:t._cc||t.cc||null};}
+function saveFavsLocal(){try{localStorage.setItem(FAV_KEY,JSON.stringify(FAVS));}catch(e){}}
+function toggleFav(t){
+  if(!t||t.trackId==null)return false;
+  var id=String(t.trackId),added;
+  if(isFaved(id)){FAVS=FAVS.filter(function(f){return String(f.trackId)!==id;});added=false;}
+  else{FAVS.unshift(favRec(t));added=true;}
+  if(authUser&&gDb){                                   // signed in → write to the same subcollection the site syncs
+    try{var col=gDb.collection("users").doc(authUser.uid).collection("favorites");
+      if(added)col.doc(id).set(Object.assign(favRec(t),{addedAt:FB.firestore.FieldValue.serverTimestamp()})).catch(function(e){console.warn("fav push",e);});
+      else col.doc(id).delete().catch(function(e){console.warn("fav del",e);});
+    }catch(e){console.warn(e);}
+  }else saveFavsLocal();                               // anonymous → localStorage (same key the site reads)
+  return added;
+}
+function loadCloudFavs(uid){
+  if(!gDb)return;
+  gDb.collection("users").doc(uid).collection("favorites").get().then(function(snap){
+    FAVS=snap.docs.map(function(d){return d.data();});
+    refreshFavBtns();
+  }).catch(function(e){console.warn("games favs pull",e);});
+}
+function favLabel(on){return on?"♥ saved":"♡ save song";}
+function refreshFavBtns(){
+  document.querySelectorAll(".g-fav").forEach(function(b){var on=isFaved(b.getAttribute("data-id"));b.classList.toggle("on",on);b.textContent=favLabel(on);});
+  document.querySelectorAll(".g-tile-fav").forEach(function(b){b.classList.toggle("on",isFaved(b.getAttribute("data-id")));});
+}
+var revealTrk={};   // per-game track currently shown on a reveal card, for its ♥ save button
+function saveBtn(game){var t=revealTrk[game];var on=t&&isFaved(t.trackId);return '<button type="button" class="g-fav'+(on?" on":"")+'" data-id="'+(t?esc(t.trackId):"")+'" onclick="WMTG.saveReveal(\''+game+'\')" aria-label="Save this song to favorites">'+favLabel(on)+'</button>';}
 
 /* ---------------- centroids (from world-atlas, for Sound Trip) ---------------- */
 var CENTROID={},ATLAS_READY=false,atlasWaiters=[];
@@ -131,6 +167,7 @@ function fallbackCopy(text){var ta=document.createElement("textarea");ta.value=t
 /* ---------------- router ---------------- */
 function show(id){["hub","soundtrip","timemachine","clusters","coverup"].forEach(function(v){document.getElementById("view-"+v).classList.toggle("on",v===id);});pauseVid();window.scrollTo(0,0);if(id==="hub")renderHub();}
 window.WMTG={show:show};
+window.WMTG.saveReveal=function(game){var t=revealTrk[game];if(!t||t.trackId==null){toast("can't save this one");return;}var added=toggleFav(t);toast(added?"Saved to your favorites ♥":"Removed from favorites");refreshFavBtns();};
 
 /* ---------------- HUB ---------------- */
 function renderAccount(){
@@ -226,18 +263,20 @@ window.WMTG.stGuess=function(c){if(ST.done||ST.guesses.indexOf(c)>=0)return;ST.g
 function stShareGrid(){return ST.guesses.map(function(g){return g===ST.ans?"🟩":(CONT[g]===CONT[ST.ans]?"🟨":"🟥");}).join("");}
 function finishST(win){
   ST.done=true;
-  var summary={win:win,ans:ST.ans,tries:ST.guesses.length,grid:stShareGrid(),artist:ST.track.artist,title:ST.track.title,decade:ST.track.decade,year:ST.track.year,ytId:ST.track.ytId,start:ST.start};
+  var summary={win:win,ans:ST.ans,tries:ST.guesses.length,grid:stShareGrid(),artist:ST.track.artist,title:ST.track.title,decade:ST.track.decade,year:ST.track.year,ytId:ST.track.ytId,start:ST.start,track:favRec(ST.track)};
   if(win){stamp(ST.ans);bumpStreak();}
   recordPlay("soundtrip",summary);
   renderSTReveal(summary);
 }
 function renderSTReveal(s){
   ST.done=true;ST.track=ST.track||{ytId:s.ytId};ST.start=s.start;
+  revealTrk.st=s.track||null;
   var lesson=(window.COUNTRY_MUSIC&&window.COUNTRY_MUSIC[s.ans]&&window.COUNTRY_MUSIC[s.ans][0])||"";
   var body=document.getElementById("st-body");
   body.innerHTML=
     '<div class="g-reveal"><div class="badge'+(s.win?"":" miss")+'">'+(s.win?"✓ Solved in "+s.tries+"!":"Today\'s answer")+'</div>'+
     '<div class="g-answer">'+flagImg(s.ans)+'<div><div class="a-nm">'+esc(cname(s.ans))+'</div><div class="a-sub">'+esc(s.title)+' · '+esc(s.artist)+' · '+decLabel(s.decade)+'</div></div></div>'+
+    (revealTrk.st?'<div class="g-saverow">'+saveBtn("st")+'</div>':"")+
     (lesson?'<div class="g-lesson"><span class="k">🎵 The sound of '+esc(cname(s.ans))+'</span>'+esc(lesson)+'</div>':"")+
     '<div class="g-player" id="st-player" style="margin-bottom:12px"><button class="g-play" id="st-play" onclick="WMTG.stPlay()">▶</button><div class="g-eq">'+eqBars()+'</div><div class="g-hint">Hear the full song</div></div>'+
     '<div class="g-sharegrid">'+s.grid+'</div><div class="g-sharecap">Sound Trip #'+dayNumber()+' · '+s.tries+(s.win?"/5 🎯":"/5")+'</div>'+
@@ -278,13 +317,15 @@ function renderTM(){
 window.WMTG.tmPlay=function(){var pl=document.getElementById("tm-player"),btn=document.getElementById("tm-play");if(playedState()){pauseVid();pl.classList.remove("playing");btn.textContent="▶";}else{playVid(TM.track.ytId,TM.start);pl.classList.add("playing");btn.textContent="❚❚";}};
 window.WMTG.tmGuess=function(d){if(TM.done)return;if(TM.guesses.some(function(g){return g.d===d;}))return;var correct=d===TM.track.decade;TM.guesses.push({d:d,correct:correct});if(correct){finishTM(true);}else if(TM.guesses.length>=3){finishTM(false);}else renderTM();};
 function tmGrid(){return TM.guesses.map(function(g){return g.correct?"🟩":(TM.timeline.indexOf(g.d)<TM.ansIdx?"🟧":"🟪");}).join("");}
-function finishTM(win){TM.done=true;var s={win:win,cc:TM.cc,decade:TM.track.decade,year:TM.track.year,title:TM.track.title,artist:TM.track.artist,ytId:TM.track.ytId,start:TM.start,grid:tmGrid(),tries:TM.guesses.length};recordPlay("timemachine",s);renderTMReveal(s);}
+function finishTM(win){TM.done=true;var s={win:win,cc:TM.cc,decade:TM.track.decade,year:TM.track.year,title:TM.track.title,artist:TM.track.artist,ytId:TM.track.ytId,start:TM.start,grid:tmGrid(),tries:TM.guesses.length,track:favRec(TM.track)};recordPlay("timemachine",s);renderTMReveal(s);}
 function renderTMReveal(s){
   TM.track=TM.track||{ytId:s.ytId};TM.start=s.start;
+  revealTrk.tm=s.track||null;
   var body=document.getElementById("tm-body");
   body.innerHTML=
     '<div class="g-reveal" style="border-color:var(--cyan)"><div class="badge'+(s.win?"":" miss")+'" style="color:var(--cyan)">'+(s.win?"✓ Solved in "+s.tries+"!":"Today\'s answer")+'</div>'+
     '<div class="g-answer">'+flagImg(s.cc)+'<div><div class="a-nm">'+decLabel(s.decade)+(yearFits(s.year,s.decade)?' · '+s.year:"")+'</div><div class="a-sub">'+esc(s.title)+' · '+esc(s.artist)+' · '+esc(cname(s.cc))+'</div></div></div>'+
+    (revealTrk.tm?'<div class="g-saverow">'+saveBtn("tm")+'</div>':"")+
     '<div class="g-lesson">You just heard how '+esc(cname(s.cc))+' sounded in the '+decLabel(s.decade)+'. Music changes with its time — instruments, recording, and the world around it all leave fingerprints.</div>'+
     '<div class="g-player" id="tm-player" style="margin-bottom:12px"><button class="g-play" id="tm-play" style="background:var(--cyan)" onclick="WMTG.tmPlay()">▶</button><div class="g-eq">'+eqBars()+'</div><div class="g-hint">Hear the full song</div></div>'+
     '<div class="g-sharegrid">'+s.grid+'</div><div class="g-sharecap">Time Machine #'+dayNumber()+' · '+s.tries+"/3"+'</div>'+
@@ -300,7 +341,7 @@ window.WMTG.tmShare=function(){copyShare(window.WMTG._tmShareText||"");};
 var CL={};
 var CL_COLORS=["🟩","🟪","🟦","🟧"];
 function clArtistList(items){return '<div class="cl-r-list">'+(items||[]).map(function(x){return '<span class="cl-r-item">'+esc(x.a)+(x.genre?' <em>'+esc(x.genre)+'</em>':'')+'</span>';}).join("")+'</div>';}
-function artistsWithTrack(c){var seen={},out=[];tracksOf(c).forEach(function(t){var a=(t.artist||"").trim(),k=a.toLowerCase();if(a&&!seen[k]){seen[k]=1;out.push({a:a,genre:t.genre||"",ytId:t.ytId,title:t.title||""});}});return out;}
+function artistsWithTrack(c){var seen={},out=[];tracksOf(c).forEach(function(t){var a=(t.artist||"").trim(),k=a.toLowerCase();if(a&&!seen[k]){seen[k]=1;out.push({a:a,genre:t.genre||"",ytId:t.ytId,title:t.title||"",trk:t});}});return out;}
 function startClusters(){
   var rng=rngFor("clusters");
   var codes=Object.keys(window.COUNTRIES).filter(function(c){return artistsOf(c).length>=4;}).sort();
@@ -309,7 +350,7 @@ function startClusters(){
   var chosen=[];shuffle(Object.keys(byCont),rng).forEach(function(k){if(chosen.length<4)chosen.push(pick(byCont[k],rng));});
   if(chosen.length<4)shuffle(codes,rng).forEach(function(c){if(chosen.length<4&&chosen.indexOf(c)<0)chosen.push(c);});
   var groups=chosen.map(function(c){var arts=shuffle(artistsWithTrack(c),rng).slice(0,4);return {cc:c,artists:arts.map(function(x){return x.a;}),tracks:arts};});
-  var tiles=[];groups.forEach(function(g,gi){g.tracks.forEach(function(x){tiles.push({a:x.a,genre:x.genre,ytId:x.ytId,g:gi,cc:g.cc});});});
+  var tiles=[];groups.forEach(function(g,gi){g.tracks.forEach(function(x){tiles.push({a:x.a,genre:x.genre,ytId:x.ytId,g:gi,cc:g.cc,trk:x.trk});});});
   tiles=shuffle(tiles,rng);
   CL={groups:groups,tiles:tiles,sel:[],solved:[],lives:4,done:false,history:[],hearing:-1};
   var pt=playedToday("clusters");
@@ -322,11 +363,14 @@ function renderCL(){
   var solvedHtml=CL.solved.map(function(gi){var g=CL.groups[gi];var col=["#c6ff00","#b388ff","#00e5ff","#ff6d00"][gi%4];return '<div class="g-solved" style="background:'+col+'"><h4>'+flagImg(g.cc)+esc(cname(g.cc))+'</h4>'+clArtistList(g.tracks)+'</div>';}).join("");
   var grid=CL.tiles.map(function(t,i){
     if(CL.solved.indexOf(t.g)>=0)return "";
-    var sel=CL.sel.indexOf(i)>=0,hearing=CL.hearing===i;
+    var sel=CL.sel.indexOf(i)>=0,hearing=CL.hearing===i,favd=t.trk&&isFaved(t.trk.trackId);
     return '<button class="g-tile'+(sel?" sel":"")+(hearing?" hearing":"")+'" onclick="WMTG.clTap('+i+')">'+
       '<span class="g-tile-art">'+esc(t.a)+'</span>'+
       (t.genre?'<span class="g-tile-genre">'+esc(t.genre)+'</span>':'')+
-      '<span class="g-tile-play" onclick="event.stopPropagation();WMTG.clHear('+i+')" aria-label="Hear a clip">'+(hearing?"♪":"▶")+'</span>'+
+      '<span class="g-tile-actions">'+
+        '<span class="g-tile-play'+(hearing?" on":"")+'" role="button" tabindex="0" onclick="event.stopPropagation();WMTG.clHear('+i+')" aria-label="Hear a clip">'+(hearing?"♪":"▶")+'</span>'+
+        '<span class="g-tile-fav'+(favd?" on":"")+'" role="button" tabindex="0" data-id="'+(t.trk?esc(t.trk.trackId):"")+'" onclick="event.stopPropagation();WMTG.clFav('+i+')" aria-label="Save to favorites">♥</span>'+
+      '</span>'+
       '</button>';
   }).join("");
   var lives="";for(var i=0;i<4;i++)lives+=i<CL.lives?"🟢":"⚫";
@@ -340,7 +384,8 @@ function renderCL(){
 }
 window.WMTG.clTap=function(i){if(CL.done)return;var k=CL.sel.indexOf(i);if(k>=0)CL.sel.splice(k,1);else if(CL.sel.length<4)CL.sel.push(i);renderCL();};
 window.WMTG.clClear=function(){CL.sel=[];renderCL();};
-window.WMTG.clHear=function(i){if(CL.done)return;var t=CL.tiles[i];if(!t||!t.ytId)return;CL.hearing=i;playVid(t.ytId,20);renderCL();};
+window.WMTG.clHear=function(i){var t=CL.tiles[i];if(!t||!t.ytId)return;CL.hearing=i;playVid(t.ytId,20);renderCL();};
+window.WMTG.clFav=function(i){var t=CL.tiles[i];if(!t||!t.trk||t.trk.trackId==null){toast("can't save this one");return;}var added=toggleFav(t.trk);toast(added?"Saved "+t.a+" ♥":"Removed from favorites");renderCL();};
 window.WMTG.clSubmit=function(){
   if(CL.done||CL.sel.length!==4)return;
   var gs=CL.sel.map(function(i){return CL.tiles[i].g;});
@@ -417,15 +462,17 @@ window.WMTG.cuGuess=function(c){
   if(CU.guesses.length>=CU_MAX)finishCU(false);else renderCU();
 };
 function cuGrid(){return CU.guesses.map(function(c){return c===CU.ans?"🟩":"🟪";}).join("");}
-function finishCU(win){CU.done=true;var s={win:win,ans:CU.ans,tries:CU.guesses.length,grid:cuGrid(),cover:CU.track.cover,artist:CU.track.artist,title:CU.track.title,decade:CU.track.decade};if(win)stamp(CU.ans);recordPlay("coverup",s);renderCUReveal(s);}
+function finishCU(win){CU.done=true;var s={win:win,ans:CU.ans,tries:CU.guesses.length,grid:cuGrid(),cover:CU.track.cover,artist:CU.track.artist,title:CU.track.title,decade:CU.track.decade,track:favRec(CU.track)};if(win)stamp(CU.ans);recordPlay("coverup",s);renderCUReveal(s);}
 function renderCUReveal(s){
   CU.track=CU.track||{cover:s.cover};
+  revealTrk.cu=s.track||null;
   var lesson=(window.COUNTRY_MUSIC&&window.COUNTRY_MUSIC[s.ans]&&window.COUNTRY_MUSIC[s.ans][0])||"";
   var body=document.getElementById("cu-body");
   body.innerHTML=
     '<div class="g-reveal" style="border-color:var(--violet)"><div class="badge'+(s.win?"":" miss")+'" style="color:var(--violet)">'+(s.win?"✓ Uncovered in "+s.tries+"!":"Today\'s answer")+'</div>'+
     '<div class="cu-frame cu-frame--done"><img src="'+esc(s.cover)+'" alt="album cover" referrerpolicy="no-referrer"></div>'+
     '<div class="g-answer">'+flagImg(s.ans)+'<div><div class="a-nm">'+esc(cname(s.ans))+'</div><div class="a-sub">'+esc(s.title)+' · '+esc(s.artist)+' · '+decLabel(s.decade)+'</div></div></div>'+
+    (revealTrk.cu?'<div class="g-saverow">'+saveBtn("cu")+'</div>':"")+
     (lesson?'<div class="g-lesson"><span class="k">🎵 The sound of '+esc(cname(s.ans))+'</span>'+esc(lesson)+'</div>':"")+
     '<div class="g-sharegrid">'+s.grid+'</div><div class="g-sharecap">Cover Up #'+dayNumber()+' · '+s.tries+'/'+CU_MAX+'</div>'+
     '<div class="g-btns"><button class="g-btn p" style="background:var(--violet)" onclick="WMTG.cuShare()">Share</button><a class="g-btn s" href="/">Explore '+esc(cname(s.ans))+' →</a></div></div>'+

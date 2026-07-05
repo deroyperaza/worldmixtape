@@ -122,18 +122,27 @@
 .cl-target.done{opacity:.5;border-color:var(--lime);color:var(--lime)}
 
 .g-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.g-tile{position:relative;background:var(--card);border:2px solid var(--card-edge);border-radius:12px;padding:12px 8px 18px;min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;cursor:pointer;color:var(--paper);transition:transform .1s,border-color .1s}
+.g-tile{position:relative;background:var(--card);border:2px solid var(--card-edge);border-radius:12px;padding:12px 8px 12px;min-height:78px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;cursor:pointer;color:var(--paper);transition:transform .1s,border-color .1s}
 .g-tile-art{font-size:12.5px;line-height:1.2;font-weight:700}
 .g-tile-genre{font-size:10px;line-height:1;opacity:.55;text-transform:lowercase}
-.g-tile-play{position:absolute;bottom:2px;right:4px;font-size:9.5px;opacity:.5;padding:2px 6px;border-radius:10px;line-height:1.4}
-.g-tile-play:hover{opacity:1;color:var(--cyan)}
+/* clear, tappable controls (were a tiny nested ▶ that was easy to miss / hit the tile instead) */
+.g-tile-actions{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:7px}
+.g-tile-play,.g-tile-fav{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:26px;padding:0 8px;border-radius:13px;font-size:13px;line-height:1;cursor:pointer;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);transition:.12s;user-select:none}
+.g-tile-play{color:var(--paper);opacity:.9}
+.g-tile-play:hover,.g-tile-play.on{color:var(--ink);background:var(--cyan);border-color:var(--cyan);opacity:1}
+.g-tile-fav{color:var(--paper);opacity:.75}
+.g-tile-fav:hover{opacity:1;color:var(--pink);border-color:var(--pink)}
+.g-tile-fav.on{opacity:1;color:#fff;background:var(--pink);border-color:var(--pink)}
 .g-tile.sel{background:var(--cyan);border-color:var(--cyan);color:var(--ink);transform:scale(.97)}
 .g-tile.sel .g-tile-genre{opacity:.75}
-.g-tile.sel .g-tile-play{color:var(--ink);opacity:.85}
+.g-tile.sel .g-tile-play,.g-tile.sel .g-tile-fav{color:var(--ink);border-color:rgba(10,9,22,.28)}
+.g-tile.sel .g-tile-fav.on{color:#fff}
 .g-tile.hearing{border-color:var(--cyan)}
-.g-tile.hearing .g-tile-play{opacity:1;color:var(--cyan)}
-.g-tile.sel.hearing .g-tile-play{color:var(--ink)}
 .g-tile.gone{display:none}
+/* reveal-card save-song button */
+.g-saverow{display:flex;justify-content:center;margin:2px 0 12px}
+.g-fav{font-family:"Space Mono",monospace;font-size:13px;font-weight:700;cursor:pointer;padding:8px 18px;border-radius:20px;background:rgba(255,255,255,.05);border:2px solid var(--pink);color:var(--pink);transition:.12s}
+.g-fav:hover,.g-fav.on{background:var(--pink);color:#fff}
 .g-solved{border-radius:12px;padding:12px 14px;margin-bottom:8px;color:var(--ink)}
 .g-solved h4{margin:0 0 4px;font-family:"Anton",sans-serif;font-weight:400;font-size:18px;display:flex;align-items:center;gap:8px}
 .g-solved p{margin:0;font-size:12px;line-height:1.4}

@@ -71,8 +71,9 @@ d3.json(ATLAS).then(world => {
 function nameOf(d){ const c = isoToCode[+d.id]; return c ? COUNTRIES[c].name : (d.properties && d.properties.name) || "Somewhere"; }
 
 function showTip(e, d) {
-  const c = isoToCode[+d.id];
-  tip.innerHTML = `${c ? flagImg(c) + " " : ""}${esc(nameOf(d))}`;
+  let c = isoToCode[+d.id];
+  if (c === "FR" && isFrenchGuiana(e)){ tip.innerHTML = `${flagImg("gf")} French Guiana`; tip.classList.remove("feat"); c = null; }
+  else tip.innerHTML = `${c ? flagImg(c) + " " : ""}${esc(nameOf(d))}`;
   tip.classList.toggle("feat", !!c);
   tip.style.left = e.clientX + "px";
   tip.style.top = e.clientY + "px";
@@ -81,6 +82,40 @@ function showTip(e, d) {
 function hideTip(){ tip.style.opacity = 0; }
 
 window.addEventListener("resize", () => { if (features.length) drawCountries(); });
+
+// world-atlas folds French Guiana into metropolitan France's geometry, so that South-America
+// blob reports as "France". Detect a pointer/click that lands in the French Guiana bbox so we can
+// label it correctly. d3.pointer(e, gMap.node()) gives coords in projection space (zoom-transform aware).
+function isFrenchGuiana(e){
+  try {
+    const p = d3.pointer(e, gMap.node());
+    const ll = projection.invert(p);
+    return !!ll && ll[0] > -55 && ll[0] < -51 && ll[1] > 1.5 && ll[1] < 6;
+  } catch { return false; }
+}
+
+// Center the map on a country (and dim the others) when it's highlighted by playback / shuffle.
+let mapFocusTimer = null;
+function centerOnCountry(code){
+  if (!path || !features.length) return;
+  const feat = features.find(f => isoToCode[+f.id] === code);
+  if (!feat) return;
+  const c = path.centroid(feat);
+  if (!c || !isFinite(c[0]) || !isFinite(c[1])) return;
+  const [w, h] = sizeOf();
+  // account for the country panel covering the right side on desktop so the country isn't hidden behind it
+  const panelOpen = document.body.classList.contains("panel-open") && window.innerWidth > 680;
+  const panelW = panelOpen ? Math.min(460, window.innerWidth * 0.92) : 0;
+  const viewCx = (w - panelW) / 2;
+  const k = 2.6;
+  const tx = viewCx - k * c[0], ty = h / 2 - k * c[1];
+  document.getElementById("map").classList.add("focus");
+  svg.transition().duration(700).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(k));
+}
+function clearMapFocus(reset){
+  document.getElementById("map").classList.remove("focus");
+  if (reset && zoom) svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity);
+}
 
 /* ---------- panel ---------- */
 const panel = document.getElementById("panel");
@@ -701,13 +736,14 @@ async function loadSharedMix(id){
 function onCountry(e, d) {
   const code = isoToCode[+d.id];
   d3.selectAll("path.country").classed("active", false);
-  if (code) { gMap.selectAll("path.country").filter(x => isoToCode[+x.id] === code).classed("active", true); openCountry(code); }
+  if (code === "FR" && isFrenchGuiana(e)){ openEmpty("French Guiana"); openPanel(); return; }   // that S-America blob is French Guiana, not France
+  if (code) { gMap.selectAll("path.country").filter(x => isoToCode[+x.id] === code).classed("active", true); centerOnCountry(code); openCountry(code); }
   else openEmpty(nameOf(d));
   openPanel();
 }
 
 function openPanel(){ panel.classList.add("show"); scrim.classList.add("show"); document.body.classList.add("panel-open"); panel.setAttribute("aria-hidden","false"); }
-function closePanel(){ panel.classList.remove("show"); scrim.classList.remove("show"); document.body.classList.remove("panel-open"); panel.setAttribute("aria-hidden","true"); d3.selectAll("path.country").classed("active", false); }
+function closePanel(){ panel.classList.remove("show"); scrim.classList.remove("show"); document.body.classList.remove("panel-open"); panel.setAttribute("aria-hidden","true"); d3.selectAll("path.country").classed("active", false); clearMapFocus(true); }
 function backToMap(){ closePanel(); setShuf(""); }   // leaving for the map resets shuffle scope to the world
 document.getElementById("panel-close").onclick = backToMap;
 scrim.onclick = backToMap;
@@ -1166,6 +1202,7 @@ async function play(i){
   schedulePlayLog(t.trackId);   // count this play if it lasts ≥5s
   const cc = t._cc || activeCode;
   player.classList.add("show"); player.setAttribute("aria-hidden","false");
+  document.body.classList.add("has-player");   // lift the corner pills above the play bar
   document.getElementById("p-art").src = t.cover || "";
   currentNote = null;   // new track → drop any pending Spotify-note restore
   setMeta(document.getElementById("p-title"), esc(t.title));
@@ -1176,6 +1213,7 @@ async function play(i){
   if (t._cc){
     d3.selectAll("path.country").classed("active", false);
     gMap.selectAll("path.country").filter(x => isoToCode[+x.id] === t._cc).classed("active", true);
+    centerOnCountry(t._cc);   // center the map on the playing country + dim the rest
   }
   highlightRow();
   refreshFavHearts();
