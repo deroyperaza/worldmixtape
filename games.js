@@ -165,7 +165,7 @@ function copyShare(text){var done=function(){toast("Copied — go paste it!");};
 function fallbackCopy(text){var ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");}catch(e){}document.body.removeChild(ta);}
 
 /* ---------------- router ---------------- */
-function show(id){["hub","soundtrip","timemachine","clusters","coverup"].forEach(function(v){document.getElementById("view-"+v).classList.toggle("on",v===id);});pauseVid();window.scrollTo(0,0);if(id==="hub")renderHub();}
+function show(id){["hub","soundtrip","timemachine","clusters","coverup","wherewhen"].forEach(function(v){document.getElementById("view-"+v).classList.toggle("on",v===id);});pauseVid();window.scrollTo(0,0);if(id==="hub")renderHub();}
 window.WMTG={show:show};
 window.WMTG.saveReveal=function(game){var t=revealTrk[game];if(!t||t.trackId==null){toast("can't save this one");return;}var added=toggleFav(t);toast(added?"Saved to your favorites ♥":"Removed from favorites");refreshFavBtns();};
 
@@ -188,6 +188,7 @@ function renderHub(){
   document.getElementById("stat-streak").textContent=STATE.streak||0;
   document.getElementById("stat-passport").textContent=pc+" / 201";
   var cards=[
+    {em:"🎯",bg:"#ff6d00",h:"Where & When",p:"Name the country, then the decade. Solo, pass &amp; play, or challenge a friend.",game:"wherewhen"},
     {em:"🎧",bg:"#ff2e92",h:"Sound Trip",p:"Hear a song — guess the country it's from.",game:"soundtrip"},
     {em:"🕰️",bg:"#00e5ff",h:"Time Machine",p:"Hear a song — guess the decade.",game:"timemachine"},
     {em:"🧩",bg:"#c6ff00",h:"Culture Clusters",p:"Sort 16 artists into their 4 countries.",game:"clusters"},
@@ -200,7 +201,7 @@ function renderHub(){
       '<div class="g-cardfoot">'+(pt?"✓ played today":"Daily · tap to play")+'</div></button>';
   }).join("");
 }
-window.WMTG.open=function(game){show(game);if(game==="soundtrip")startSoundTrip();else if(game==="timemachine")startTimeMachine();else if(game==="clusters")startClusters();else startCoverUp();};
+window.WMTG.open=function(game){show(game);if(game==="wherewhen")startWhereWhen();else if(game==="soundtrip")startSoundTrip();else if(game==="timemachine")startTimeMachine();else if(game==="clusters")startClusters();else startCoverUp();};
 
 /* ==================================================================
    GAME 1 — SOUND TRIP
@@ -481,8 +482,208 @@ function renderCUReveal(s){
 }
 window.WMTG.cuShare=function(){copyShare(window.WMTG._cuShareText||"");};
 
+/* ==================================================================
+   GAME 5 — WHERE & WHEN  (name the country, then the decade)
+   Modes: solo high-score · pass-and-play (same device) · async challenge link.
+   Signed-in scores post to a global leaderboard rendered on /stats.
+   ================================================================== */
+var WW={},WW_N=5;
+function wwPool(){return Object.keys(window.COUNTRIES).filter(function(c){return CENTROID[c]&&tracksOf(c).length>0;});}
+var _wwTimeline=null;
+function wwTimeline(){ if(_wwTimeline)return _wwTimeline; var present={}; Object.keys(window.COUNTRIES).forEach(function(c){tracksOf(c).forEach(function(t){if(t.decade)present[t.decade]=1;});}); _wwTimeline=DECADE_ORDER.filter(function(d){return present[d];}); return _wwTimeline; }
+function wwBuild(n){ var pool=wwPool(),qs=[],used={},guard=0; while(qs.length<n&&guard++<800){ var c=pool[Math.floor(Math.random()*pool.length)]; var tks=tracksOf(c); if(!tks.length)continue; var t=tks[Math.floor(Math.random()*tks.length)]; if(!t.ytId||used[t.ytId])continue; used[t.ytId]=1; qs.push({cc:c,ytId:t.ytId,title:t.title||"",artist:t.artist||"",cover:t.cover||"",decade:t.decade||"",start:15+Math.floor(Math.random()*35)}); } return qs; }
+function wwCountryChoices(ans){ var pool=wwPool(),cont=CONT[ans]; var same=pool.filter(function(c){return c!==ans&&CONT[c]===cont;}); var other=pool.filter(function(c){return c!==ans&&CONT[c]!==cont;}); var d=shuffle(same,Math.random).slice(0,2).concat(shuffle(other,Math.random).slice(0,2)).slice(0,3); return shuffle([ans].concat(d),Math.random); }
+function wwScoreCountry(g,a){ if(g===a)return {pts:1000,exact:true,km:0}; var km=distKm(g,a); var pts=km==null?(CONT[g]===CONT[a]?300:0):Math.max(0,Math.round(600*(1-km/8000))); return {pts:pts,exact:false,km:km}; }
+function wwScoreDecade(g,a){ var tl=WW.timeline,gi=tl.indexOf(g),ai=tl.indexOf(a); if(g===a)return {pts:500,off:0}; if(gi<0||ai<0)return {pts:0,off:99}; var off=Math.abs(gi-ai); return {pts:Math.max(0,500-off*150),off:off}; }
+function wwSelfName(){ return (authUser&&(authUser.displayName||authUser.email))?String(authUser.displayName||authUser.email).split("@")[0].split(" ")[0]:"You"; }
+
+/* ---- entry + mode picker ---- */
+function startWhereWhen(){ WW={}; document.getElementById("ww-body").innerHTML='<div class="g-done">Loading songs…</div>'; whenAtlas(function(){ renderWWModes(); }); }
+function renderWWModes(){
+  var best=(STATE.ww&&STATE.ww.best)||0;
+  document.getElementById("ww-body").innerHTML=
+    '<p class="g-intro" style="margin:0 0 14px">A song plays from somewhere, sometime — country and decade hidden. <b>Name the country, then the decade.</b> Five songs, one score.</p>'+
+    '<div class="ww-modes">'+
+      '<button class="ww-mode" style="--c:var(--pink)" onclick="WMTG.wwStart(\'solo\')"><b>🎯 Solo</b><span>Beat your high score'+(best?' · best '+best.toLocaleString():'')+'</span></button>'+
+      '<button class="ww-mode" style="--c:var(--cyan)" onclick="WMTG.wwPassSetup()"><b>👥 Pass &amp; play</b><span>2+ players, same device, take turns</span></button>'+
+      '<button class="ww-mode" style="--c:var(--lime)" onclick="WMTG.wwStart(\'challenge\')"><b>📨 Challenge a friend</b><span>Play 5, send an invite link to beat you</span></button>'+
+    '</div>'+
+    (FB?'<div id="ww-lb-hint" class="g-hint" style="text-align:center;margin-top:16px"></div>':'');
+  wwLbHint();
+}
+function wwLbHint(){ var el=document.getElementById("ww-lb-hint"); if(!el)return; el.innerHTML = authUser? ('Signed in as <b>'+esc(wwSelfName())+'</b> — your best posts to the <a href="/stats/">leaderboard</a>.') : 'Playing as a guest. <a href="#" onclick="WMTG_signIn();return false">Sign in</a> to join the global leaderboard.'; }
+window.WMTG.wwHome=function(){ pauseVid(); renderWWModes(); };
+window.WMTG.wwStart=function(mode){ var qs=wwBuild(WW_N); if(qs.length<WW_N){ toast("not enough songs — try again"); return; } startWWRound({mode:mode, players:[wwSelfName()], questions:qs}); };
+
+/* ---- pass-and-play setup ---- */
+window.WMTG.wwPassSetup=function(){
+  WW._names=["Player 1","Player 2"];
+  document.getElementById("ww-body").innerHTML=
+    '<button class="g-back" onclick="WMTG.wwHome()">← modes</button>'+
+    '<p class="g-intro">Add players. Everyone hears the <b>same 5 songs</b> and takes turns on this device.</p>'+
+    '<div id="ww-names"></div>'+
+    '<div class="g-btns"><button class="g-btn s" onclick="WMTG.wwAddName()" style="flex:0 0 auto;padding:12px 16px">+ player</button><button class="g-btn p" style="background:var(--cyan)" onclick="WMTG.wwPassGo()">Start</button></div>';
+  renderWWNames();
+};
+function renderWWNames(){ document.getElementById("ww-names").innerHTML=WW._names.map(function(n,i){return '<div class="ww-nrow"><input class="ww-ninput" value="'+esc(n)+'" maxlength="16" oninput="WMTG.wwName('+i+',this.value)">'+(WW._names.length>2?'<button class="ww-nx" onclick="WMTG.wwDelName('+i+')" aria-label="Remove">✕</button>':'')+'</div>';}).join(""); }
+window.WMTG.wwName=function(i,v){WW._names[i]=v;};
+window.WMTG.wwAddName=function(){ if(WW._names.length>=6){toast("6 players max");return;} WW._names.push("Player "+(WW._names.length+1)); renderWWNames(); };
+window.WMTG.wwDelName=function(i){ WW._names.splice(i,1); renderWWNames(); };
+window.WMTG.wwPassGo=function(){ var names=WW._names.map(function(n){return (n||"").trim()||"Player";}); var qs=wwBuild(WW_N); if(qs.length<WW_N){toast("not enough songs");return;} startWWRound({mode:'pass', players:names, questions:qs}); };
+
+/* ---- round engine ---- */
+function startWWRound(cfg){
+  WW={ mode:cfg.mode, questions:cfg.questions, timeline:wwTimeline(),
+    players:cfg.players.map(function(nm){return {name:nm,songs:[],total:0};}),
+    pi:0, qi:0, step:"country", choiceSet:null, cmode:(STATE.wwMode||"kid"),
+    guess:null, done:false, challenge:cfg.challenge||null, _newBest:false, _challengeId:null };
+  pauseVid(); renderWWQuestion();
+}
+function wwProgress(){ return "Song "+(WW.qi+1)+" / "+WW.questions.length; }
+function renderWWQuestion(){
+  var q=WW.questions[WW.qi];
+  var head='<div class="ww-scorebar"><span class="ww-who">'+esc(WW.players[WW.pi].name)+'</span><span class="ww-prog">'+wwProgress()+'</span><span class="ww-run">'+WW.players[WW.pi].total.toLocaleString()+' pts</span></div>';
+  var player='<div class="g-player" id="ww-player"><button class="g-play" id="ww-play" style="background:var(--tang)" onclick="WMTG.wwPlay()">▶</button><div class="g-eq">'+eqBars()+'</div><div class="g-hint">Tap to hear the mystery song</div></div>';
+  var body;
+  if(WW.step==="country"){
+    if(!WW.choiceSet)WW.choiceSet=wwCountryChoices(q.cc);
+    var input;
+    if(WW.cmode==="kid"){ input='<div class="g-choices">'+WW.choiceSet.map(function(c){return '<button class="g-choice" onclick="WMTG.wwGuessCountry(\''+c+'\')">'+flagImg(c)+esc(cname(c))+'</button>';}).join("")+'</div>'; }
+    else { input='<div class="g-search"><input id="ww-input" type="text" placeholder="Type a country and pick…" autocomplete="off" oninput="WMTG.wwSuggest(this.value)"><div class="g-suggest" id="ww-suggest" style="display:none"></div></div>'; }
+    body=head+player+
+      '<div class="g-modes"><button class="'+(WW.cmode==="kid"?"on":"")+'" onclick="WMTG.wwCMode(\'kid\')">Kid · 4 choices</button><button class="'+(WW.cmode==="explorer"?"on":"")+'" onclick="WMTG.wwCMode(\'explorer\')">Explorer · search</button></div>'+
+      '<div class="g-hint" style="text-align:center">Step 1 — <b>which country?</b></div>'+input;
+  } else if(WW.step==="decade"){
+    var chips=WW.timeline.map(function(d){return '<button class="g-dec" onclick="WMTG.wwGuessDecade(\''+d+'\')">'+decLabel(d)+'</button>';}).join("");
+    body=head+player+
+      '<div class="ww-locked">'+flagImg(WW.guess.cc)+' you said <b>'+esc(cname(WW.guess.cc))+'</b></div>'+
+      '<div class="g-hint" style="text-align:center">Step 2 — <b>which decade?</b></div>'+
+      '<div class="g-decades">'+chips+'</div>';
+  } else { body=head+renderWWSongReveal(); }
+  document.getElementById("ww-body").innerHTML=body;
+}
+window.WMTG.wwPlay=function(){ var q=WW.questions[WW.qi]; var pl=document.getElementById("ww-player"),btn=document.getElementById("ww-play"); if(playedState()){pauseVid();pl.classList.remove("playing");btn.textContent="▶";}else{playVid(q.ytId,q.start);pl.classList.add("playing");btn.textContent="❚❚";} };
+window.WMTG.wwCMode=function(m){ WW.cmode=m; STATE.wwMode=m; save(STATE); renderWWQuestion(); };
+window.WMTG.wwSuggest=function(q){ var box=document.getElementById("ww-suggest"); q=(q||"").trim().toLowerCase(); if(q.length<1){box.style.display="none";return;} var m=Object.keys(window.COUNTRIES).filter(function(c){return cname(c).toLowerCase().indexOf(q)>=0;}).sort(function(a,b){return cname(a).localeCompare(cname(b));}).slice(0,8); if(!m.length){box.style.display="none";return;} box.innerHTML=m.map(function(c){return '<button onclick="WMTG.wwGuessCountry(\''+c+'\')">'+flagImg(c)+esc(cname(c))+'</button>';}).join(""); box.style.display="block"; };
+window.WMTG.wwGuessCountry=function(c){ if(WW.step!=="country")return; var q=WW.questions[WW.qi]; WW.guess={cc:c,cScore:wwScoreCountry(c,q.cc)}; WW.step="decade"; renderWWQuestion(); };
+window.WMTG.wwGuessDecade=function(d){ if(WW.step!=="decade")return; var q=WW.questions[WW.qi]; WW.guess.dec=d; WW.guess.dScore=wwScoreDecade(d,q.decade); WW.guess.q=q; WW.guess.total=WW.guess.cScore.pts+WW.guess.dScore.pts; WW.players[WW.pi].songs.push(WW.guess); WW.players[WW.pi].total+=WW.guess.total; WW.step="reveal"; renderWWQuestion(); };
+function renderWWSongReveal(){
+  var g=WW.guess,q=g.q;
+  var cFb=g.cScore.exact?'<span class="same">✓ exact!</span>':(g.cScore.km!=null?'<span class="km">'+g.cScore.km.toLocaleString()+' km off</span> '+bearingArrow(g.cc,q.cc):'<span class="km">wrong region</span>');
+  var dFb=g.dScore.off===0?'<span class="same">✓ exact!</span>':'<span class="km">'+(g.dScore.off===99?"—":g.dScore.off+" decade"+(g.dScore.off>1?"s":"")+" off")+'</span>';
+  var last=WW.qi>=WW.questions.length-1;
+  return '<div class="g-reveal ww-reveal">'+
+    '<div class="ww-song"><img class="ww-cover" src="'+esc(q.cover||"")+'" onerror="this.style.visibility=\'hidden\'" referrerpolicy="no-referrer"><div><div class="a-nm">'+esc(q.title)+'</div><div class="a-sub">'+esc(q.artist)+'</div></div></div>'+
+    '<div class="ww-ans"><div class="ww-ansrow">'+flagImg(q.cc)+' <b>'+esc(cname(q.cc))+'</b> · '+cFb+' <span class="ww-pts">+'+g.cScore.pts+'</span></div>'+
+    '<div class="ww-ansrow">🕰️ <b>'+decLabel(q.decade)+'</b> · '+dFb+' <span class="ww-pts">+'+g.dScore.pts+'</span></div></div>'+
+    '<div class="ww-songtotal">+'+g.total.toLocaleString()+' this song</div>'+
+    '<div class="g-btns"><button class="g-btn p" style="background:var(--tang)" onclick="WMTG.wwNext()">'+(last?"See results":"Next song")+' →</button></div>'+
+    '</div>';
+}
+window.WMTG.wwNext=function(){ pauseVid(); if(WW.qi<WW.questions.length-1){ WW.qi++; WW.step="country"; WW.choiceSet=null; WW.guess=null; renderWWQuestion(); return; } if(WW.pi<WW.players.length-1){ renderWWHandoff(); } else finishWWRound(); };
+function renderWWHandoff(){
+  var next=WW.players[WW.pi+1];
+  document.getElementById("ww-body").innerHTML=
+    '<div class="ww-handoff"><div class="ww-hbadge">Pass the device</div>'+
+    '<p>'+esc(WW.players[WW.pi].name)+' scored <b>'+WW.players[WW.pi].total.toLocaleString()+'</b>.</p>'+
+    '<h3>'+esc(next.name)+", you're up.</h3><p class=\"g-hint\">Same 5 songs. No peeking 🙈</p>"+
+    '<div class="g-btns"><button class="g-btn p" style="background:var(--cyan)" onclick="WMTG.wwNextPlayer()">I&#39;m '+esc(next.name)+' — start</button></div></div>';
+}
+window.WMTG.wwNextPlayer=function(){ WW.pi++; WW.qi=0; WW.step="country"; WW.choiceSet=null; WW.guess=null; renderWWQuestion(); };
+function finishWWRound(){
+  WW.done=true; pauseVid();
+  var me=WW.players[0];
+  if(WW.mode!=="pass"){
+    if(!STATE.ww)STATE.ww={};
+    if(me.total>(STATE.ww.best||0)){ STATE.ww.best=me.total; STATE.ww.bestAt=dayStr(); WW._newBest=true; }
+    STATE.ww.plays=(STATE.ww.plays||0)+1; save(STATE);
+    if(authUser) wwSubmitLeaderboard(me.total);
+    if(WW.mode==="challengePlay") wwRecordOpponent(me.total);
+    if(WW.mode==="challenge"){ wwCreateChallenge(me.total).then(function(id){ WW._challengeId=id; if(WW.done)renderWWResults(); }); }
+  }
+  renderWWResults();
+}
+function wwAnswerKey(){
+  var me=WW.players[0];
+  return '<div class="ww-key"><h4>The five songs</h4>'+me.songs.map(function(s){return '<div class="ww-keyrow">'+flagImg(s.q.cc)+'<span class="ww-kt">'+esc(s.q.title)+' · '+esc(s.q.artist)+'</span><span class="ww-kd">'+esc(cname(s.q.cc))+' · '+decLabel(s.q.decade)+'</span></div>';}).join("")+'</div>';
+}
+function renderWWResults(){
+  var box=document.getElementById("ww-body");
+  if(WW.mode==="pass"){
+    var ranked=WW.players.slice().sort(function(a,b){return b.total-a.total;});
+    box.innerHTML='<div class="g-reveal"><div class="badge">🏆 '+esc(ranked[0].name)+' wins!</div>'+
+      '<ol class="ww-rank">'+ranked.map(function(p,i){return '<li class="'+(i===0?"win":"")+'"><span class="ww-rk">'+(i+1)+'</span><span class="ww-rn">'+esc(p.name)+'</span><span class="ww-rp">'+p.total.toLocaleString()+'</span></li>';}).join("")+'</ol>'+
+      wwAnswerKey()+
+      '<div class="g-btns"><button class="g-btn p" style="background:var(--cyan)" onclick="WMTG.wwHome()">Play again</button></div></div>';
+    return;
+  }
+  var me=WW.players[0], chal=WW.challenge, cmp="";
+  if(WW.mode==="challengePlay"&&chal){
+    var win=me.total>chal.creatorScore, tie=me.total===chal.creatorScore;
+    cmp='<div class="ww-vs"><div class="ww-vsc"><span>'+esc(chal.creatorName||"Them")+'</span><b>'+Number(chal.creatorScore||0).toLocaleString()+'</b></div><div class="ww-vsx">vs</div><div class="ww-vsc'+(win?" win":"")+'"><span>You</span><b>'+me.total.toLocaleString()+'</b></div></div>'+
+      '<div class="badge'+(win?"":" miss")+'">'+(win?"✓ You win!":(tie?"A tie!":"So close — "+esc(chal.creatorName||"they")+" win"+(chal.creatorName?"s":"")))+'</div>';
+  }
+  var share="";
+  if(WW.mode==="challenge"){
+    share='<div class="ww-challenge"><p>Send this to a friend — they play the same 5 songs and try to beat your score:</p>'+
+      '<div class="g-btns"><button class="g-btn p" style="background:var(--lime)" onclick="WMTG.wwShareChallenge()">'+(WW._challengeId?"Copy invite link":"Creating link…")+'</button></div></div>';
+  }
+  box.innerHTML='<div class="g-reveal">'+cmp+
+    (WW.mode!=="challengePlay"?'<div class="badge">'+(WW._newBest?"🎉 New personal best!":"Round complete")+'</div>':"")+
+    '<div class="ww-final">'+me.total.toLocaleString()+' <span>points</span></div>'+
+    (STATE.ww&&STATE.ww.best?'<div class="g-hint" style="text-align:center">Your best: '+STATE.ww.best.toLocaleString()+'</div>':"")+
+    (!authUser&&FB?'<div class="ww-signin"><button class="g-acct-in" onclick="WMTG_signIn()"><svg class="g-acct-g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Sign in to post your score</button></div>':"")+
+    share+
+    wwAnswerKey()+
+    '<div class="g-btns"><button class="g-btn p" style="background:var(--tang)" onclick="WMTG.wwHome()">Play again</button><a class="g-btn s" href="/stats/">Leaderboard →</a></div></div>';
+}
+window.WMTG.wwShareChallenge=function(){ if(!WW._challengeId){toast("still creating the link…");return;} var url=location.origin+"/games/?c="+WW._challengeId; copyShare("🎵 Where & When — I scored "+WW.players[0].total.toLocaleString()+". Same 5 songs, can you beat me?\n"+url); };
+
+/* ---- challenge (Firestore) ---- */
+function wwCreateChallenge(score){
+  if(!gDb) return Promise.resolve(null);
+  var ref=gDb.collection("challenges").doc();
+  var data={ creatorName:wwSelfName(), creatorScore:score, creatorAt:FB.firestore.FieldValue.serverTimestamp(),
+    questions:WW.questions.map(function(q){return {cc:q.cc,ytId:q.ytId,title:q.title,artist:q.artist,cover:q.cover,decade:q.decade,start:q.start};}),
+    opponentName:null, opponentScore:null };
+  return ref.set(data).then(function(){return ref.id;}).catch(function(e){console.warn("challenge create",e);return null;});
+}
+function wwRecordOpponent(score){ var chal=WW.challenge; if(!gDb||!chal||!chal.id)return; gDb.collection("challenges").doc(chal.id).update({opponentName:wwSelfName(),opponentScore:score,opponentAt:FB.firestore.FieldValue.serverTimestamp()}).catch(function(e){console.warn("opponent record",e);}); }
+function wwOpenChallenge(id){
+  show("wherewhen");
+  var box=document.getElementById("ww-body"); box.innerHTML='<div class="g-done">Loading challenge…</div>';
+  if(!gDb){ box.innerHTML='<div class="g-done">Challenges need a connection. <button class="g-btn p" onclick="WMTG.wwHome()">Play Where &amp; When</button></div>'; return; }
+  gDb.collection("challenges").doc(id).get().then(function(doc){
+    if(!doc.exists){ box.innerHTML='<div class="g-done">That challenge wasn\'t found.<br><br><button class="g-btn p" onclick="WMTG.wwHome()">Play Where &amp; When</button></div>'; return; }
+    var d=doc.data(); d.id=id; whenAtlas(function(){ renderWWInvite(d); });
+  }).catch(function(e){ console.warn(e); box.innerHTML='<div class="g-done">Could not load the challenge.</div>'; });
+}
+function renderWWInvite(d){
+  WW._pending=d;
+  document.getElementById("ww-body").innerHTML=
+    '<div class="g-reveal"><div class="badge">🎯 You&#39;ve been challenged!</div>'+
+    '<p class="g-intro" style="text-align:center"><b>'+esc(d.creatorName||"A friend")+'</b> scored <b>'+Number(d.creatorScore||0).toLocaleString()+'</b> on 5 mystery songs. You get the <b>same 5</b> — name each country &amp; decade and try to beat them.</p>'+
+    (d.opponentScore!=null?'<div class="g-hint" style="text-align:center">Heads up — this challenge was already answered ('+Number(d.opponentScore).toLocaleString()+'). You can still play for practice.</div>':"")+
+    '<div class="g-btns"><button class="g-btn p" style="background:var(--lime)" onclick="WMTG.wwPlayChallenge()">Accept — play the 5 songs</button></div></div>';
+}
+window.WMTG.wwPlayChallenge=function(){ var d=WW._pending; if(!d||!d.questions){toast("challenge unavailable");return;} startWWRound({mode:"challengePlay", players:[wwSelfName()], questions:d.questions, challenge:d}); };
+
+/* ---- leaderboard (global best per signed-in user) ---- */
+function wwSubmitLeaderboard(score){
+  if(!gDb||!authUser)return;
+  var ref=gDb.collection("leaderboard_ww").doc(authUser.uid);
+  ref.get().then(function(doc){
+    var prev=doc.exists?(doc.data().best||0):0; if(score<=prev)return;
+    ref.set({ name:String(authUser.displayName||authUser.email||"Player").split("@")[0], photo:authUser.photoURL||"", best:score, uid:authUser.uid, updatedAt:FB.firestore.FieldValue.serverTimestamp() },{merge:true}).catch(function(e){console.warn("lb submit",e);});
+  }).catch(function(e){console.warn("lb read",e);});
+}
+
 /* ---------------- boot ---------------- */
-function boot(){loadAtlas();renderHub();var dn=document.querySelectorAll(".g-dn");for(var i=0;i<dn.length;i++)dn[i].textContent=dayNumber();}
+function boot(){
+  loadAtlas(); renderHub();
+  var dn=document.querySelectorAll(".g-dn"); for(var i=0;i<dn.length;i++)dn[i].textContent=dayNumber();
+  var m=/[?&]c=([A-Za-z0-9_-]+)/.exec(location.search||""); if(m){ wwOpenChallenge(m[1]); }
+}
 if(document.readyState!=="loading")boot();else document.addEventListener("DOMContentLoaded",boot);
 
 })();
