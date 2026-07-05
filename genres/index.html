@@ -18,8 +18,11 @@
     radial-gradient(1200px 600px at 80% -10%, #1c1147 0%, transparent 60%),
     radial-gradient(900px 500px at 0% 110%, #23124a 0%, transparent 55%), var(--ink)}
   a{color:var(--cyan)}
+  .hd__logolink{display:block;border:none;line-height:0;margin:14px auto 0;max-width:1180px;padding:0 22px}
+  .hd__logo{width:262px;height:auto;display:block;margin-left:-8px}
+  @media(max-width:680px){.hd__logo{width:168px}}
   header.top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;
-    padding:18px 22px 6px;max-width:1180px;margin:0 auto}
+    padding:8px 22px 6px;max-width:1180px;margin:0 auto}
   .brand{display:flex;align-items:baseline;gap:12px}
   h1{font-family:"Anton",sans-serif;font-size:34px;line-height:.95;letter-spacing:.01em;margin:0;
     text-transform:uppercase;color:var(--yellow);transform:rotate(-1.5deg)}
@@ -58,6 +61,7 @@
 </style>
 </head>
 <body>
+  <a class="hd__logolink" href="/" aria-label="World Mixtape — home"><img class="hd__logo" src="/WMT-logo.svg" alt="World Mixtape" onerror="this.style.display='none'"/></a>
   <header class="top">
     <div class="brand"><h1>Genre Atlas</h1><span class="proto">Prototype</span></div>
     <a class="home" href="/">← World Mixtape</a>
