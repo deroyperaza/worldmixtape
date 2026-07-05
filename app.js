@@ -2580,6 +2580,24 @@ function openInfo(code){
       ${mh.map(p => `<p>${esc(p)}</p>`).join("")}
     </div>` : "";
 
+  // "What they eat" — signature dishes (from the shared COUNTRY_FOOD map). Guarded: only renders when present.
+  const fd = (typeof COUNTRY_FOOD !== "undefined" && COUNTRY_FOOD[code] && COUNTRY_FOOD[code].dishes && COUNTRY_FOOD[code].dishes.length) ? COUNTRY_FOOD[code] : null;
+  const dishImg = f => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=600`;
+  const foodHtml = fd ? `
+    <div class="info-food">
+      <h3>🍽️ What ${esc(theName(code, c.name))} eats</h3>
+      ${fd.intro ? `<p class="info-food__intro">${esc(fd.intro)}</p>` : ""}
+      <div class="info-dishes">
+        ${fd.dishes.map(dish => `
+          <div class="info-dish">
+            ${dish.f ? `<img class="info-dish__img" loading="lazy" src="${dishImg(dish.f)}" alt="${esc(dish.n)}">` : `<div class="info-dish__img info-dish__img--none">${dish.e || "🍽️"}</div>`}
+            <div class="info-dish__n">${dish.e ? dish.e + " " : ""}${esc(dish.n)}</div>
+            <div class="info-dish__d">${esc(dish.d)}</div>
+          </div>`).join("")}
+      </div>
+      ${fd.source ? `<div class="info-food__src"><a href="${fd.source.url}" target="_blank" rel="noopener">${esc(fd.source.label)} — ${esc(fd.source.detail)} ↗</a></div>` : ""}
+    </div>` : "";
+
   infoInner.innerHTML = `
     <div class="info-head">
       <div class="jhead__flag">${flagImg(code)}</div>
@@ -2624,6 +2642,8 @@ function openInfo(code){
       </div>
       ${starsHtml}
     </div>
+
+    ${foodHtml}
 
     ${timelineHtml}
 

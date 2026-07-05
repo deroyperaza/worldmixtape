@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Genre Atlas · World Mixtape</title>
+<meta name="robots" content="noindex"><!-- prototype -->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0916; --ink2:#141029; --panel:#0f0a24;
+    --paper:#fff7e6; --pink:#ff2e92; --cyan:#00e5ff; --yellow:#ffe600;
+    --empty:#1a1533; --stroke:#2b2350;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--ink);color:var(--paper);font-family:"Space Mono",monospace}
+  body{min-height:100vh;background:
+    radial-gradient(1200px 600px at 80% -10%, #1c1147 0%, transparent 60%),
+    radial-gradient(900px 500px at 0% 110%, #23124a 0%, transparent 55%), var(--ink)}
+  a{color:var(--cyan)}
+  header.top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    padding:18px 22px 6px;max-width:1180px;margin:0 auto}
+  .brand{display:flex;align-items:baseline;gap:12px}
+  h1{font-family:"Anton",sans-serif;font-size:34px;line-height:.95;letter-spacing:.01em;margin:0;
+    text-transform:uppercase;color:var(--yellow);transform:rotate(-1.5deg)}
+  .proto{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--pink);border:2px solid var(--pink);
+    border-radius:20px;padding:3px 9px;transform:rotate(-1.5deg)}
+  .home{font-size:12px;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;opacity:.85}
+  .lede{max-width:1180px;margin:0 auto;padding:0 22px;font-size:13px;line-height:1.5;opacity:.8;max-width:760px}
+  .wrap{max-width:1180px;margin:6px auto 40px;padding:0 22px}
+  .controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:16px 0 10px}
+  .controls label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;opacity:.7}
+  select{font-family:"Space Mono",monospace;font-size:15px;font-weight:700;color:var(--paper);background:#16123a;
+    border:2.5px solid var(--cyan);border-radius:12px;padding:9px 14px;box-shadow:3px 3px 0 var(--cyan);
+    cursor:pointer;max-width:340px}
+  select:focus{outline:none;border-color:var(--pink);box-shadow:3px 3px 0 var(--pink)}
+  .stat{font-size:12px;letter-spacing:.03em}
+  .stat b{color:var(--pink)}
+  .mapcard{position:relative;background:var(--panel);border:3px solid var(--stroke);border-radius:16px;
+    padding:6px;overflow:hidden}
+  svg.map{display:block;width:100%;height:auto}
+  .country{stroke:var(--ink);stroke-width:.4;cursor:default;transition:fill .35s ease}
+  .country:hover{stroke:var(--yellow);stroke-width:1.2}
+  .legend{display:flex;align-items:center;gap:12px;margin:14px 2px 0;flex-wrap:wrap}
+  .legend .bar{width:220px;height:14px;border-radius:7px;border:1px solid var(--stroke)}
+  .legend .lab{font-size:11px;letter-spacing:.05em;opacity:.75}
+  .legend .swatch{width:14px;height:14px;border-radius:4px;background:var(--empty);border:1px solid var(--stroke);
+    display:inline-block;vertical-align:-2px;margin-right:5px}
+  .tip{position:fixed;pointer-events:none;z-index:20;background:#0b0820;border:2px solid var(--cyan);
+    border-radius:10px;padding:8px 11px;font-size:12px;line-height:1.35;max-width:240px;opacity:0;
+    transform:translateY(4px);transition:opacity .1s;box-shadow:4px 4px 0 rgba(0,229,255,.25)}
+  .tip.on{opacity:1;transform:none}
+  .tip .tn{font-family:"Anton",sans-serif;font-size:15px;text-transform:uppercase;color:var(--yellow);letter-spacing:.02em}
+  .tip .tg{color:var(--pink);font-weight:700}
+  .tip .tm{opacity:.75;font-size:11px;margin-top:3px}
+  footer{max-width:1180px;margin:0 auto;padding:8px 22px 40px;font-size:11px;opacity:.55;letter-spacing:.03em}
+  @media (max-width:640px){ h1{font-size:26px} }
+</style>
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><h1>Genre Atlas</h1><span class="proto">Prototype</span></div>
+    <a class="home" href="/">← World Mixtape</a>
+  </header>
+  <p class="lede">Pick a genre and watch where in the world it lives. Each country is shaded by how much of its
+    Mixtape catalog belongs to that sound — brighter means a bigger share of the local music.</p>
+
+  <div class="wrap">
+    <div class="controls">
+      <label for="genre">Genre</label>
+      <select id="genre"></select>
+      <span class="stat" id="stat"></span>
+    </div>
+
+    <div class="mapcard">
+      <svg class="map" id="map" viewBox="0 0 960 500" role="img" aria-label="World map heat-map of a musical genre"></svg>
+    </div>
+
+    <div class="legend">
+      <span class="lab"><span class="swatch"></span>none</span>
+      <span class="lab">0%</span>
+      <div class="bar" id="legendbar"></div>
+      <span class="lab" id="legendmax">max</span>
+      <span class="lab">share of a country's catalog</span>
+    </div>
+  </div>
+
+  <div class="tip" id="tip"></div>
+
+  <footer>Prototype · data from the World Mixtape catalog (Deezer/YouTube-sourced), <span id="ntracks"></span> tracks across <span id="ncountries"></span> countries · map: Natural Earth via world-atlas.</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="/data.js?v=100"></script>
+  <script>
+  (function(){
+    const ATLAS = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+    // WMT-flavored heat ramp: cold violet → pink → hot yellow
+    const ramp = d3.interpolateRgbBasis(["#3a2170","#7a2b8c","#ff2e92","#ff8a00","#ffe600"]);
+
+    // ---- index the catalog: iso(numeric) -> {code,name,total,genres{}} ----
+    const isoInfo = {};              // world-atlas numeric id -> country stats
+    const genreBreadth = {}, genreTracks = {};
+    let totalTracks = 0, nCountries = 0;
+    for (const cc in COUNTRIES){
+      const C = COUNTRIES[cc]; const er = C.eras || {}; let total = 0; const g = {};
+      for (const d in er) for (const t of er[d]){ total++; totalTracks++;
+        const gg = (t.genre||"").toLowerCase().trim(); if (gg) g[gg] = (g[gg]||0)+1; }
+      if (!total) continue; nCountries++;
+      if (C.iso) isoInfo[+C.iso] = { code:cc, name:C.name, total, genres:g };
+      const seen = {};
+      for (const k in g){ genreTracks[k] = (genreTracks[k]||0)+g[k]; if(!seen[k]){ genreBreadth[k]=(genreBreadth[k]||0)+1; seen[k]=1; } }
+    }
+    document.getElementById("ntracks").textContent = totalTracks.toLocaleString();
+    document.getElementById("ncountries").textContent = nCountries;
+
+    // ---- genre picker, sorted by breadth (most global first) ----
+    const genres = Object.keys(genreBreadth).sort((a,b)=>
+      genreBreadth[b]-genreBreadth[a] || genreTracks[b]-genreTracks[a] || a.localeCompare(b));
+    const sel = document.getElementById("genre");
+    genres.forEach(g=>{
+      const o = document.createElement("option");
+      o.value = g;
+      o.textContent = g + "  ·  " + genreBreadth[g] + " countries · " + genreTracks[g].toLocaleString() + " tracks";
+      sel.appendChild(o);
+    });
+    sel.value = genres.includes("hip-hop") ? "hip-hop" : genres[0];
+
+    // ---- map ----
+    const svg = d3.select("#map");
+    const projection = d3.geoNaturalEarth1();
+    const path = d3.geoPath(projection);
+    const tip = document.getElementById("tip");
+    let features = [];
+
+    function shareFor(iso, genre){
+      const info = isoInfo[iso];
+      if (!info) return null;                 // not in catalog
+      const n = info.genres[genre] || 0;
+      return { share: info.total ? n/info.total : 0, n, total: info.total, name: info.name };
+    }
+
+    function paint(){
+      const genre = sel.value;
+      // domain: hottest country's share for this genre
+      let maxShare = 0, present = 0;
+      for (const iso in isoInfo){ const s = shareFor(+iso, genre); if (s && s.n>0){ present++; if (s.share>maxShare) maxShare = s.share; } }
+      if (maxShare === 0) maxShare = 1;
+      const color = d3.scaleSequential(t=>ramp(t)).domain([0, maxShare]);
+
+      svg.selectAll("path.country").attr("fill", d=>{
+        const s = shareFor(+d.id, genre);
+        if (!s || s.n === 0) return "var(--empty)";
+        return color(s.share);
+      });
+
+      document.getElementById("stat").innerHTML =
+        "<b>" + present + "</b> countries feature <b>" + genre + "</b> · hottest share " + Math.round(maxShare*100) + "%";
+      // legend gradient + max label
+      const stops = d3.range(0,1.0001,0.1).map(t=>ramp(t)).join(",");
+      document.getElementById("legendbar").style.background = "linear-gradient(90deg," + stops + ")";
+      document.getElementById("legendmax").textContent = Math.round(maxShare*100) + "%";
+    }
+
+    function showTip(evt, d){
+      const genre = sel.value;
+      const s = shareFor(+d.id, genre);
+      const name = (s && s.name) || (d.properties && d.properties.name) || "—";
+      if (!s){ tip.innerHTML = "<div class='tn'>"+name+"</div><div class='tm'>not in the Mixtape catalog</div>"; }
+      else {
+        tip.innerHTML = "<div class='tn'>"+name+"</div>"+
+          "<div><span class='tg'>"+genre+"</span> — "+Math.round(s.share*100)+"% of its catalog</div>"+
+          "<div class='tm'>"+s.n+" of "+s.total+" tracks</div>";
+      }
+      tip.classList.add("on");
+      const pad=14; let x=evt.clientX+pad, y=evt.clientY+pad;
+      if (x+250>innerWidth) x=evt.clientX-250; if (y+90>innerHeight) y=evt.clientY-90;
+      tip.style.left=x+"px"; tip.style.top=y+"px";
+    }
+    function hideTip(){ tip.classList.remove("on"); }
+
+    d3.json(ATLAS).then(world=>{
+      features = topojson.feature(world, world.objects.countries).features;
+      projection.fitExtent([[6,6],[954,494]], {type:"FeatureCollection", features});
+      svg.append("g").selectAll("path")
+        .data(features).enter().append("path")
+        .attr("class","country").attr("d",path).attr("fill","var(--empty)")
+        .on("mousemove", showTip).on("mouseleave", hideTip);
+      paint();
+    });
+
+    sel.addEventListener("change", paint);
+  })();
+  </script>
+</body>
+</html>
