@@ -108,8 +108,16 @@ footer.ab-foot p{font-size:12px;color:#8a83b8;margin:6px 0}
 
   <div class="kpis" id="kpis"></div>
 
-  <h2 class="sec">🎯 Where &amp; When — top players</h2>
-  <ul class="lb" id="lb-ww"><li class="empty">loading…</li></ul>
+  <div class="cols">
+    <div>
+      <h2 class="sec">🏆 Top players — all games</h2>
+      <ul class="lb" id="lb-games"><li class="empty">loading…</li></ul>
+    </div>
+    <div>
+      <h2 class="sec">♥ Top collectors — most favorites</h2>
+      <ul class="lb" id="lb-collectors"><li class="empty">loading…</li></ul>
+    </div>
+  </div>
 
   <div class="cols">
     <div>
@@ -221,20 +229,27 @@ s.onload = () => {
 s.onerror = () => { document.getElementById("lb-plays").innerHTML=document.getElementById("lb-faves").innerHTML='<li class="empty">leaderboard unavailable</li>'; };
 document.head.appendChild(s);
 
-/* ---- Where & When players leaderboard (global all-time best per signed-in user) ---- */
-db.collection("leaderboard_ww").orderBy("best","desc").limit(25).get().then(q => {
-  const el = document.getElementById("lb-ww");
-  const rows = q.docs.map(d => d.data()).filter(r => r && r.best > 0);
-  if (!rows.length){ el.innerHTML = '<li class="empty">No scores yet — <a href="/games/" style="color:var(--cyan)">be the first to play Where &amp; When</a>.</li>'; return; }
-  el.innerHTML = rows.map((r,i) => {
-    const av = r.photo
-      ? `<img class="lb__art" style="border-radius:50%" src="${esc(r.photo)}" alt="" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">`
-      : `<span class="lb__art" style="border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:17px;color:var(--paper)">${esc((r.name||"?").trim().slice(0,1).toUpperCase())}</span>`;
-    return `<li><span class="lb__n">${i+1}</span>${av}
-      <div class="lb__tx"><div class="lb__title">${esc(r.name||"Player")}</div></div>
-      <div class="lb__ct plays">${fmt(r.best)} pts</div></li>`;
-  }).join("");
-}).catch(() => { document.getElementById("lb-ww").innerHTML = '<li class="empty">leaderboard coming soon</li>'; });
+/* ---- user leaderboards: global games score + most-favorites collectors ---- */
+function userAvatar(r){
+  return r.photo
+    ? `<img class="lb__art" style="border-radius:50%" src="${esc(r.photo)}" alt="" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">`
+    : `<span class="lb__art" style="border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:17px;color:var(--paper)">${esc((r.name||"?").trim().slice(0,1).toUpperCase())}</span>`;
+}
+function renderUserLB(elId, coll, field, suffix, cls, emptyMsg){
+  db.collection(coll).orderBy(field,"desc").limit(25).get().then(q => {
+    const el = document.getElementById(elId);
+    const rows = q.docs.map(d => d.data()).filter(r => r && (r[field]||0) > 0);
+    if (!rows.length){ el.innerHTML = `<li class="empty">${emptyMsg}</li>`; return; }
+    el.innerHTML = rows.map((r,i) =>
+      `<li><span class="lb__n">${i+1}</span>${userAvatar(r)}
+        <div class="lb__tx"><div class="lb__title">${esc(r.name||"Player")}</div></div>
+        <div class="lb__ct ${cls}">${fmt(r[field])}${suffix}</div></li>`).join("");
+  }).catch(() => { document.getElementById(elId).innerHTML = '<li class="empty">leaderboard coming soon</li>'; });
+}
+renderUserLB("lb-games", "leaderboard_games", "score", " pts", "plays",
+  'No scores yet — <a href="/games/" style="color:var(--cyan)">play a game to get on the board</a>.');
+renderUserLB("lb-collectors", "leaderboard_faves", "count", " ♥", "faves",
+  'No collectors yet — <a href="/" style="color:var(--cyan)">start saving favorites</a>.');
 </script>
 </body>
 </html>

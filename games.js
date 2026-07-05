@@ -63,6 +63,8 @@ function mergeStates(local,cloud){
   if(cl>ll){out.lastWinDay=cloud.lastWinDay;out.streak=cloud.streak||0;}else{out.lastWinDay=local.lastWinDay;out.streak=local.streak||0;}
   ["soundtrip","timemachine","clusters"].forEach(function(g){var pk=chooseNewerPlay((local.plays||{})[g],(cloud.plays||{})[g]);if(pk)out.plays[g]=pk;});
   out.stMode=local.stMode||cloud.stMode;
+  out.gamesScore=Math.max(local.gamesScore||0,cloud.gamesScore||0);   // cumulative all-games score (leaderboard)
+  out.wwMode=local.wwMode||cloud.wwMode; if((local.ww||cloud.ww)){out.ww=local.ww||cloud.ww;}
   return out;
 }
 function scheduleCloud(){if(!cloudReady||!authUser||!gDb)return;if(cloudTimer)clearTimeout(cloudTimer);cloudTimer=setTimeout(cloudPush,700);}
@@ -91,7 +93,7 @@ if(FB){
   gAuth.getRedirectResult().catch(function(e){if(e&&e.code)console.warn("redirect",e);});
   gAuth.onAuthStateChanged(function(u){
     authUser=u||null;
-    if(u){pullAndMerge(u.uid).then(function(){renderHub();});loadCloudFavs(u.uid);}
+    if(u){pullAndMerge(u.uid).then(function(){renderHub();pushGamesLeaderboard();});loadCloudFavs(u.uid);}
     else{cloudReady=false;FAVS=loadFavs();refreshFavBtns();renderHub();}
   });
 }
@@ -115,15 +117,21 @@ function toggleFav(t){
       else col.doc(id).delete().catch(function(e){console.warn("fav del",e);});
     }catch(e){console.warn(e);}
   }else saveFavsLocal();                               // anonymous → localStorage (same key the site reads)
+  if(authUser&&gDb)pushFavesLeaderboard();             // keep the "most favorites" leaderboard current
   return added;
 }
 function loadCloudFavs(uid){
   if(!gDb)return;
   gDb.collection("users").doc(uid).collection("favorites").get().then(function(snap){
     FAVS=snap.docs.map(function(d){return d.data();});
-    refreshFavBtns();
+    refreshFavBtns(); pushFavesLeaderboard();
   }).catch(function(e){console.warn("games favs pull",e);});
 }
+/* global leaderboards (shown on /stats): cumulative all-games score + most-favorites collectors */
+function pushGamesLeaderboard(){ if(!gDb||!authUser)return; try{ gDb.collection("leaderboard_games").doc(authUser.uid).set({ name:wwSelfName(), photo:(authUser.photoURL||""), score:(STATE.gamesScore||0), uid:authUser.uid, updatedAt:FB.firestore.FieldValue.serverTimestamp() },{merge:true}).catch(function(e){console.warn("games lb",e);}); }catch(e){console.warn(e);} }
+function pushFavesLeaderboard(){ if(!gDb||!authUser)return; try{ gDb.collection("leaderboard_faves").doc(authUser.uid).set({ name:wwSelfName(), photo:(authUser.photoURL||""), count:FAVS.length, uid:authUser.uid, updatedAt:FB.firestore.FieldValue.serverTimestamp() },{merge:true}).catch(function(e){console.warn("faves lb",e);}); }catch(e){console.warn(e);} }
+/* every game funnels points into one cumulative score → the global games leaderboard */
+function awardGames(pts){ pts=Math.max(0,Math.round(pts||0)); if(!pts)return; if(!STATE.gamesScore)STATE.gamesScore=0; STATE.gamesScore+=pts; save(STATE); pushGamesLeaderboard(); }
 function favLabel(on){return on?"♥ saved":"♡ save song";}
 function refreshFavBtns(){
   document.querySelectorAll(".g-fav").forEach(function(b){var on=isFaved(b.getAttribute("data-id"));b.classList.toggle("on",on);b.textContent=favLabel(on);});
@@ -265,7 +273,7 @@ function stShareGrid(){return ST.guesses.map(function(g){return g===ST.ans?"🟩
 function finishST(win){
   ST.done=true;
   var summary={win:win,ans:ST.ans,tries:ST.guesses.length,grid:stShareGrid(),artist:ST.track.artist,title:ST.track.title,decade:ST.track.decade,year:ST.track.year,ytId:ST.track.ytId,start:ST.start,track:favRec(ST.track)};
-  if(win){stamp(ST.ans);bumpStreak();}
+  if(win){stamp(ST.ans);bumpStreak();awardGames(Math.max(120,600-(ST.guesses.length-1)*100));}
   recordPlay("soundtrip",summary);
   renderSTReveal(summary);
 }
@@ -318,7 +326,7 @@ function renderTM(){
 window.WMTG.tmPlay=function(){var pl=document.getElementById("tm-player"),btn=document.getElementById("tm-play");if(playedState()){pauseVid();pl.classList.remove("playing");btn.textContent="▶";}else{playVid(TM.track.ytId,TM.start);pl.classList.add("playing");btn.textContent="❚❚";}};
 window.WMTG.tmGuess=function(d){if(TM.done)return;if(TM.guesses.some(function(g){return g.d===d;}))return;var correct=d===TM.track.decade;TM.guesses.push({d:d,correct:correct});if(correct){finishTM(true);}else if(TM.guesses.length>=3){finishTM(false);}else renderTM();};
 function tmGrid(){return TM.guesses.map(function(g){return g.correct?"🟩":(TM.timeline.indexOf(g.d)<TM.ansIdx?"🟧":"🟪");}).join("");}
-function finishTM(win){TM.done=true;var s={win:win,cc:TM.cc,decade:TM.track.decade,year:TM.track.year,title:TM.track.title,artist:TM.track.artist,ytId:TM.track.ytId,start:TM.start,grid:tmGrid(),tries:TM.guesses.length,track:favRec(TM.track)};recordPlay("timemachine",s);renderTMReveal(s);}
+function finishTM(win){TM.done=true;var s={win:win,cc:TM.cc,decade:TM.track.decade,year:TM.track.year,title:TM.track.title,artist:TM.track.artist,ytId:TM.track.ytId,start:TM.start,grid:tmGrid(),tries:TM.guesses.length,track:favRec(TM.track)};if(win)awardGames(Math.max(120,500-(TM.guesses.length-1)*120));recordPlay("timemachine",s);renderTMReveal(s);}
 function renderTMReveal(s){
   TM.track=TM.track||{ytId:s.ytId};TM.start=s.start;
   revealTrk.tm=s.track||null;
@@ -402,7 +410,7 @@ window.WMTG.clSubmit=function(){
   }
 };
 function clGrid(){return CL.history.map(function(row){return row.map(function(g){return CL_COLORS[g%4];}).join("");}).join("\n");}
-function finishCL(win){CL.done=true;var s={win:win,solved:CL.solved.length,grid:clGrid(),groups:CL.groups.map(function(g){return {cc:g.cc,artists:g.artists,items:g.tracks.map(function(x){return {a:x.a,genre:x.genre};})};})};CL.solved.forEach(function(gi){stamp(CL.groups[gi].cc);});recordPlay("clusters",s);renderCLReveal(s);}
+function finishCL(win){CL.done=true;var s={win:win,solved:CL.solved.length,grid:clGrid(),groups:CL.groups.map(function(g){return {cc:g.cc,artists:g.artists,items:g.tracks.map(function(x){return {a:x.a,genre:x.genre};})};})};CL.solved.forEach(function(gi){stamp(CL.groups[gi].cc);});awardGames(CL.solved.length*250+(win?200:0));recordPlay("clusters",s);renderCLReveal(s);}
 function renderCLReveal(s){
   var body=document.getElementById("cl-body");
   var cards=s.groups.map(function(g,gi){var col=["#c6ff00","#b388ff","#00e5ff","#ff6d00"][gi%4];var lesson=(window.COUNTRY_MUSIC&&window.COUNTRY_MUSIC[g.cc]&&window.COUNTRY_MUSIC[g.cc][0])||"";var snip=lesson.split(". ").slice(0,1).join(". ");if(snip&&!/[.!?]$/.test(snip))snip+=".";var items=g.items||(g.artists||[]).map(function(a){return {a:a,genre:""};});return '<div class="g-solved" style="background:'+col+';margin-bottom:10px"><h4>'+flagImg(g.cc)+esc(cname(g.cc))+'</h4>'+clArtistList(items)+(snip?'<p style="margin-top:6px;opacity:.85">'+esc(snip)+'</p>':"")+'</div>';}).join("");
@@ -463,7 +471,7 @@ window.WMTG.cuGuess=function(c){
   if(CU.guesses.length>=CU_MAX)finishCU(false);else renderCU();
 };
 function cuGrid(){return CU.guesses.map(function(c){return c===CU.ans?"🟩":"🟪";}).join("");}
-function finishCU(win){CU.done=true;var s={win:win,ans:CU.ans,tries:CU.guesses.length,grid:cuGrid(),cover:CU.track.cover,artist:CU.track.artist,title:CU.track.title,decade:CU.track.decade,track:favRec(CU.track)};if(win)stamp(CU.ans);recordPlay("coverup",s);renderCUReveal(s);}
+function finishCU(win){CU.done=true;var s={win:win,ans:CU.ans,tries:CU.guesses.length,grid:cuGrid(),cover:CU.track.cover,artist:CU.track.artist,title:CU.track.title,decade:CU.track.decade,track:favRec(CU.track)};if(win){stamp(CU.ans);awardGames(Math.max(120,500-(CU.guesses.length-1)*150));}recordPlay("coverup",s);renderCUReveal(s);}
 function renderCUReveal(s){
   CU.track=CU.track||{cover:s.cover};
   revealTrk.cu=s.track||null;
@@ -511,7 +519,7 @@ function renderWWModes(){
     (FB?'<div id="ww-lb-hint" class="g-hint" style="text-align:center;margin-top:16px"></div>':'');
   wwLbHint();
 }
-function wwLbHint(){ var el=document.getElementById("ww-lb-hint"); if(!el)return; el.innerHTML = authUser? ('Signed in as <b>'+esc(wwSelfName())+'</b> — your best posts to the <a href="/stats/">leaderboard</a>.') : 'Playing as a guest. <a href="#" onclick="WMTG_signIn();return false">Sign in</a> to join the global leaderboard.'; }
+function wwLbHint(){ var el=document.getElementById("ww-lb-hint"); if(!el)return; el.innerHTML = authUser? ('Signed in as <b>'+esc(wwSelfName())+'</b> — your scores post to the global <a href="/stats/">games leaderboard</a>.') : 'Playing as a guest. <a href="#" onclick="WMTG_signIn();return false">Sign in</a> to join the global games leaderboard.'; }
 window.WMTG.wwHome=function(){ pauseVid(); renderWWModes(); };
 window.WMTG.wwStart=function(mode){ var qs=wwBuild(WW_N); if(qs.length<WW_N){ toast("not enough songs — try again"); return; } startWWRound({mode:mode, players:[wwSelfName()], questions:qs}); };
 
@@ -597,7 +605,7 @@ function finishWWRound(){
     if(!STATE.ww)STATE.ww={};
     if(me.total>(STATE.ww.best||0)){ STATE.ww.best=me.total; STATE.ww.bestAt=dayStr(); WW._newBest=true; }
     STATE.ww.plays=(STATE.ww.plays||0)+1; save(STATE);
-    if(authUser) wwSubmitLeaderboard(me.total);
+    awardGames(me.total);                         // Where & When feeds the global games score
     if(WW.mode==="challengePlay") wwRecordOpponent(me.total);
     if(WW.mode==="challenge"){ wwCreateChallenge(me.total).then(function(id){ WW._challengeId=id; if(WW.done)renderWWResults(); }); }
   }
@@ -668,15 +676,6 @@ function renderWWInvite(d){
 }
 window.WMTG.wwPlayChallenge=function(){ var d=WW._pending; if(!d||!d.questions){toast("challenge unavailable");return;} startWWRound({mode:"challengePlay", players:[wwSelfName()], questions:d.questions, challenge:d}); };
 
-/* ---- leaderboard (global best per signed-in user) ---- */
-function wwSubmitLeaderboard(score){
-  if(!gDb||!authUser)return;
-  var ref=gDb.collection("leaderboard_ww").doc(authUser.uid);
-  ref.get().then(function(doc){
-    var prev=doc.exists?(doc.data().best||0):0; if(score<=prev)return;
-    ref.set({ name:String(authUser.displayName||authUser.email||"Player").split("@")[0], photo:authUser.photoURL||"", best:score, uid:authUser.uid, updatedAt:FB.firestore.FieldValue.serverTimestamp() },{merge:true}).catch(function(e){console.warn("lb submit",e);});
-  }).catch(function(e){console.warn("lb read",e);});
-}
 
 /* ---------------- boot ---------------- */
 function boot(){

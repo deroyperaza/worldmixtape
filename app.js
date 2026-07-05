@@ -212,6 +212,17 @@ function favRecord(t, cc){
 function loadLocalFavs(){ try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch { return []; } }
 function favoritesIsOpen(){ const h = inner.querySelector(".jhead__name"); return panel.classList.contains("show") && !!h && h.textContent.trim().toLowerCase() === "favorites"; }
 function refreshFavoritesView(){ if (favoritesIsOpen()) openFavorites(); }
+// "most favorites" leaderboard on /stats — write this signed-in user's live favorite count
+function pushFavesLeaderboard(){
+  if (!(authUser && FB)) return;
+  try {
+    FB.firestore().collection("leaderboard_faves").doc(authUser.uid).set({
+      name: String(authUser.displayName || authUser.email || "Player").split("@")[0],
+      photo: authUser.photoURL || "", count: favs.length, uid: authUser.uid,
+      updatedAt: FB.firestore.FieldValue.serverTimestamp()
+    }, { merge: true }).catch(e => console.warn("faves lb", e));
+  } catch (e) { console.warn(e); }
+}
 
 if (FB){
   const auth = FB.auth(), db = FB.firestore();
@@ -251,6 +262,7 @@ if (FB){
       favUnsub = userFavs(u.uid).orderBy("addedAt", "desc").onSnapshot(snap => {
         favs = snap.docs.map(d => d.data());
         updateFavCount(); refreshFavHearts(); refreshFavoritesView();
+        pushFavesLeaderboard();   // keep the "most favorites" board on /stats current
       }, err => console.warn("favorites sync", err));
     } else {
       favs = loadLocalFavs();
