@@ -142,9 +142,12 @@ function saveBtn(game){var t=revealTrk[game];var on=t&&isFaved(t.trackId);return
 
 /* ---------------- centroids (from world-atlas, for Sound Trip) ---------------- */
 var CENTROID={},ATLAS_READY=false,atlasWaiters=[];
+var ATLAS_FEATURES=null,ISO_TO_CODE={};   // for the clickable GeoGuessr-style map (Where & When)
+(function(){ Object.keys(window.COUNTRIES||{}).forEach(function(c){ ISO_TO_CODE[String(window.COUNTRIES[c].iso).padStart(3,"0")]=c; }); })();
 function loadAtlas(){
   d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json").then(function(world){
     var feats=topojson.feature(world,world.objects.countries).features;
+    ATLAS_FEATURES=feats;
     var byId={};feats.forEach(function(f){byId[String(f.id)]=f;});
     Object.keys(window.COUNTRIES).forEach(function(c){
       var f=byId[String(window.COUNTRIES[c].iso).padStart(3,"0")];
@@ -500,8 +503,53 @@ function wwPool(){return Object.keys(window.COUNTRIES).filter(function(c){return
 var _wwTimeline=null;
 function wwTimeline(){ if(_wwTimeline)return _wwTimeline; var present={}; Object.keys(window.COUNTRIES).forEach(function(c){tracksOf(c).forEach(function(t){if(t.decade)present[t.decade]=1;});}); _wwTimeline=DECADE_ORDER.filter(function(d){return present[d];}); return _wwTimeline; }
 function wwBuild(n){ var pool=wwPool(),qs=[],used={},guard=0; while(qs.length<n&&guard++<800){ var c=pool[Math.floor(Math.random()*pool.length)]; var tks=tracksOf(c); if(!tks.length)continue; var t=tks[Math.floor(Math.random()*tks.length)]; if(!t.ytId||used[t.ytId])continue; used[t.ytId]=1; qs.push({cc:c,ytId:t.ytId,title:t.title||"",artist:t.artist||"",cover:t.cover||"",decade:t.decade||"",start:15+Math.floor(Math.random()*35)}); } return qs; }
-function wwCountryChoices(ans){ var pool=wwPool(),cont=CONT[ans]; var same=pool.filter(function(c){return c!==ans&&CONT[c]===cont;}); var other=pool.filter(function(c){return c!==ans&&CONT[c]!==cont;}); var d=shuffle(same,Math.random).slice(0,2).concat(shuffle(other,Math.random).slice(0,2)).slice(0,3); return shuffle([ans].concat(d),Math.random); }
-function wwScoreCountry(g,a){ if(g===a)return {pts:1000,exact:true,km:0}; var km=distKm(g,a); var pts=km==null?(CONT[g]===CONT[a]?300:0):Math.max(0,Math.round(600*(1-km/8000))); return {pts:pts,exact:false,km:km}; }
+// GeoGuessr-style: score the map click by great-circle distance from the clicked country to the answer.
+function wwScoreClick(guessCentroid, guessIso, ans){
+  var ac=CENTROID[ans]; if(!ac||!guessCentroid) return {pts:0,km:null,exact:false};
+  var exact=String(guessIso)===String(window.COUNTRIES[ans].iso).padStart(3,"0");
+  var km=Math.round(d3.geoDistance(guessCentroid,ac)*6371);
+  var pts=exact?1000:Math.max(0,Math.round(1000*(1-km/9000)));   // 0km=1000 → ~9000km=0
+  return {pts:pts,km:km,exact:exact};
+}
+function wwArrow(A,B){ if(!A||!B)return ""; var φ1=A[1]*Math.PI/180,φ2=B[1]*Math.PI/180,Δλ=(B[0]-A[0])*Math.PI/180; var y=Math.sin(Δλ)*Math.cos(φ2),x=Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ); var b=(Math.atan2(y,x)*180/Math.PI+360)%360; return ARROWS[Math.round(b/45)%8]; }
+// render the world map into #ww-map: clickable (make a guess) or reveal (guess ✕ + answer ● + line)
+function wwDrawMap(clickable){
+  var mount=document.getElementById("ww-map"); if(!mount||!ATLAS_FEATURES)return;
+  var w=mount.clientWidth||320, h=Math.max(150,Math.round(w*0.52));
+  var svg=d3.select(mount).html("").append("svg").attr("viewBox","0 0 "+w+" "+h).attr("width","100%").attr("height",h).style("display","block").style("touch-action","none");
+  var g=svg.append("g");
+  var proj=d3.geoNaturalEarth1().fitSize([w-2,h-2],{type:"FeatureCollection",features:ATLAS_FEATURES});
+  var path=d3.geoPath(proj);
+  var q=WW.questions[WW.qi], ans=q.cc, ansIso=String(window.COUNTRIES[ans].iso).padStart(3,"0");
+  g.selectAll("path").data(ATLAS_FEATURES).enter().append("path").attr("class","ww-cpath").attr("d",path)
+    .attr("stroke","#0a0916").attr("stroke-width",0.4)
+    .attr("fill",function(d){ if(!clickable){ if(String(d.id)===ansIso)return "#c6ff00"; if(WW.guess&&String(d.id)===String(WW.guess.iso))return "#ff2e92"; } return "#2c2456"; })
+    .style("cursor",clickable?"crosshair":"default");
+  if(clickable){
+    g.selectAll("path.ww-cpath")
+      .on("mouseover",function(){ d3.select(this).attr("fill","#ff6d00"); })
+      .on("mouseout",function(){ d3.select(this).attr("fill","#2c2456"); })
+      .on("click",function(e,d){ wwPick(d); });
+    var zoom=d3.zoom().scaleExtent([1,9]).on("zoom",function(e){ g.attr("transform",e.transform); });
+    svg.call(zoom).on("dblclick.zoom",null);
+  } else if(WW.guess){
+    var A=WW.guess.gcentroid, B=CENTROID[ans];
+    if(A&&B){ var pa=proj(A),pb=proj(B);
+      g.append("line").attr("x1",pa[0]).attr("y1",pa[1]).attr("x2",pb[0]).attr("y2",pb[1]).attr("stroke","#fff7e6").attr("stroke-width",1.5).attr("stroke-dasharray","4 3");
+      g.append("circle").attr("cx",pa[0]).attr("cy",pa[1]).attr("r",4).attr("fill","#ff2e92").attr("stroke","#0a0916");
+      g.append("circle").attr("cx",pb[0]).attr("cy",pb[1]).attr("r",4.5).attr("fill","#c6ff00").attr("stroke","#0a0916");
+    }
+  }
+}
+function wwPick(feature){
+  if(WW.step!=="country"||!feature)return;
+  var q=WW.questions[WW.qi];
+  var gc; try{ gc=d3.geoCentroid(feature); }catch(e){ gc=null; }
+  var sc=wwScoreClick(gc,feature.id,q.cc);
+  var code=ISO_TO_CODE[String(feature.id)]||null;
+  WW.guess={cc:code,iso:feature.id,gcentroid:gc,gname:(code?cname(code):((feature.properties&&feature.properties.name)||"there")),cScore:sc};
+  WW.step="decade"; renderWWQuestion();
+}
 function wwScoreDecade(g,a){ var tl=WW.timeline,gi=tl.indexOf(g),ai=tl.indexOf(a); if(g===a)return {pts:500,off:0}; if(gi<0||ai<0)return {pts:0,off:99}; var off=Math.abs(gi-ai); return {pts:Math.max(0,500-off*150),off:off}; }
 function wwSelfName(){ return (authUser&&(authUser.displayName||authUser.email))?String(authUser.displayName||authUser.email).split("@")[0].split(" ")[0]:"You"; }
 
@@ -543,7 +591,7 @@ window.WMTG.wwPassGo=function(){ var names=WW._names.map(function(n){return (n||
 function startWWRound(cfg){
   WW={ mode:cfg.mode, questions:cfg.questions, timeline:wwTimeline(),
     players:cfg.players.map(function(nm){return {name:nm,songs:[],total:0};}),
-    pi:0, qi:0, step:"country", choiceSet:null, cmode:(STATE.wwMode||"kid"),
+    pi:0, qi:0, step:"country",
     guess:null, done:false, challenge:cfg.challenge||null, _newBest:false, _challengeId:null };
   pauseVid(); renderWWQuestion();
 }
@@ -554,33 +602,30 @@ function renderWWQuestion(){
   var player='<div class="g-player" id="ww-player"><button class="g-play" id="ww-play" style="background:var(--tang)" onclick="WMTG.wwPlay()">▶</button><div class="g-eq">'+eqBars()+'</div><div class="g-hint">Tap to hear the mystery song</div></div>';
   var body;
   if(WW.step==="country"){
-    if(!WW.choiceSet)WW.choiceSet=wwCountryChoices(q.cc);
-    var input;
-    if(WW.cmode==="kid"){ input='<div class="g-choices">'+WW.choiceSet.map(function(c){return '<button class="g-choice" onclick="WMTG.wwGuessCountry(\''+c+'\')">'+flagImg(c)+esc(cname(c))+'</button>';}).join("")+'</div>'; }
-    else { input='<div class="g-search"><input id="ww-input" type="text" placeholder="Type a country and pick…" autocomplete="off" oninput="WMTG.wwSuggest(this.value)"><div class="g-suggest" id="ww-suggest" style="display:none"></div></div>'; }
     body=head+player+
-      '<div class="g-modes"><button class="'+(WW.cmode==="kid"?"on":"")+'" onclick="WMTG.wwCMode(\'kid\')">Kid · 4 choices</button><button class="'+(WW.cmode==="explorer"?"on":"")+'" onclick="WMTG.wwCMode(\'explorer\')">Explorer · search</button></div>'+
-      '<div class="g-hint" style="text-align:center">Step 1 — <b>which country?</b></div>'+input;
+      '<div class="g-hint" style="text-align:center">Step 1 — <b>click the country</b> you think it\'s from <span style="opacity:.6">· scroll/pinch to zoom</span></div>'+
+      '<div class="ww-map" id="ww-map"></div>';
   } else if(WW.step==="decade"){
     var chips=WW.timeline.map(function(d){return '<button class="g-dec" onclick="WMTG.wwGuessDecade(\''+d+'\')">'+decLabel(d)+'</button>';}).join("");
     body=head+player+
-      '<div class="ww-locked">'+flagImg(WW.guess.cc)+' you said <b>'+esc(cname(WW.guess.cc))+'</b></div>'+
+      '<div class="ww-locked">'+(WW.guess.cc?flagImg(WW.guess.cc):"📍")+' you picked <b>'+esc(WW.guess.gname)+'</b></div>'+
       '<div class="g-hint" style="text-align:center">Step 2 — <b>which decade?</b></div>'+
       '<div class="g-decades">'+chips+'</div>';
   } else { body=head+renderWWSongReveal(); }
   document.getElementById("ww-body").innerHTML=body;
+  if(WW.step==="country") wwDrawMap(true);
+  else if(WW.step==="reveal") wwDrawMap(false);
 }
 window.WMTG.wwPlay=function(){ var q=WW.questions[WW.qi]; var pl=document.getElementById("ww-player"),btn=document.getElementById("ww-play"); if(playedState()){pauseVid();pl.classList.remove("playing");btn.textContent="▶";}else{playVid(q.ytId,q.start);pl.classList.add("playing");btn.textContent="❚❚";} };
-window.WMTG.wwCMode=function(m){ WW.cmode=m; STATE.wwMode=m; save(STATE); renderWWQuestion(); };
-window.WMTG.wwSuggest=function(q){ var box=document.getElementById("ww-suggest"); q=(q||"").trim().toLowerCase(); if(q.length<1){box.style.display="none";return;} var m=Object.keys(window.COUNTRIES).filter(function(c){return cname(c).toLowerCase().indexOf(q)>=0;}).sort(function(a,b){return cname(a).localeCompare(cname(b));}).slice(0,8); if(!m.length){box.style.display="none";return;} box.innerHTML=m.map(function(c){return '<button onclick="WMTG.wwGuessCountry(\''+c+'\')">'+flagImg(c)+esc(cname(c))+'</button>';}).join(""); box.style.display="block"; };
-window.WMTG.wwGuessCountry=function(c){ if(WW.step!=="country")return; var q=WW.questions[WW.qi]; WW.guess={cc:c,cScore:wwScoreCountry(c,q.cc)}; WW.step="decade"; renderWWQuestion(); };
 window.WMTG.wwGuessDecade=function(d){ if(WW.step!=="decade")return; var q=WW.questions[WW.qi]; WW.guess.dec=d; WW.guess.dScore=wwScoreDecade(d,q.decade); WW.guess.q=q; WW.guess.total=WW.guess.cScore.pts+WW.guess.dScore.pts; WW.players[WW.pi].songs.push(WW.guess); WW.players[WW.pi].total+=WW.guess.total; WW.step="reveal"; renderWWQuestion(); };
 function renderWWSongReveal(){
   var g=WW.guess,q=g.q;
-  var cFb=g.cScore.exact?'<span class="same">✓ exact!</span>':(g.cScore.km!=null?'<span class="km">'+g.cScore.km.toLocaleString()+' km off</span> '+bearingArrow(g.cc,q.cc):'<span class="km">wrong region</span>');
+  var cFb=g.cScore.exact?'<span class="same">✓ spot on!</span>':(g.cScore.km!=null?'<span class="km">'+g.cScore.km.toLocaleString()+' km away</span> '+wwArrow(g.gcentroid,CENTROID[q.cc]):'<span class="km">way off</span>');
   var dFb=g.dScore.off===0?'<span class="same">✓ exact!</span>':'<span class="km">'+(g.dScore.off===99?"—":g.dScore.off+" decade"+(g.dScore.off>1?"s":"")+" off")+'</span>';
   var last=WW.qi>=WW.questions.length-1;
   return '<div class="g-reveal ww-reveal">'+
+    '<div class="ww-map ww-map--reveal" id="ww-map"></div>'+
+    '<div class="ww-maplegend"><span><i class="dot pink"></i>your guess</span><span><i class="dot lime"></i>'+esc(cname(q.cc))+'</span></div>'+
     '<div class="ww-song"><img class="ww-cover" src="'+esc(q.cover||"")+'" onerror="this.style.visibility=\'hidden\'" referrerpolicy="no-referrer"><div><div class="a-nm">'+esc(q.title)+'</div><div class="a-sub">'+esc(q.artist)+'</div></div></div>'+
     '<div class="ww-ans"><div class="ww-ansrow">'+flagImg(q.cc)+' <b>'+esc(cname(q.cc))+'</b> · '+cFb+' <span class="ww-pts">+'+g.cScore.pts+'</span></div>'+
     '<div class="ww-ansrow">🕰️ <b>'+decLabel(q.decade)+'</b> · '+dFb+' <span class="ww-pts">+'+g.dScore.pts+'</span></div></div>'+
@@ -588,7 +633,7 @@ function renderWWSongReveal(){
     '<div class="g-btns"><button class="g-btn p" style="background:var(--tang)" onclick="WMTG.wwNext()">'+(last?"See results":"Next song")+' →</button></div>'+
     '</div>';
 }
-window.WMTG.wwNext=function(){ pauseVid(); if(WW.qi<WW.questions.length-1){ WW.qi++; WW.step="country"; WW.choiceSet=null; WW.guess=null; renderWWQuestion(); return; } if(WW.pi<WW.players.length-1){ renderWWHandoff(); } else finishWWRound(); };
+window.WMTG.wwNext=function(){ pauseVid(); if(WW.qi<WW.questions.length-1){ WW.qi++; WW.step="country"; WW.guess=null; renderWWQuestion(); return; } if(WW.pi<WW.players.length-1){ renderWWHandoff(); } else finishWWRound(); };
 function renderWWHandoff(){
   var next=WW.players[WW.pi+1];
   document.getElementById("ww-body").innerHTML=
@@ -597,7 +642,7 @@ function renderWWHandoff(){
     '<h3>'+esc(next.name)+", you're up.</h3><p class=\"g-hint\">Same 5 songs. No peeking 🙈</p>"+
     '<div class="g-btns"><button class="g-btn p" style="background:var(--cyan)" onclick="WMTG.wwNextPlayer()">I&#39;m '+esc(next.name)+' — start</button></div></div>';
 }
-window.WMTG.wwNextPlayer=function(){ WW.pi++; WW.qi=0; WW.step="country"; WW.choiceSet=null; WW.guess=null; renderWWQuestion(); };
+window.WMTG.wwNextPlayer=function(){ WW.pi++; WW.qi=0; WW.step="country"; WW.guess=null; renderWWQuestion(); };
 function finishWWRound(){
   WW.done=true; pauseVid();
   var me=WW.players[0];
