@@ -738,6 +738,7 @@ function featuredGroups(){ return (typeof FEATURED_GROUPS !== "undefined" && Arr
 function findFeaturedDef(id){ for (const g of featuredGroups()) for (const d of (g.playlists||[])) if (d.id===id) return d; return null; }
 // build a mixtape object from a featured def: pull each team's tracks since `since`, weave them together
 function buildFeaturedMix(def){
+  if (def.filter) return buildFilteredMix(def);   // mood/feature playlists build from TRACK_FEATURES, not teams
   const since = def.since || 2000;
   const perTeam = (def.teams||[]).map(cc => {
     const C = COUNTRIES[cc]; if (!C) return [];
@@ -753,8 +754,38 @@ function buildFeaturedMix(def){
   const tracks = mixed.slice(0, def.limit || 40);
   return { id:"feat-"+def.id, name:def.name, sub:def.sub, emoji:def.emoji||"🎧", kind:"featured", key:(def.teams&&def.teams[0])||"featured", teams:def.teams, tracks, featured:true, when:def.when, where:def.where };
 }
-function openFeatured(){
+// catalog-wide audio-feature filter (TRACK_FEATURES from track_features.js, lazy-loaded on Featured open).
+// Any featured def with a `filter` builds from here — e.g. Deep Focus = instrumental + calm + slow/mid tempo.
+function buildFilteredMix(def){
+  const f = def.filter || {}, TF = (typeof TRACK_FEATURES !== "undefined") ? TRACK_FEATURES : {};
+  const seen = new Set(), out = [];
+  for (const cc in COUNTRIES){
+    const C = COUNTRIES[cc]; if (!C || !C.eras) continue;
+    for (const t of Object.values(C.eras).flat()){
+      if (t.trackId == null || seen.has(t.trackId)) continue;
+      const ft = TF[t.trackId]; if (!ft) continue;
+      if (f.instrumental === true && ft.i !== true) continue;
+      if (f.energyBand && !f.energyBand.includes(ft.eb)) continue;
+      if (f.tempoBand && !f.tempoBand.includes(ft.tb)) continue;
+      if (f.since && (t.year||0) < f.since) continue;
+      seen.add(t.trackId); out.push(Object.assign({_cc:cc}, t));
+    }
+  }
+  const tracks = mixShuf(out).slice(0, def.limit || 60);
+  return { id:"feat-"+def.id, name:def.name, sub:def.sub, emoji:def.emoji||"\uD83C\uDFA7", kind:"featured", key:"featured", tracks, featured:true };
+}
+// lazy-load the ~1.8MB feature table only when Featured (with a filter playlist) is opened
+let _tfPromise = null;
+function ensureTrackFeatures(){
+  if (typeof TRACK_FEATURES !== "undefined") return Promise.resolve();
+  if (_tfPromise) return _tfPromise;
+  _tfPromise = new Promise(res => { const s = document.createElement("script");
+    s.src = "track_features.js?v=1"; s.onload = res; s.onerror = res; document.head.appendChild(s); });
+  return _tfPromise;
+}
+async function openFeatured(){
   viewingMix = null; activeCode = null; currentEra = null; currentGenre = null;
+  if (featuredGroups().some(g => (g.playlists||[]).some(d => d.filter))) await ensureTrackFeatures();
   const sections = featuredGroups().map(g => {
     const cards = (g.playlists||[]).map(def => {
       const m = buildFeaturedMix(def);

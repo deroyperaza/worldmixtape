@@ -17,6 +17,14 @@
    "England" draws from the catalog's GB (United Kingdom) music. */
 const FEATURED_GROUPS = [
   {
+    banner: "\uD83C\uDFA7 Made for focus",
+    note: "Instrumental, lyric-free tracks from around the world \u2014 calm enough to work to. Auto-built from each song's audio fingerprint (tempo \u00b7 energy \u00b7 vocals).",
+    playlists: [
+      { id: "deep-focus", name: "Deep Focus", sub: "instrumental \u00b7 calm \u00b7 no lyrics", emoji: "\uD83C\uDFA7",
+        filter: { instrumental: true, energyBand: ["calm","moderate"], tempoBand: ["slow","mid"] }, limit: 80 },
+    ],
+  },
+  {
     tag: "WORLD CUP · ROUND OF 16",
     banner: "⚽ World Cup mixtapes",
     note: "Every Round of 16 matchup, both countries' music since 2000, mixed into one playlist. Two nations, one tape.",
