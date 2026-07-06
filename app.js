@@ -1313,12 +1313,7 @@ function prefetchPreview(t){                        // warm a track's 30s previe
 let handoffTrack = null;                            // the full-song track we swapped to preview for background playback
 function handoffToPreview(t){
   if (!t) return;
-  // Remember where the full song was, then FULLY STOP YouTube (not just pause). A merely-paused iframe keeps
-  // YouTube's own media session on the iOS lock screen (its ±10s seek buttons); stopping releases it so our
-  // native-audio session — with prev/next TRACK buttons — takes over. We reload from t._resumeAt on unlock.
-  try { if (yt && yt.getCurrentTime) t._resumeAt = yt.getCurrentTime() || 0; } catch(_){}
-  try { if (yt && yt.stopVideo) yt.stopVideo(); } catch(_){}
-  stopYtPoll();
+  stopYt();                                         // pause the iframe (iOS suspends it on lock anyway) — playVideo resumes in place on unlock
   playSource = "preview";
   handoffTrack = t;
   setMediaSession(t, t._cc || activeCode);
@@ -1337,8 +1332,8 @@ document.addEventListener("visibilitychange", () => {
       const cur = queue[qIndex];
       audio.pause();
       if (cur === handoffTrack && cur.ytId && ytReady && !ytFailed.has(cur.ytId)){
-        playSource = "youtube"; ytExpected = cur.ytId; ytUserPaused = false; curDuration = 0;
-        if (yt && yt.loadVideoById) yt.loadVideoById({ videoId: cur.ytId, startSeconds: cur._resumeAt || 0 });  // reload full song from where we left off
+        playSource = "youtube"; ytExpected = cur.ytId; ytUserPaused = false;
+        if (yt && yt.playVideo) yt.playVideo();      // resume same video in place → instant, no reload
         startYtPoll();
       } else if (cur){
         play(qIndex);                                // advanced to another track while locked → clean restart in full
@@ -1691,8 +1686,11 @@ function flashPlayerNote(msg, ms){
 }
 audio.addEventListener("timeupdate", () => {
   if (!scrubbing && audio.duration) setProg((audio.currentTime/audio.duration*100) + "%");
-  // No mediaSession.setPositionState: any seek signal (position OR seek handlers) makes iOS render ±10s
-  // seek buttons instead of prev/next. Cleanest config = ONLY previoustrack/nexttrack, nothing else.
+  // Feed position to the lock screen → scrubber + the ±10s buttons actually seek within the clip.
+  // (iOS shows ±10s regardless of config for this setup — prev/next handlers stay for platforms that honor them.)
+  if ("mediaSession" in navigator && playSource === "preview" && audio.duration && isFinite(audio.duration) && navigator.mediaSession.setPositionState){
+    try { navigator.mediaSession.setPositionState({ duration: audio.duration, position: Math.min(audio.currentTime, audio.duration), playbackRate: audio.playbackRate || 1 }); } catch(_){}
+  }
 });
 // iOS clears now-playing metadata when a fresh audio source starts → re-set it once playback is actually rolling
 audio.addEventListener("playing", () => { const t = queue[qIndex]; if (t) setMediaSession(t, t._cc || activeCode); });
