@@ -39,6 +39,11 @@
   select:focus{outline:none;border-color:var(--pink);box-shadow:3px 3px 0 var(--pink)}
   .stat{font-size:12px;letter-spacing:.03em}
   .stat b{color:var(--pink)}
+  .playbtn{font-family:"Anton",sans-serif;font-size:15px;letter-spacing:.02em;text-transform:uppercase;
+    color:var(--ink);background:var(--yellow);border:2.5px solid var(--yellow);border-radius:12px;
+    padding:9px 16px;box-shadow:3px 3px 0 var(--pink);cursor:pointer;transition:transform .08s,box-shadow .08s;white-space:nowrap}
+  .playbtn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--pink)}
+  .playbtn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--pink)}
   .mapcard{position:relative;background:var(--panel);border:3px solid var(--stroke);border-radius:16px;
     padding:6px;overflow:hidden}
   svg.map{display:block;width:100%;height:auto}
@@ -73,6 +78,7 @@
     <div class="controls">
       <label for="genre">Genre</label>
       <select id="genre"></select>
+      <button id="playgenre" class="playbtn">▶ Play mixtape</button>
       <span class="stat" id="stat"></span>
     </div>
 
@@ -194,6 +200,13 @@
     });
 
     sel.addEventListener("change", paint);
+
+    // ---- play a mixtape of the selected genre in the main app (reuses its full player) ----
+    const playBtn = document.getElementById("playgenre");
+    const updatePlayBtn = () => { playBtn.textContent = "▶ Play " + sel.value + " mixtape"; };
+    playBtn.addEventListener("click", () => { location.href = "/?genre=" + encodeURIComponent(sel.value); });
+    sel.addEventListener("change", updatePlayBtn);
+    updatePlayBtn();
   })();
   </script>
 </body>

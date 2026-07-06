@@ -699,7 +699,7 @@ function openMixtape(m){
     </div></div>
     <div id="tracklist"></div>`;
   const back = inner.querySelector("#mix-back");
-  back.onclick = () => { viewingMix=null; if (m.featured) openFeatured(); else if (shared) backToMap(); else openFavorites(); };
+  back.onclick = () => { viewingMix=null; if (m.featured) openFeatured(); else if (shared || m.standalone) backToMap(); else openFavorites(); };
   // renderTracks only paints the DOM — the queue must be set alongside it so row-clicks/Play scope to THIS mixtape
   const showList = list => { queue = list; qIndex = -1; renderTracks(list); };
   inner.querySelector("#mix-play").onclick = () => { showList(m.tracks); play(0); };
@@ -711,6 +711,26 @@ function openMixtape(m){
   if (sv) sv.onclick = () => { let n=0; m.tracks.forEach(t => { if(!isFav(t.trackId)){ toggleFav(t, t._cc); n++; } }); refreshFavHearts(); flashToast(n ? (n+" track"+(n>1?"s":"")+" saved to your favorites ♥") : "already in your favorites"); };
   showList(m.tracks);
   setShufMix(m);   // top shuffle now reflects + shuffles within this mixtape
+}
+
+// ---- Genre mixtape (opened from the Genre Atlas via /?genre=<name>) ----
+// Gathers every track of one genre across all countries into a shuffled world mixtape,
+// played in the main player (full-song YouTube + favorites), reusing openMixtape.
+function buildGenreMix(gRaw){
+  const g = (gRaw||"").toLowerCase().trim(); if (!g) return null;
+  const seen = new Set(), out = [], ccs = new Set();
+  for (const cc in COUNTRIES){
+    const C = COUNTRIES[cc]; if (!C || !C.eras) continue;
+    for (const t of Object.values(C.eras).flat()){
+      if (t.trackId == null || seen.has(t.trackId)) continue;
+      if ((t.genre||"").toLowerCase().trim() !== g) continue;
+      seen.add(t.trackId); ccs.add(cc); out.push(Object.assign({_cc:cc}, t));
+    }
+  }
+  if (!out.length) return null;
+  const tracks = mixShuf(out).slice(0, 80);   // a digestible shuffled mixtape, not the whole crate
+  return { id:"genre-"+g.replace(/[^a-z0-9]+/g,"-"), name:cap(gRaw), emoji:"🎧", kind:"genre", key:"featured",
+           sub:out.length+" tracks · "+ccs.size+" countries", tracks, standalone:true };
 }
 
 // ---- Featured playlists (curated by us, pushed to all users via featured.js) ----
@@ -2992,4 +3012,15 @@ function drawCountryOutline(code, svgEl){
   const go = () => { try { loadSharedMix(mid); } catch(e){ console.warn("shared mix", e); } history.replaceState(null, "", location.pathname); };
   if (window.firebase && firebase.apps && firebase.apps.length) setTimeout(go, 300);
   else setTimeout(go, 1000);
+})();
+
+// deep link: ?genre=<name> opens a world mixtape of that genre (from the Genre Atlas)
+(function(){
+  const g = new URLSearchParams(location.search).get("genre");
+  if (!g) return;
+  setTimeout(() => {
+    const m = buildGenreMix(g);
+    if (m){ openMixtape(m); openPanel(); } else flashToast("no tracks for that genre yet");
+    history.replaceState(null, "", location.pathname);
+  }, 400);
 })();
