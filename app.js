@@ -1429,6 +1429,8 @@ function wireMediaSession(){
     ms.setActionHandler("pause",         () => { if (playSource === "youtube"){ if (yt){ ytUserPaused = true; yt.pauseVideo(); } } else { audio.pause(); } });
     ms.setActionHandler("previoustrack", () => prev());
     ms.setActionHandler("nexttrack",     () => next());
+    // Force the lock screen to show prev/next TRACK buttons, not ±10s seek: disable all seek actions.
+    ["seekbackward", "seekforward", "seekto"].forEach(a => { try { ms.setActionHandler(a, null); } catch(_){} });
   } catch(_){}
 }
 function msArtwork(t){                                    // iOS wants absolute URLs; a few sizes helps it pick
@@ -1705,9 +1707,8 @@ function flashPlayerNote(msg, ms){
 }
 audio.addEventListener("timeupdate", () => {
   if (!scrubbing && audio.duration) setProg((audio.currentTime/audio.duration*100) + "%");
-  if ("mediaSession" in navigator && playSource === "preview" && audio.duration && isFinite(audio.duration) && navigator.mediaSession.setPositionState){
-    try { navigator.mediaSession.setPositionState({ duration: audio.duration, position: Math.min(audio.currentTime, audio.duration), playbackRate: audio.playbackRate || 1 }); } catch(_){}
-  }
+  // NOTE: intentionally NOT calling mediaSession.setPositionState — advertising a seekable position makes
+  // iOS show ±10s seek buttons on the lock screen instead of prev/next track buttons.
 });
 // iOS clears now-playing metadata when a fresh audio source starts → re-set it once playback is actually rolling
 audio.addEventListener("playing", () => { const t = queue[qIndex]; if (t) setMediaSession(t, t._cc || activeCode); });
