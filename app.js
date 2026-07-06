@@ -1313,7 +1313,12 @@ function prefetchPreview(t){                        // warm a track's 30s previe
 let handoffTrack = null;                            // the full-song track we swapped to preview for background playback
 function handoffToPreview(t){
   if (!t) return;
-  stopYt();                                         // pause the iframe (iOS suspends it on lock anyway)
+  // Remember where the full song was, then FULLY STOP YouTube (not just pause). A merely-paused iframe keeps
+  // YouTube's own media session on the iOS lock screen (its ±10s seek buttons); stopping releases it so our
+  // native-audio session — with prev/next TRACK buttons — takes over. We reload from t._resumeAt on unlock.
+  try { if (yt && yt.getCurrentTime) t._resumeAt = yt.getCurrentTime() || 0; } catch(_){}
+  try { if (yt && yt.stopVideo) yt.stopVideo(); } catch(_){}
+  stopYtPoll();
   playSource = "preview";
   handoffTrack = t;
   setMediaSession(t, t._cc || activeCode);
@@ -1332,8 +1337,8 @@ document.addEventListener("visibilitychange", () => {
       const cur = queue[qIndex];
       audio.pause();
       if (cur === handoffTrack && cur.ytId && ytReady && !ytFailed.has(cur.ytId)){
-        playSource = "youtube"; ytExpected = cur.ytId; ytUserPaused = false;
-        if (yt && yt.playVideo) yt.playVideo();      // resume same video → continues from its paused position
+        playSource = "youtube"; ytExpected = cur.ytId; ytUserPaused = false; curDuration = 0;
+        if (yt && yt.loadVideoById) yt.loadVideoById({ videoId: cur.ytId, startSeconds: cur._resumeAt || 0 });  // reload full song from where we left off
         startYtPoll();
       } else if (cur){
         play(qIndex);                                // advanced to another track while locked → clean restart in full
