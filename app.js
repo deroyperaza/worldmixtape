@@ -1279,6 +1279,7 @@ async function play(i){
   currentNote = null;   // new track → drop any pending Spotify-note restore
   setMeta(document.getElementById("p-title"), esc(t.title));
   setMeta(document.getElementById("p-artist"), trackMetaHtml(t, cc));
+  setMediaSession(t, cc);                         // iOS lock-screen now-playing (surfaces on the native-audio preview path)
   setProg("0%");
   setPlayIcon(true); player.classList.add("playing");
   // world-shuffle: light up the track's country on the map as it plays
@@ -1318,6 +1319,39 @@ async function play(i){
 function setPlayIcon(playing){
   document.getElementById("p-play").textContent = playing ? "❚❚" : "▶";
   const ap = document.getElementById("art-play"); if (ap) ap.textContent = playing ? "❚❚" : "▶";
+  if ("mediaSession" in navigator){ try { navigator.mediaSession.playbackState = playing ? "playing" : "paused"; } catch(_){} }
+}
+
+/* ---------- iOS lock-screen / background: Media Session (native-audio preview path) ----------
+   Full-song YouTube plays inside a cross-origin iframe that iOS suspends on screen-lock — Media
+   Session can't reach a media element we don't own, so it can't rescue full songs. The native
+   <audio> preview path DOES keep going on a locked screen, so we give it real lock-screen metadata
+   + transport controls (play/pause/prev/next) here. Handlers wired once; metadata refreshes per track. */
+let mediaSessionWired = false;
+function wireMediaSession(){
+  if (mediaSessionWired || !("mediaSession" in navigator)) return;
+  mediaSessionWired = true;
+  const ms = navigator.mediaSession;
+  try {
+    ms.setActionHandler("play",          () => { if (playSource === "youtube"){ if (yt){ ytUserPaused = false; yt.playVideo(); } } else if (audio.paused){ audio.play(); setPlayIcon(true); player.classList.add("playing"); } });
+    ms.setActionHandler("pause",         () => { if (playSource === "youtube"){ if (yt){ ytUserPaused = true; yt.pauseVideo(); } } else { audio.pause(); } });
+    ms.setActionHandler("previoustrack", () => prev());
+    ms.setActionHandler("nexttrack",     () => next());
+  } catch(_){}
+}
+function setMediaSession(t, cc){
+  if (!("mediaSession" in navigator)) return;
+  wireMediaSession();
+  const C = cc && typeof COUNTRIES !== "undefined" ? COUNTRIES[cc] : null;
+  const art = t.cover || "icon-512.png";                 // per-track cover art, else the app icon
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title:  t.title || "",
+      artist: t.artist || "",
+      album:  t.album || (C ? C.name : "World Mixtape"),
+      artwork: [{ src: art, sizes: "512x512" }]
+    });
+  } catch(_){}
 }
 
 function togglePlay(){
@@ -1554,6 +1588,9 @@ function flashPlayerNote(msg, ms){
 }
 audio.addEventListener("timeupdate", () => {
   if (!scrubbing && audio.duration) setProg((audio.currentTime/audio.duration*100) + "%");
+  if ("mediaSession" in navigator && playSource === "preview" && audio.duration && isFinite(audio.duration) && navigator.mediaSession.setPositionState){
+    try { navigator.mediaSession.setPositionState({ duration: audio.duration, position: Math.min(audio.currentTime, audio.duration), playbackRate: audio.playbackRate || 1 }); } catch(_){}
+  }
 });
 audio.addEventListener("ended", next);
 audio.addEventListener("pause", () => { setPlayIcon(false); player.classList.remove("playing"); });
