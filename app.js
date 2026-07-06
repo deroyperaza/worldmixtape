@@ -1375,18 +1375,31 @@ function msArtwork(t){                                    // iOS wants absolute 
   const icon = abs("icon-512.png");                       // fallback: the app mascot
   return [{ src: icon, sizes: "512x512", type: "image/png" }, { src: abs("icon-192.png"), sizes: "192x192", type: "image/png" }];
 }
+// TEMP DEBUG: on ?forcepreview=1 or ?msdebug=1, show a live on-device readout of Media Session state. Remove with the test flag.
+function _msDebug(s){
+  if (!/[?&](forcepreview|msdebug)=1/.test(location.search)) return;
+  let el = document.getElementById("ms-debug");
+  if (!el){ el = document.createElement("div"); el.id = "ms-debug";
+    el.style.cssText = "position:fixed;left:6px;bottom:86px;z-index:99999;background:#000;color:#0f0;font:11px/1.35 monospace;padding:6px 8px;max-width:92vw;border-radius:6px;white-space:pre-wrap;pointer-events:none";
+    document.body.appendChild(el); }
+  el.textContent = "MS: " + s;
+}
 function setMediaSession(t, cc){
-  if (!("mediaSession" in navigator)) return;
+  if (!("mediaSession" in navigator)){ _msDebug("navigator.mediaSession MISSING"); return; }
   wireMediaSession();
+  if (typeof MediaMetadata === "undefined"){ _msDebug("MediaMetadata constructor MISSING (iOS too old?)"); return; }
   const C = cc && typeof COUNTRIES !== "undefined" ? COUNTRIES[cc] : null;
+  const art = msArtwork(t);
   try {
     navigator.mediaSession.metadata = new MediaMetadata({
       title:  t.title || "",
       artist: t.artist || "",
       album:  t.album || (C ? C.name : "World Mixtape"),
-      artwork: msArtwork(t)
+      artwork: art
     });
-  } catch(_){}
+    const m = navigator.mediaSession.metadata;
+    _msDebug("SET ok · title=" + (m && m.title ? m.title : "(EMPTY)") + " · art=" + String((art[0] && art[0].src) || "none").slice(0, 46));
+  } catch(e){ _msDebug("THREW: " + (e && e.message ? e.message : e)); }
 }
 
 function togglePlay(){
