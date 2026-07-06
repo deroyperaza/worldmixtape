@@ -1286,9 +1286,63 @@ function schedulePlayLog(trackId){
   }, 5000);   // skips (<5s) don't count
 }
 
-// TEMP TEST FLAG: worldmixtape.com/?forcepreview=1 forces the native-audio 30s-preview path (skips YouTube)
-// so we can verify the iOS lock-screen Media Session card on a real device. Remove this + its use below after testing.
+/* ---------- iOS background handoff (full song ⇄ 30s preview) ----------
+   Full-song YouTube can't play on a locked iOS screen (cross-origin iframe iOS suspends). So while the app
+   is backgrounded we hand the current track off to its native-audio 30s preview (which DOES background +
+   shows the lock-screen card in the installed PWA), then hand back to the full song — resumed from where it
+   paused — when the app returns to the foreground. ?forcepreview=1 still forces preview for testing. */
 const FORCE_PREVIEW = /[?&]forcepreview=1/.test(location.search);
+const _SILENCE = "data:audio/wav;base64,UklGRjQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YRAAAACAgICAgICAgICAgICAgICA";
+let audioPrimed = false;
+function primeAudio(){                              // iOS: play the <audio> element once from a user gesture so we can
+  if (audioPrimed || !audio) return;               // later start it programmatically (at screen-lock) without a fresh tap
+  audioPrimed = true;
+  try { audio.muted = true; audio.src = _SILENCE;
+    const p = audio.play();
+    const done = () => { try { audio.pause(); } catch(_){} audio.muted = false; };
+    if (p && p.then) p.then(done).catch(() => { audio.muted = false; }); else done();
+  } catch(_){ audio.muted = false; }
+}
+function prefetchPreview(t){                        // warm a track's 30s preview URL + cover so a lock-time handoff is instant
+  if (!t) return;
+  if (t.src === "itunes" && t.preview){ t._pv = t.preview; return; }
+  if (t._pv) return;
+  dzTrack(t.trackId, data => { if (!data) return;
+    if (data.preview) t._pv = data.preview;
+    if (!t.cover && data.album && data.album.cover_big) t.cover = data.album.cover_big; });
+}
+let handoffTrack = null;                            // the full-song track we swapped to preview for background playback
+function handoffToPreview(t){
+  if (!t) return;
+  stopYt();                                         // pause the iframe (iOS suspends it on lock anyway)
+  playSource = "preview";
+  handoffTrack = t;
+  setMediaSession(t, t._cc || activeCode);
+  if (t._pv){ audio.src = t._pv; audio.play().catch(()=>{}); }
+  else prefetchPreview(t);                          // not warmed yet — may not complete while backgrounding
+}
+document.addEventListener("visibilitychange", () => {
+  if (qIndex < 0) return;
+  const t = queue[qIndex];
+  if (document.hidden){
+    // screen locked / app backgrounded → hand a playing full song off to its preview so audio survives
+    if (playSource === "youtube" && t && t.ytId && !ytUserPaused) handoffToPreview(t);
+  } else {
+    // back in foreground → if we're on a background-preview, return to the full song from where it paused
+    if (handoffTrack){
+      const cur = queue[qIndex];
+      audio.pause();
+      if (cur === handoffTrack && cur.ytId && ytReady && !ytFailed.has(cur.ytId)){
+        playSource = "youtube"; ytExpected = cur.ytId; ytUserPaused = false;
+        if (yt && yt.playVideo) yt.playVideo();      // resume same video → continues from its paused position
+        startYtPoll();
+      } else if (cur){
+        play(qIndex);                                // advanced to another track while locked → clean restart in full
+      }
+      handoffTrack = null;
+    }
+  }
+});
 
 async function play(i){
   if (!queue.length) return;
@@ -1319,12 +1373,18 @@ async function play(i){
   // Tracks carrying a ytId play full-length in-browser via YouTube, no login, for everyone.
   // On embed error they fall through to the 30s preview (see onYtError). Tracks with no ytId
   // (no full version found) play the 30s Deezer/iTunes preview below.
-  if (!FORCE_PREVIEW && t.ytId && ytReady && !ytFailed.has(t.ytId)){
+  // Full song via YouTube — but only in the foreground. When backgrounded/locked, a ytId track plays its
+  // preview instead (the iframe can't run on a locked screen), so auto-advance keeps audio going on the lock screen.
+  if (!FORCE_PREVIEW && !document.hidden && t.ytId && ytReady && !ytFailed.has(t.ytId)){
     audio.pause();
+    primeAudio();                                       // unlock <audio> now (user gesture) for a later lock-time handoff
+    handoffTrack = null;                                // fresh intentional play → not a background handoff
     playSource = "youtube"; ytExpected = t.ytId; ytUserPaused = false; curDuration = 0;
     yt.loadVideoById(t.ytId);
     if (yt.playVideo) yt.playVideo();
     startYtPoll();
+    prefetchPreview(t);                                 // warm this track's preview…
+    prefetchPreview(queue[(qIndex + 1) % queue.length]); // …and the next, so a lock-time handoff/advance is instant
     return;
   }
 
@@ -1336,8 +1396,10 @@ async function play(i){
     audio.src = url;
     audio.play().catch(()=>{ setPlayIcon(false); player.classList.remove("playing"); });
   };
-  if (t.src === "itunes" && t.preview) onUrl(t.preview);            // iTunes-sourced backfill track → its stored preview
+  if (t._pv) onUrl(t._pv);                                          // warmed preview (instant; works while backgrounded)
+  else if (t.src === "itunes" && t.preview) onUrl(t.preview);      // iTunes-sourced backfill track → its stored preview
   else dzTrack(t.trackId, data => {                                 // Deezer track → fresh 30s JSONP preview (+ album art)
+    if (data && data.preview) t._pv = data.preview;
     if (data && !t.cover && data.album && data.album.cover_big) t.cover = data.album.cover_big;   // real cover for lock screen
     onUrl(data && data.preview);
   });
