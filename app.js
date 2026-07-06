@@ -1290,8 +1290,7 @@ function schedulePlayLog(trackId){
    Full-song YouTube can't play on a locked iOS screen (cross-origin iframe iOS suspends). So while the app
    is backgrounded we hand the current track off to its native-audio 30s preview (which DOES background +
    shows the lock-screen card in the installed PWA), then hand back to the full song — resumed from where it
-   paused — when the app returns to the foreground. ?forcepreview=1 still forces preview for testing. */
-const FORCE_PREVIEW = /[?&]forcepreview=1/.test(location.search);
+   paused — when the app returns to the foreground. */
 const _SILENCE = "data:audio/wav;base64,UklGRjQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YRAAAACAgICAgICAgICAgICAgICA";
 let audioPrimed = false;
 function primeAudio(){                              // iOS: play the <audio> element once from a user gesture so we can
@@ -1314,16 +1313,14 @@ function prefetchPreview(t){                        // warm a track's 30s previe
 let handoffTrack = null;                            // the full-song track we swapped to preview for background playback
 function handoffToPreview(t){
   if (!t) return;
-  _dbg("LOCK→preview " + String(t.title || "").slice(0, 14) + " pv=" + (t._pv ? "warm" : "COLD"));
   stopYt();                                         // pause the iframe (iOS suspends it on lock anyway)
   playSource = "preview";
   handoffTrack = t;
   setMediaSession(t, t._cc || activeCode);
-  if (t._pv){ audio.src = t._pv; audio.play().then(() => _dbg("handoff audio OK")).catch(e => _dbg("handoff play FAIL " + (e && e.name || e))); }
-  else { _dbg("handoff COLD → fetch"); prefetchPreview(t); }   // not warmed yet — may not complete while backgrounding
+  if (t._pv){ audio.src = t._pv; audio.play().catch(()=>{}); }
+  else prefetchPreview(t);                          // not warmed yet — may not complete while backgrounding
 }
 document.addEventListener("visibilitychange", () => {
-  _dbg("vis " + (document.hidden ? "HIDDEN" : "SHOWN") + " src=" + playSource);
   if (qIndex < 0) return;
   const t = queue[qIndex];
   if (document.hidden){
@@ -1377,7 +1374,7 @@ async function play(i){
   // (no full version found) play the 30s Deezer/iTunes preview below.
   // Full song via YouTube — but only in the foreground. When backgrounded/locked, a ytId track plays its
   // preview instead (the iframe can't run on a locked screen), so auto-advance keeps audio going on the lock screen.
-  if (!FORCE_PREVIEW && !document.hidden && t.ytId && ytReady && !ytFailed.has(t.ytId)){
+  if (!document.hidden && t.ytId && ytReady && !ytFailed.has(t.ytId)){
     audio.pause();
     primeAudio();                                       // unlock <audio> now (user gesture) for a later lock-time handoff
     handoffTrack = null;                                // fresh intentional play → not a background handoff
@@ -1391,13 +1388,12 @@ async function play(i){
 
   stopYt();
   playSource = "preview";
-  _dbg("play preview " + String(t.title || "").slice(0, 14) + " pv=" + (t._pv ? "warm" : "cold") + " hid=" + document.hidden);
   if (!document.hidden) for (let k = 1; k <= 5; k++) prefetchPreview(queue[(qIndex + k) % queue.length]);  // keep the window warm ahead of a lock
   const onUrl = url => {
     if (queue[qIndex] !== t) return;
-    if (!url){ _dbg("NO preview url → skip"); document.getElementById("p-artist").textContent = "preview unavailable — skipping…"; setTimeout(next, 900); return; }
+    if (!url){ document.getElementById("p-artist").textContent = "preview unavailable — skipping…"; setTimeout(next, 900); return; }
     audio.src = url;
-    audio.play().then(() => _dbg("preview audio OK")).catch(() => { _dbg("preview play FAIL"); setPlayIcon(false); player.classList.remove("playing"); });
+    audio.play().catch(() => { setPlayIcon(false); player.classList.remove("playing"); });
   };
   if (t._pv) onUrl(t._pv);                                          // warmed preview (instant; works while backgrounded)
   else if (t.src === "itunes" && t.preview) onUrl(t.preview);      // iTunes-sourced backfill track → its stored preview
@@ -1442,35 +1438,19 @@ function msArtwork(t){                                    // iOS wants absolute 
   const icon = abs("icon-512.png");                       // fallback: the app mascot
   return [{ src: icon, sizes: "512x512", type: "image/png" }, { src: abs("icon-192.png"), sizes: "192x192", type: "image/png" }];
 }
-// TEMP DEBUG: on ?forcepreview=1 or ?msdebug=1, show a live on-device readout of Media Session state. Remove with the test flag.
-const _dbgLines = [];                                // TEMP: rolling on-device event log (?msdebug=1 or ?forcepreview=1)
-function _msDebug(s){
-  const t = (typeof performance !== "undefined" && performance.now) ? (performance.now() / 1000).toFixed(1) : "0";
-  _dbgLines.push(t + "s " + s); while (_dbgLines.length > 14) _dbgLines.shift();
-  if (!/[?&](forcepreview|msdebug)=1/.test(location.search)) return;
-  let el = document.getElementById("ms-debug");
-  if (!el){ el = document.createElement("div"); el.id = "ms-debug";
-    el.style.cssText = "position:fixed;left:6px;bottom:86px;z-index:99999;background:#000;color:#0f0;font:10px/1.3 monospace;padding:6px 8px;max-width:94vw;max-height:42vh;overflow:hidden;border-radius:6px;white-space:pre-wrap;pointer-events:none";
-    document.body.appendChild(el); }
-  el.textContent = _dbgLines.join("\n");
-}
-const _dbg = _msDebug;                               // event-log alias
 function setMediaSession(t, cc){
-  if (!("mediaSession" in navigator)){ _msDebug("navigator.mediaSession MISSING"); return; }
+  if (!("mediaSession" in navigator)) return;
   wireMediaSession();
-  if (typeof MediaMetadata === "undefined"){ _msDebug("MediaMetadata constructor MISSING (iOS too old?)"); return; }
+  if (typeof MediaMetadata === "undefined") return;                 // older iOS lacks the constructor
   const C = cc && typeof COUNTRIES !== "undefined" ? COUNTRIES[cc] : null;
-  const art = msArtwork(t);
   try {
     navigator.mediaSession.metadata = new MediaMetadata({
       title:  t.title || "",
       artist: t.artist || "",
       album:  t.album || (C ? C.name : "World Mixtape"),
-      artwork: art
+      artwork: msArtwork(t)
     });
-    const m = navigator.mediaSession.metadata;
-    _msDebug("SET ok · title=" + (m && m.title ? m.title : "(EMPTY)") + " · art=" + String((art[0] && art[0].src) || "none").slice(0, 46));
-  } catch(e){ _msDebug("THREW: " + (e && e.message ? e.message : e)); }
+  } catch(_){}
 }
 
 function togglePlay(){
@@ -1713,8 +1693,8 @@ audio.addEventListener("timeupdate", () => {
 // iOS clears now-playing metadata when a fresh audio source starts → re-set it once playback is actually rolling
 audio.addEventListener("playing", () => { const t = queue[qIndex]; if (t) setMediaSession(t, t._cc || activeCode); });
 audio.addEventListener("loadedmetadata", () => { const t = queue[qIndex]; if (t) setMediaSession(t, t._cc || activeCode); });
-audio.addEventListener("ended", () => { _dbg("ENDED→next hid=" + document.hidden); next(); });
-audio.addEventListener("pause", () => { _dbg("audio pause"); setPlayIcon(false); player.classList.remove("playing"); });
+audio.addEventListener("ended", next);
+audio.addEventListener("pause", () => { setPlayIcon(false); player.classList.remove("playing"); });
 audio.addEventListener("play",  () => { setPlayIcon(true);  player.classList.add("playing"); });
 
 /* ---------- seek: click or drag the progress bar (works for preview + Spotify) ---------- */
