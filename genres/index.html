@@ -64,6 +64,17 @@
   .tip .tm{opacity:.75;font-size:11px;margin-top:3px}
   footer{max-width:1180px;margin:0 auto;padding:8px 22px 40px;font-size:11px;opacity:.55;letter-spacing:.03em}
   @media (max-width:640px){ h1{font-size:26px} }
+  /* shared credit footer (matches the Stats/About pages) */
+  footer.ab-foot{border-top:1px solid var(--stroke);max-width:1180px;margin:22px auto 10px;padding:22px 22px 10px;text-align:center;opacity:1;font-size:inherit;letter-spacing:normal}
+  footer.ab-foot p{font-size:12px;color:#8a83b8;margin:6px 0}
+  .ft-logolink{display:block;width:140px;margin:0 auto 12px;line-height:0;transition:transform .12s}
+  .ft-logolink:hover{transform:scale(1.04)}
+  .ft-logo{display:block;width:140px;height:auto}
+  .hk{color:#fff7e6;font-weight:700;text-decoration:none}
+  .hk:hover{color:var(--yellow)}
+  .hk-logo{display:inline-block;margin-top:12px;transition:transform .12s;text-decoration:none}
+  .hk-logo:hover{transform:scale(1.08)}
+  .hk-ic{height:26px;width:auto;display:block}
 </style>
 </head>
 <body>
@@ -101,6 +112,13 @@
   <div class="tip" id="tip"></div>
 
   <footer>Prototype · data from the World Mixtape catalog (Deezer/YouTube-sourced), <span id="ntracks"></span> tracks across <span id="ncountries"></span> countries · map: Natural Earth via world-atlas.</footer>
+
+  <footer class="ab-foot">
+    <a class="ft-logolink" href="/" aria-label="World Mixtape — home"><img class="ft-logo" src="/WMT-logo-cream.svg" alt="World Mixtape"></a>
+    <p>a century of local music, decade by decade</p>
+    <p>An experiment by <a class="hk" href="https://hyperakt.com" target="_blank" rel="noopener">Hyperakt</a>.</p>
+    <a class="hk-logo" href="https://hyperakt.com" target="_blank" rel="noopener" aria-label="Hyperakt"><img class="hk-ic" src="/hyperakt-h.svg?v=3" alt="Hyperakt"></a>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
