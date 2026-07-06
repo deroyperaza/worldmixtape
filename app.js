@@ -1317,7 +1317,10 @@ async function play(i){
     audio.play().catch(()=>{ setPlayIcon(false); player.classList.remove("playing"); });
   };
   if (t.src === "itunes" && t.preview) onUrl(t.preview);            // iTunes-sourced backfill track → its stored preview
-  else dzTrack(t.trackId, data => onUrl(data && data.preview));    // Deezer track → fresh 30s JSONP preview
+  else dzTrack(t.trackId, data => {                                 // Deezer track → fresh 30s JSONP preview (+ album art)
+    if (data && !t.cover && data.album && data.album.cover_big) t.cover = data.album.cover_big;   // real cover for lock screen
+    onUrl(data && data.preview);
+  });
 }
 
 function setPlayIcon(playing){
@@ -1343,17 +1346,25 @@ function wireMediaSession(){
     ms.setActionHandler("nexttrack",     () => next());
   } catch(_){}
 }
+function msArtwork(t){                                    // iOS wants absolute URLs; a few sizes helps it pick
+  const abs = u => { try { return new URL(u, location.href).href; } catch(_){ return u; } };
+  if (t.cover){                                          // real album art (Deezer cover_big / iTunes artwork)
+    const c = abs(t.cover);
+    return [{ src: c, sizes: "500x500", type: "image/jpeg" }, { src: c, sizes: "250x250", type: "image/jpeg" }];
+  }
+  const icon = abs("icon-512.png");                       // fallback: the app mascot
+  return [{ src: icon, sizes: "512x512", type: "image/png" }, { src: abs("icon-192.png"), sizes: "192x192", type: "image/png" }];
+}
 function setMediaSession(t, cc){
   if (!("mediaSession" in navigator)) return;
   wireMediaSession();
   const C = cc && typeof COUNTRIES !== "undefined" ? COUNTRIES[cc] : null;
-  const art = t.cover || "icon-512.png";                 // per-track cover art, else the app icon
   try {
     navigator.mediaSession.metadata = new MediaMetadata({
       title:  t.title || "",
       artist: t.artist || "",
       album:  t.album || (C ? C.name : "World Mixtape"),
-      artwork: [{ src: art, sizes: "512x512" }]
+      artwork: msArtwork(t)
     });
   } catch(_){}
 }
@@ -1596,6 +1607,9 @@ audio.addEventListener("timeupdate", () => {
     try { navigator.mediaSession.setPositionState({ duration: audio.duration, position: Math.min(audio.currentTime, audio.duration), playbackRate: audio.playbackRate || 1 }); } catch(_){}
   }
 });
+// iOS clears now-playing metadata when a fresh audio source starts → re-set it once playback is actually rolling
+audio.addEventListener("playing", () => { const t = queue[qIndex]; if (t) setMediaSession(t, t._cc || activeCode); });
+audio.addEventListener("loadedmetadata", () => { const t = queue[qIndex]; if (t) setMediaSession(t, t._cc || activeCode); });
 audio.addEventListener("ended", next);
 audio.addEventListener("pause", () => { setPlayIcon(false); player.classList.remove("playing"); });
 audio.addEventListener("play",  () => { setPlayIcon(true);  player.classList.add("playing"); });
