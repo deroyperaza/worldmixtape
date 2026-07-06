@@ -730,7 +730,7 @@ function buildGenreMix(gRaw){
   if (!out.length) return null;
   const tracks = mixShuf(out).slice(0, 80);   // a digestible shuffled mixtape, not the whole crate
   return { id:"genre-"+g.replace(/[^a-z0-9]+/g,"-"), name:cap(gRaw), emoji:"🎧", kind:"genre", key:"featured",
-           sub:out.length+" tracks · "+ccs.size+" countries", tracks, standalone:true };
+           sub:ccs.size+" countries · shuffled genre mixtape", tracks, standalone:true };
 }
 
 // ---- Featured playlists (curated by us, pushed to all users via featured.js) ----
