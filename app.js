@@ -1691,10 +1691,8 @@ function flashPlayerNote(msg, ms){
 }
 audio.addEventListener("timeupdate", () => {
   if (!scrubbing && audio.duration) setProg((audio.currentTime/audio.duration*100) + "%");
-  // Report position to the lock screen — this is what makes iOS show prev/next TRACK buttons (+ a scrubber).
-  if ("mediaSession" in navigator && playSource === "preview" && audio.duration && isFinite(audio.duration) && navigator.mediaSession.setPositionState){
-    try { navigator.mediaSession.setPositionState({ duration: audio.duration, position: Math.min(audio.currentTime, audio.duration), playbackRate: audio.playbackRate || 1 }); } catch(_){}
-  }
+  // No mediaSession.setPositionState: any seek signal (position OR seek handlers) makes iOS render ±10s
+  // seek buttons instead of prev/next. Cleanest config = ONLY previoustrack/nexttrack, nothing else.
 });
 // iOS clears now-playing metadata when a fresh audio source starts → re-set it once playback is actually rolling
 audio.addEventListener("playing", () => { const t = queue[qIndex]; if (t) setMediaSession(t, t._cc || activeCode); });
