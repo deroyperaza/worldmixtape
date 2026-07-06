@@ -684,7 +684,7 @@ function openMixtape(m){
   viewingMix = m; activeCode = null; currentEra = null; currentGenre = null;
   const shared = !!m.shared, acc = mixAccent(m);
   inner.innerHTML = `<div class="jhead jhead--mix">
-    <button class="mix-back" id="mix-back">${shared ? "‹ explore the map" : "‹ favorites"}</button>
+    <button class="mix-back" id="mix-back">${m.featured ? "‹ featured" : (shared ? "‹ explore the map" : "‹ favorites")}</button>
     <div class="jhead__top"><div class="jhead__flag jhead__flag--ico" style="--accent:${acc}">${m.emoji||"🎧"}</div>
       <h2 class="jhead__name" style="--accent:${acc}">${esc(m.name)}</h2></div>
     <div class="jhead__meta">${esc((m.sub||"").toUpperCase())} · ${m.recCount ? (m.seedCount+" SAVED + "+m.recCount+" NEW") : (m.tracks.length+" TRACKS")}${shared && m.by ? " · FROM "+esc((m.by||"").toUpperCase()) : ""}</div>
@@ -692,13 +692,13 @@ function openMixtape(m){
     <div class="mix-actions">
       <button class="mix-btn mix-btn--play" id="mix-play">▶ Play</button>
       <button class="mix-btn" id="mix-shuf">🔀 Shuffle</button>
-      ${shared ? `<button class="mix-btn" id="mix-save">♥ Save these</button>` : ``}
+      ${(shared || m.featured) ? `<button class="mix-btn" id="mix-save">♥ Save these</button>` : ``}
       ${m.kind==="saved" ? `<button class="mix-btn mix-btn--del" id="mix-del">🗑 Remove</button>` : ``}
       <button class="mix-btn mix-btn--share" id="mix-share">✈️ Share</button>
     </div></div>
     <div id="tracklist"></div>`;
   const back = inner.querySelector("#mix-back");
-  back.onclick = () => { viewingMix=null; if (shared) backToMap(); else openFavorites(); };
+  back.onclick = () => { viewingMix=null; if (m.featured) openFeatured(); else if (shared) backToMap(); else openFavorites(); };
   // renderTracks only paints the DOM — the queue must be set alongside it so row-clicks/Play scope to THIS mixtape
   const showList = list => { queue = list; qIndex = -1; renderTracks(list); };
   inner.querySelector("#mix-play").onclick = () => { showList(m.tracks); play(0); };
@@ -710,6 +710,60 @@ function openMixtape(m){
   if (sv) sv.onclick = () => { let n=0; m.tracks.forEach(t => { if(!isFav(t.trackId)){ toggleFav(t, t._cc); n++; } }); refreshFavHearts(); flashToast(n ? (n+" track"+(n>1?"s":"")+" saved to your favorites ♥") : "already in your favorites"); };
   showList(m.tracks);
   setShufMix(m);   // top shuffle now reflects + shuffles within this mixtape
+}
+
+// ---- Featured playlists (curated by us, pushed to all users via featured.js) ----
+function featuredGroups(){ return (typeof FEATURED_GROUPS !== "undefined" && Array.isArray(FEATURED_GROUPS)) ? FEATURED_GROUPS : []; }
+function findFeaturedDef(id){ for (const g of featuredGroups()) for (const d of (g.playlists||[])) if (d.id===id) return d; return null; }
+// build a mixtape object from a featured def: pull each team's tracks since `since`, weave them together
+function buildFeaturedMix(def){
+  const since = def.since || 2000;
+  const perTeam = (def.teams||[]).map(cc => {
+    const C = COUNTRIES[cc]; if (!C) return [];
+    const seen = new Set(), out = [];
+    for (const dec of Object.values(C.eras||{})) for (const t of dec){
+      if ((t.year||0) >= since && t.trackId!=null && !seen.has(t.trackId)){ seen.add(t.trackId); out.push(Object.assign({_cc:cc}, t)); }
+    }
+    out.sort((a,b)=>(b.year||0)-(a.year||0));   // newest first within each country
+    return out;
+  });
+  const mixed = []; let i = 0, more = true;       // interleave A,B,A,B… so both countries stay woven together
+  while (more){ more = false; for (const arr of perTeam){ if (arr[i]){ mixed.push(arr[i]); more = true; } } i++; }
+  const tracks = mixed.slice(0, def.limit || 40);
+  return { id:"feat-"+def.id, name:def.name, sub:def.sub, emoji:def.emoji||"🎧", kind:"featured", key:(def.teams&&def.teams[0])||"featured", teams:def.teams, tracks, featured:true };
+}
+function openFeatured(){
+  viewingMix = null; activeCode = null; currentEra = null; currentGenre = null;
+  const sections = featuredGroups().map(g => {
+    const cards = (g.playlists||[]).map(def => {
+      const m = buildFeaturedMix(def);
+      return `<div class="mix-card feat-card" data-id="${esc(def.id)}" role="button" tabindex="0" style="--accent:${mixAccent(m)}">
+          ${mixCollage(m.tracks)}
+          <span class="mix-card__body"><span class="mix-card__name">${m.emoji} ${esc(m.name)}</span>
+          <span class="mix-card__sub">${esc(m.sub)}</span>
+          <span class="mix-card__ct">${m.tracks.length} tracks →</span></span>
+        </div>`;
+    }).join("");
+    return `<div class="feat-group">
+        ${g.banner ? `<div class="feat-banner"><span class="feat-banner__t">${esc(g.banner)}</span>${g.tag?`<span class="feat-banner__tag">${esc(g.tag)}</span>`:""}</div>` : ""}
+        ${g.note ? `<div class="feat-note">${esc(g.note)}</div>` : ""}
+        <div class="mix-row feat-row">${cards}</div>
+      </div>`;
+  }).join("");
+  inner.innerHTML = `<div class="jhead jhead--feat">
+      <button class="mix-back" id="feat-back">‹ explore the map</button>
+      <div class="jhead__top"><div class="jhead__flag jhead__flag--ico" style="--accent:#ff2e92">🎧</div>
+        <h2 class="jhead__name" style="--accent:#ff2e92">Featured</h2></div>
+      <div class="jhead__meta">CURATED PLAYLISTS · UPDATED OFTEN</div>
+    </div>
+    ${sections || `<div class="empty">no featured playlists right now</div>`}`;
+  inner.querySelector("#feat-back").onclick = () => backToMap();
+  inner.querySelectorAll(".feat-card").forEach(b => {
+    const open = () => { const def = findFeaturedDef(b.dataset.id); if (def) openMixtape(buildFeaturedMix(def)); };
+    b.onclick = open;
+    b.onkeydown = e => { if (e.key==="Enter"||e.key===" "){ e.preventDefault(); open(); } };
+  });
+  openPanel();
 }
 // point the top shuffle control at the open mixtape (no dropdown option — set scope directly)
 function setShufMix(m){
@@ -1282,6 +1336,7 @@ document.getElementById("p-fav").onclick = () => {
 };
 document.getElementById("faves-btn").onclick = openFavorites;
 document.getElementById("search-btn").onclick = openSearch;
+{ const _fp = document.getElementById("feat-pill"); if (_fp) _fp.onclick = openFeatured; }
 
 /* ---------- language / translation (self-driven, ~108 languages) ----------
    Google's old free Website Translator widget was retired — its per-string backend now 403s,

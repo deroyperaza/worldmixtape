@@ -195,6 +195,25 @@ body.has-player .brand__about{bottom:96px}
 body.has-player .brand__play{bottom:132px}
 @media(max-width:680px){ body.has-player .brand__about{bottom:86px} body.has-player .brand__play{bottom:122px} }
 
+/* featured pill: sits above the games pill, cyan to stand apart */
+.brand__feat{display:inline-block;pointer-events:auto;cursor:pointer;font-family:"Space Mono",monospace;font-size:11px;
+  font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--cyan);padding:3px 10px 4px;
+  border-radius:20px;border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);text-decoration:none;
+  transform:rotate(-1deg);position:fixed;left:18px;bottom:90px;z-index:52}
+.brand__feat:hover{transform:rotate(-1deg) translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+@media(max-width:680px){ .brand__feat{left:14px;bottom:88px} }
+body.has-player .brand__feat{bottom:168px}
+@media(max-width:680px){ body.has-player .brand__feat{bottom:158px} }
+
+/* featured playlists panel */
+.feat-group{margin:6px 0 8px}
+.feat-banner{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:4px 2px 4px}
+.feat-banner__t{font-family:"Archivo Black","Anton",sans-serif;font-size:18px;letter-spacing:.01em;color:var(--yellow)}
+.feat-banner__tag{font-family:"Space Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink);background:var(--lime);padding:2px 8px;border-radius:12px}
+.feat-note{font-family:"Space Mono",monospace;font-size:11.5px;line-height:1.5;color:var(--paper);opacity:.82;margin:0 2px 12px;max-width:520px}
+.jhead--feat .jhead__meta{color:var(--cyan)}
+
 
 /* map */
 .map-wrap{position:fixed;inset:26px 0 0 0;display:block}
