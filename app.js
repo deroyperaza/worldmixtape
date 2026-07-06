@@ -780,7 +780,7 @@ function ensureTrackFeatures(){
   if (typeof TRACK_FEATURES !== "undefined") return Promise.resolve();
   if (_tfPromise) return _tfPromise;
   _tfPromise = new Promise(res => { const s = document.createElement("script");
-    s.src = "track_features.js?v=1"; s.onload = res; s.onerror = res; document.head.appendChild(s); });
+    s.src = "track_features.js?v=2"; s.onload = res; s.onerror = res; document.head.appendChild(s); });
   return _tfPromise;
 }
 async function openFeatured(){
