@@ -1314,14 +1314,16 @@ function prefetchPreview(t){                        // warm a track's 30s previe
 let handoffTrack = null;                            // the full-song track we swapped to preview for background playback
 function handoffToPreview(t){
   if (!t) return;
+  _dbg("LOCK→preview " + String(t.title || "").slice(0, 14) + " pv=" + (t._pv ? "warm" : "COLD"));
   stopYt();                                         // pause the iframe (iOS suspends it on lock anyway)
   playSource = "preview";
   handoffTrack = t;
   setMediaSession(t, t._cc || activeCode);
-  if (t._pv){ audio.src = t._pv; audio.play().catch(()=>{}); }
-  else prefetchPreview(t);                          // not warmed yet — may not complete while backgrounding
+  if (t._pv){ audio.src = t._pv; audio.play().then(() => _dbg("handoff audio OK")).catch(e => _dbg("handoff play FAIL " + (e && e.name || e))); }
+  else { _dbg("handoff COLD → fetch"); prefetchPreview(t); }   // not warmed yet — may not complete while backgrounding
 }
 document.addEventListener("visibilitychange", () => {
+  _dbg("vis " + (document.hidden ? "HIDDEN" : "SHOWN") + " src=" + playSource);
   if (qIndex < 0) return;
   const t = queue[qIndex];
   if (document.hidden){
@@ -1383,18 +1385,19 @@ async function play(i){
     yt.loadVideoById(t.ytId);
     if (yt.playVideo) yt.playVideo();
     startYtPoll();
-    prefetchPreview(t);                                 // warm this track's preview…
-    prefetchPreview(queue[(qIndex + 1) % queue.length]); // …and the next, so a lock-time handoff/advance is instant
+    for (let k = 0; k <= 5; k++) prefetchPreview(queue[(qIndex + k) % queue.length]);  // warm this + next 5 so lock-screen advances are instant
     return;
   }
 
   stopYt();
   playSource = "preview";
+  _dbg("play preview " + String(t.title || "").slice(0, 14) + " pv=" + (t._pv ? "warm" : "cold") + " hid=" + document.hidden);
+  if (!document.hidden) for (let k = 1; k <= 5; k++) prefetchPreview(queue[(qIndex + k) % queue.length]);  // keep the window warm ahead of a lock
   const onUrl = url => {
     if (queue[qIndex] !== t) return;
-    if (!url){ document.getElementById("p-artist").textContent = "preview unavailable — skipping…"; setTimeout(next, 900); return; }
+    if (!url){ _dbg("NO preview url → skip"); document.getElementById("p-artist").textContent = "preview unavailable — skipping…"; setTimeout(next, 900); return; }
     audio.src = url;
-    audio.play().catch(()=>{ setPlayIcon(false); player.classList.remove("playing"); });
+    audio.play().then(() => _dbg("preview audio OK")).catch(() => { _dbg("preview play FAIL"); setPlayIcon(false); player.classList.remove("playing"); });
   };
   if (t._pv) onUrl(t._pv);                                          // warmed preview (instant; works while backgrounded)
   else if (t.src === "itunes" && t.preview) onUrl(t.preview);      // iTunes-sourced backfill track → its stored preview
@@ -1438,14 +1441,18 @@ function msArtwork(t){                                    // iOS wants absolute 
   return [{ src: icon, sizes: "512x512", type: "image/png" }, { src: abs("icon-192.png"), sizes: "192x192", type: "image/png" }];
 }
 // TEMP DEBUG: on ?forcepreview=1 or ?msdebug=1, show a live on-device readout of Media Session state. Remove with the test flag.
+const _dbgLines = [];                                // TEMP: rolling on-device event log (?msdebug=1 or ?forcepreview=1)
 function _msDebug(s){
+  const t = (typeof performance !== "undefined" && performance.now) ? (performance.now() / 1000).toFixed(1) : "0";
+  _dbgLines.push(t + "s " + s); while (_dbgLines.length > 14) _dbgLines.shift();
   if (!/[?&](forcepreview|msdebug)=1/.test(location.search)) return;
   let el = document.getElementById("ms-debug");
   if (!el){ el = document.createElement("div"); el.id = "ms-debug";
-    el.style.cssText = "position:fixed;left:6px;bottom:86px;z-index:99999;background:#000;color:#0f0;font:11px/1.35 monospace;padding:6px 8px;max-width:92vw;border-radius:6px;white-space:pre-wrap;pointer-events:none";
+    el.style.cssText = "position:fixed;left:6px;bottom:86px;z-index:99999;background:#000;color:#0f0;font:10px/1.3 monospace;padding:6px 8px;max-width:94vw;max-height:42vh;overflow:hidden;border-radius:6px;white-space:pre-wrap;pointer-events:none";
     document.body.appendChild(el); }
-  el.textContent = "MS: " + s;
+  el.textContent = _dbgLines.join("\n");
 }
+const _dbg = _msDebug;                               // event-log alias
 function setMediaSession(t, cc){
   if (!("mediaSession" in navigator)){ _msDebug("navigator.mediaSession MISSING"); return; }
   wireMediaSession();
@@ -1705,8 +1712,8 @@ audio.addEventListener("timeupdate", () => {
 // iOS clears now-playing metadata when a fresh audio source starts → re-set it once playback is actually rolling
 audio.addEventListener("playing", () => { const t = queue[qIndex]; if (t) setMediaSession(t, t._cc || activeCode); });
 audio.addEventListener("loadedmetadata", () => { const t = queue[qIndex]; if (t) setMediaSession(t, t._cc || activeCode); });
-audio.addEventListener("ended", next);
-audio.addEventListener("pause", () => { setPlayIcon(false); player.classList.remove("playing"); });
+audio.addEventListener("ended", () => { _dbg("ENDED→next hid=" + document.hidden); next(); });
+audio.addEventListener("pause", () => { _dbg("audio pause"); setPlayIcon(false); player.classList.remove("playing"); });
 audio.addEventListener("play",  () => { setPlayIcon(true);  player.classList.add("playing"); });
 
 /* ---------- seek: click or drag the progress bar (works for preview + Spotify) ---------- */
