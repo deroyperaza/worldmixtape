@@ -131,7 +131,7 @@
     genres.forEach(g=>{
       const o = document.createElement("option");
       o.value = g;
-      o.textContent = g + "  ·  " + genreBreadth[g] + " countries · " + genreTracks[g].toLocaleString() + " tracks";
+      o.textContent = g;   // name only — counts live in the stat line (avoids the dropdown cut-off)
       sel.appendChild(o);
     });
     sel.value = genres.includes("hip-hop") ? "hip-hop" : genres[0];
@@ -165,7 +165,7 @@
       });
 
       document.getElementById("stat").innerHTML =
-        "<b>" + present + "</b> countries feature <b>" + genre + "</b> · hottest share " + Math.round(maxShare*100) + "%";
+        "<b>" + genreTracks[genre].toLocaleString() + "</b> tracks · <b>" + present + "</b> countries · hottest share " + Math.round(maxShare*100) + "%";
       // legend gradient + max label
       const stops = d3.range(0,1.0001,0.1).map(t=>ramp(t)).join(",");
       document.getElementById("legendbar").style.background = "linear-gradient(90deg," + stops + ")";
