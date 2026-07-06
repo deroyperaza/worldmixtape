@@ -1266,6 +1266,10 @@ function schedulePlayLog(trackId){
   }, 5000);   // skips (<5s) don't count
 }
 
+// TEMP TEST FLAG: worldmixtape.com/?forcepreview=1 forces the native-audio 30s-preview path (skips YouTube)
+// so we can verify the iOS lock-screen Media Session card on a real device. Remove this + its use below after testing.
+const FORCE_PREVIEW = /[?&]forcepreview=1/.test(location.search);
+
 async function play(i){
   if (!queue.length) return;
   qIndex = (i + queue.length) % queue.length;
@@ -1295,7 +1299,7 @@ async function play(i){
   // Tracks carrying a ytId play full-length in-browser via YouTube, no login, for everyone.
   // On embed error they fall through to the 30s preview (see onYtError). Tracks with no ytId
   // (no full version found) play the 30s Deezer/iTunes preview below.
-  if (t.ytId && ytReady && !ytFailed.has(t.ytId)){
+  if (!FORCE_PREVIEW && t.ytId && ytReady && !ytFailed.has(t.ytId)){
     audio.pause();
     playSource = "youtube"; ytExpected = t.ytId; ytUserPaused = false; curDuration = 0;
     yt.loadVideoById(t.ytId);
