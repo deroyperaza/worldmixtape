@@ -1296,7 +1296,7 @@ async function play(i){
   // (no full version found) play the 30s Deezer/iTunes preview below.
   if (t.ytId && ytReady && !ytFailed.has(t.ytId)){
     audio.pause();
-    playSource = "youtube"; ytExpected = t.ytId; curDuration = 0;
+    playSource = "youtube"; ytExpected = t.ytId; ytUserPaused = false; curDuration = 0;
     yt.loadVideoById(t.ytId);
     if (yt.playVideo) yt.playVideo();
     startYtPoll();
@@ -1324,7 +1324,8 @@ function togglePlay(){
   if (qIndex < 0){ if (queue.length) play(0); return; }
   if (playSource === "youtube"){
     if (!yt) return;
-    if (yt.getPlayerState() === YT.PlayerState.PLAYING) yt.pauseVideo(); else yt.playVideo();
+    if (yt.getPlayerState() === YT.PlayerState.PLAYING){ ytUserPaused = true; yt.pauseVideo(); }
+    else { ytUserPaused = false; yt.playVideo(); }
     return;
   }
   if (audio.paused){ audio.play(); setPlayIcon(true); player.classList.add("playing"); }
@@ -1488,7 +1489,7 @@ importFavsFromHash();   // if opened via a "sync devices" link, merge those favo
 /* ---------- YouTube full-song playback (per-track ytId; Cuba pilot) ---------- */
 // A hidden audio-only IFrame player. Tracks with a ytId play here full-length, no login, for everyone.
 // The IFrame API calls onYouTubeIframeAPIReady once loaded (script tag is after app.js in index.html).
-let yt = null, ytReady = false, ytPoll = null, ytExpected = null;
+let yt = null, ytReady = false, ytPoll = null, ytExpected = null, ytUserPaused = false;
 const ytFailed = new Set();                              // ytIds that errored (embed disabled/removed) → don't retry
 window.onYouTubeIframeAPIReady = function(){
   yt = new YT.Player("yt-player", {
@@ -1509,6 +1510,11 @@ function startYtPoll(){                                    // drive the progress
     const d = yt.getDuration ? yt.getDuration() : 0;
     const p = yt.getCurrentTime ? yt.getCurrentTime() : 0;
     if (d){ curDuration = d; setProg((p / d * 100) + "%"); }
+    // Watchdog: YT's ENDED event is unreliable (can land in PAUSED or stall at the final
+    // second, esp. on mobile/backgrounded tabs) → the queue would silently stop between songs.
+    // If the playhead reaches the end and the user didn't pause, advance ourselves.
+    // ytExpected is cleared here so onYtState's ENDED can't double-fire.
+    if (d && p >= d - 0.4 && ytExpected && !ytUserPaused){ ytExpected = null; next(); }
   }, 250);
 }
 function stopYt(){ if (yt){ try { yt.pauseVideo(); } catch(_){} } stopYtPoll(); }
@@ -1516,7 +1522,7 @@ function onYtState(e){
   if (playSource !== "youtube") return;
   if (e.data === YT.PlayerState.PLAYING){ setPlayIcon(true);  player.classList.add("playing"); }
   if (e.data === YT.PlayerState.PAUSED){  setPlayIcon(false); player.classList.remove("playing"); }
-  if (e.data === YT.PlayerState.ENDED){   next(); }                 // auto-advance like preview/Spotify
+  if (e.data === YT.PlayerState.ENDED){   if (ytExpected){ ytExpected = null; next(); } }   // auto-advance (guarded vs. poll watchdog)
 }
 function onYtError(){                                                // embed disabled / removed / restricted
   if (playSource !== "youtube") return;
