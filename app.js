@@ -1420,14 +1420,17 @@ function wireMediaSession(){
   if (mediaSessionWired || !("mediaSession" in navigator)) return;
   mediaSessionWired = true;
   const ms = navigator.mediaSession;
-  try {
-    ms.setActionHandler("play",          () => { if (playSource === "youtube"){ if (yt){ ytUserPaused = false; yt.playVideo(); } } else if (audio.paused){ audio.play(); setPlayIcon(true); player.classList.add("playing"); } });
-    ms.setActionHandler("pause",         () => { if (playSource === "youtube"){ if (yt){ ytUserPaused = true; yt.pauseVideo(); } } else { audio.pause(); } });
-    ms.setActionHandler("previoustrack", () => prev());
-    ms.setActionHandler("nexttrack",     () => next());
-    // Force the lock screen to show prev/next TRACK buttons, not ±10s seek: disable all seek actions.
-    ["seekbackward", "seekforward", "seekto"].forEach(a => { try { ms.setActionHandler(a, null); } catch(_){} });
-  } catch(_){}
+  // Each handler in its own try: on iOS an unsupported action throws, and a shared try would silently
+  // drop every handler after it — including previoustrack/nexttrack, which is what draws the track buttons.
+  const set = (action, fn) => { try { ms.setActionHandler(action, fn); } catch(_){} };
+  set("play",          () => { if (playSource === "youtube"){ if (yt){ ytUserPaused = false; yt.playVideo(); } } else if (audio.paused){ audio.play(); setPlayIcon(true); player.classList.add("playing"); } });
+  set("pause",         () => { if (playSource === "youtube"){ if (yt){ ytUserPaused = true; yt.pauseVideo(); } } else { audio.pause(); } });
+  set("previoustrack", () => prev());
+  set("nexttrack",     () => next());
+  // Disable seek so the lock screen shows prev/next TRACK buttons, not ±10s skip.
+  set("seekbackward",  null);
+  set("seekforward",   null);
+  set("seekto",        null);
 }
 function msArtwork(t){                                    // iOS wants absolute URLs; a few sizes helps it pick
   const abs = u => { try { return new URL(u, location.href).href; } catch(_){ return u; } };
