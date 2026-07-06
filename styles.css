@@ -213,6 +213,11 @@ body.has-player .brand__feat{bottom:168px}
   color:var(--ink);background:var(--lime);padding:2px 8px;border-radius:12px}
 .feat-note{font-family:"Space Mono",monospace;font-size:11.5px;line-height:1.5;color:var(--paper);opacity:.82;margin:0 2px 12px;max-width:520px}
 .jhead--feat .jhead__meta{color:var(--cyan)}
+.jhead__sched{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.03em;color:var(--cyan);margin-top:5px;font-weight:700}
+.feat-card__when{display:block;font-family:"Space Mono",monospace;font-size:10.5px;color:var(--cyan);margin-top:4px;letter-spacing:.02em;font-weight:700}
+/* per-row country flag on mixed/matchup playlists so the two sides read apart */
+.track__flag{width:17px;height:auto;border-radius:2px;margin-right:5px;vertical-align:-3px;box-shadow:0 0 0 1px rgba(255,255,255,.18)}
+.track__cc{font-weight:700;opacity:.7}
 
 
 /* map */

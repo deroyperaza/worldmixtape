@@ -688,6 +688,7 @@ function openMixtape(m){
     <div class="jhead__top"><div class="jhead__flag jhead__flag--ico" style="--accent:${acc}">${m.emoji||"🎧"}</div>
       <h2 class="jhead__name" style="--accent:${acc}">${esc(m.name)}</h2></div>
     <div class="jhead__meta">${esc((m.sub||"").toUpperCase())} · ${m.recCount ? (m.seedCount+" SAVED + "+m.recCount+" NEW") : (m.tracks.length+" TRACKS")}${shared && m.by ? " · FROM "+esc((m.by||"").toUpperCase()) : ""}</div>
+    ${(m.when||m.where) ? `<div class="jhead__sched">🗓️ ${esc([m.when, m.where].filter(Boolean).join(" · "))}</div>` : ""}
     ${m.recCount ? `<div class="mix-hint">✦ fresh picks matched to your taste — heart the keepers to save them</div>` : ``}
     <div class="mix-actions">
       <button class="mix-btn mix-btn--play" id="mix-play">▶ Play</button>
@@ -730,16 +731,18 @@ function buildFeaturedMix(def){
   const mixed = []; let i = 0, more = true;       // interleave A,B,A,B… so both countries stay woven together
   while (more){ more = false; for (const arr of perTeam){ if (arr[i]){ mixed.push(arr[i]); more = true; } } i++; }
   const tracks = mixed.slice(0, def.limit || 40);
-  return { id:"feat-"+def.id, name:def.name, sub:def.sub, emoji:def.emoji||"🎧", kind:"featured", key:(def.teams&&def.teams[0])||"featured", teams:def.teams, tracks, featured:true };
+  return { id:"feat-"+def.id, name:def.name, sub:def.sub, emoji:def.emoji||"🎧", kind:"featured", key:(def.teams&&def.teams[0])||"featured", teams:def.teams, tracks, featured:true, when:def.when, where:def.where };
 }
 function openFeatured(){
   viewingMix = null; activeCode = null; currentEra = null; currentGenre = null;
   const sections = featuredGroups().map(g => {
     const cards = (g.playlists||[]).map(def => {
       const m = buildFeaturedMix(def);
+      const sched = [def.when, def.where].filter(Boolean).join(" · ");
       return `<div class="mix-card feat-card" data-id="${esc(def.id)}" role="button" tabindex="0" style="--accent:${mixAccent(m)}">
           ${mixCollage(m.tracks)}
           <span class="mix-card__body"><span class="mix-card__name">${m.emoji} ${esc(m.name)}</span>
+          ${sched ? `<span class="feat-card__when">🗓️ ${esc(sched)}</span>` : ""}
           <span class="mix-card__sub">${esc(m.sub)}</span>
           <span class="mix-card__ct">${m.tracks.length} tracks →</span></span>
         </div>`;
@@ -896,13 +899,16 @@ function renderTracks(list){
   renderedList = list;
   const accOf = t => (t._cc && COUNTRIES[t._cc] ? COUNTRIES[t._cc].color
     : (activeCode && COUNTRIES[activeCode] ? COUNTRIES[activeCode].color : "#ff2e92"));
+  // when a list mixes multiple countries (e.g. a matchup playlist), flag each row so the two sets read apart
+  const _ccs = new Set(list.map(t => t._cc).filter(Boolean));
+  const showCC = _ccs.size > 1;
   tl.innerHTML = list.map((t, i) => `
     <div class="track" data-i="${i}" style="animation-delay:${Math.min(i,30)*0.03}s;--accent:${accOf(t)}">
       <div class="track__rank">${i+1}${t.year?`<span class="track__yr">${t.year}</span>`:''}</div>
       <img class="track__art" loading="lazy" src="${t.cover||''}" alt="">
       <div class="track__txt">
         <div class="track__title">${esc(t.title)}${t.__rec?'<span class="track__new" title="A discovery pick matched to your taste — heart it to save"><span class="track__new-star">✦</span> new</span>':''}${(!t.ytId)?'<span class="track__30s" title="Preview only — full song not available; 30-second clip">30s</span>':''}</div>
-        <div class="track__artist">${esc(t.artist)}${t.diaspora?'<span class="track__nf">diáspora</span>':''}</div>
+        <div class="track__artist">${showCC && t._cc ? flagImg(t._cc, "track__flag") + (COUNTRIES[t._cc] ? `<span class="track__cc">${esc(COUNTRIES[t._cc].name)}</span> · ` : "") : ""}${esc(t.artist)}${t.diaspora?'<span class="track__nf">diáspora</span>':''}</div>
       </div>
       <div class="track__actions">
         <span class="track__ct" data-i="${i}" title="times hearted" hidden></span>
