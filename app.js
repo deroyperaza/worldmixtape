@@ -758,20 +758,29 @@ function buildFeaturedMix(def){
 // Any featured def with a `filter` builds from here — e.g. Deep Focus = instrumental + calm + slow/mid tempo.
 function buildFilteredMix(def){
   const f = def.filter || {}, TF = (typeof TRACK_FEATURES !== "undefined") ? TRACK_FEATURES : {};
-  const seen = new Set(), out = [];
+  const seenId = new Set(), seenKey = new Set(), pool = [];
   for (const cc in COUNTRIES){
     const C = COUNTRIES[cc]; if (!C || !C.eras) continue;
     for (const t of Object.values(C.eras).flat()){
-      if (t.trackId == null || seen.has(t.trackId)) continue;
+      if (t.trackId == null || seenId.has(t.trackId)) continue;
       const ft = TF[t.trackId]; if (!ft) continue;
       if (f.instrumental === true && ft.i !== true) continue;
       if (f.energyBand && !f.energyBand.includes(ft.eb)) continue;
       if (f.tempoBand && !f.tempoBand.includes(ft.tb)) continue;
       if (f.since && (t.year||0) < f.since) continue;
-      seen.add(t.trackId); out.push(Object.assign({_cc:cc}, t));
+      const key = ((t.artist||"")+"|"+(t.title||"")).toLowerCase().trim();   // same song from another release -> skip
+      if (seenKey.has(key)) continue;
+      seenId.add(t.trackId); seenKey.add(key); pool.push(Object.assign({_cc:cc}, t));
     }
   }
-  const tracks = mixShuf(out).slice(0, def.limit || 60);
+  const perArtist = def.perArtist || 3, cnt = {}, out = [];   // shuffle, then cap per artist so one name can't dominate
+  for (const t of mixShuf(pool)){
+    const a = (t.artist||"").toLowerCase().trim();
+    if ((cnt[a] = cnt[a]||0) >= perArtist) continue;
+    cnt[a]++; out.push(t);
+    if (out.length >= (def.limit||60)) break;
+  }
+  const tracks = out;
   return { id:"feat-"+def.id, name:def.name, sub:def.sub, emoji:def.emoji||"\uD83C\uDFA7", kind:"featured", key:"featured", tracks, featured:true };
 }
 // lazy-load the ~1.8MB feature table only when Featured (with a filter playlist) is opened
