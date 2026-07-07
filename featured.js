@@ -22,6 +22,9 @@ const FEATURED_GROUPS = [
     playlists: [
       { id: "deep-focus", name: "Deep Focus", sub: "instrumental \u00b7 calm \u00b7 no lyrics", emoji: "\uD83C\uDFA7",
         filter: { instrumental: true, energyBand: ["calm","moderate"], tempoBand: ["slow","mid"] }, limit: 80 },
+      { id: "electronic-focus", name: "Modern Electronic", sub: "instrumental electronica for the flow — downtempo, ambient-techno, synth", emoji: "🎛️", trackIds: [3871666931,860375402,12266089,66537630,140599781,3263565081,2009470487,3601708652,603342962,677144832] },
+      { id: "meditative-focus", name: "Meditative", sub: "slow, spacious & still — ambient, neoclassical, solo piano", emoji: "🧘", trackIds: [13202819,13202825,6058030,2402663105,625571952,62743862,62742667,1522716902,2384671095,2384670975,115782512,115782402,2782140912] },
+      { id: "folk-focus", name: "Folk & Acoustic", sub: "fingerpicked, plucked & bowed — world folk traditions, no words", emoji: "🪕", trackIds: [623421062,90270219,2145299447,548784,864289,1104080,1168313,3675886562,1787551937,3786142442,16334364,15935606,45851171,99269422,252016,62914729,63186348,1296821292,64909865,36436321,238405,144701112,1939664327,957776322] },
     ],
   },
   {

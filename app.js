@@ -737,7 +737,22 @@ function buildGenreMix(gRaw){
 function featuredGroups(){ return (typeof FEATURED_GROUPS !== "undefined" && Array.isArray(FEATURED_GROUPS)) ? FEATURED_GROUPS : []; }
 function findFeaturedDef(id){ for (const g of featuredGroups()) for (const d of (g.playlists||[])) if (d.id===id) return d; return null; }
 // build a mixtape object from a featured def: pull each team's tracks since `since`, weave them together
+// explicit curated track list — a featured def with `trackIds` (e.g. the flavor focus playlists)
+let _trackIndex = null;
+function trackIndex(){
+  if (_trackIndex) return _trackIndex;
+  _trackIndex = {};
+  for (const cc in COUNTRIES){ const C = COUNTRIES[cc]; if (!C || !C.eras) continue;
+    for (const t of Object.values(C.eras).flat()){ if (t.trackId != null && !_trackIndex[t.trackId]) _trackIndex[t.trackId] = Object.assign({_cc:cc}, t); } }
+  return _trackIndex;
+}
+function buildExplicitMix(def){
+  const idx = trackIndex();
+  const tracks = (def.trackIds || []).map(id => idx[id]).filter(Boolean);
+  return { id:"feat-"+def.id, name:def.name, sub:def.sub, emoji:def.emoji||"🎧", kind:"featured", key:"featured", tracks, featured:true };
+}
 function buildFeaturedMix(def){
+  if (def.trackIds) return buildExplicitMix(def);
   if (def.filter) return buildFilteredMix(def);   // mood/feature playlists build from TRACK_FEATURES, not teams
   const since = def.since || 2000;
   const perTeam = (def.teams||[]).map(cc => {
