@@ -263,8 +263,8 @@ body.has-player .brand__feat{bottom:168px}
   scrollbar-width:none;margin-top:2px}
 #tracklist::-webkit-scrollbar{display:none}
 /* favorites: mixtapes + filters + list scroll together as one body (so the tall mixtape strip scrolls away) */
-.fav-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:120px}
-.fav-scroll::-webkit-scrollbar{display:none}
+.fav-scroll,.feat-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:120px}
+.fav-scroll::-webkit-scrollbar,.feat-scroll::-webkit-scrollbar{display:none}
 .fav-scroll #tracklist{flex:none;min-height:0;overflow:visible;padding-bottom:0;margin-top:0}
 
 .jhead{position:relative;margin:18px 0 12px}

@@ -819,8 +819,9 @@ async function openFeatured(){
         <h2 class="jhead__name" style="--accent:#ff2e92">Featured</h2></div>
       <div class="jhead__meta">CURATED PLAYLISTS · UPDATED OFTEN</div>
     </div>
-    ${sections || `<div class="empty">no featured playlists right now</div>`}`;
+    <div class="feat-scroll" id="feat-scroll">${sections || `<div class="empty">no featured playlists right now</div>`}</div>`;
   inner.querySelector("#feat-back").onclick = () => backToMap();
+  { const _fsc = inner.querySelector("#feat-scroll"); if (_fsc) _fsc.addEventListener("scroll", () => panel.classList.toggle("scrolled", _fsc.scrollTop > 8), { passive: true }); }
   inner.querySelectorAll(".feat-card").forEach(b => {
     const open = () => { const def = findFeaturedDef(b.dataset.id); if (def) openMixtape(buildFeaturedMix(def)); };
     b.onclick = open;
