@@ -755,11 +755,13 @@ function buildFeaturedMix(def){
   if (def.trackIds) return buildExplicitMix(def);
   if (def.filter) return buildFilteredMix(def);   // mood/feature playlists build from TRACK_FEATURES, not teams
   const since = def.since || 2000;
+  const _TF = (typeof TRACK_FEATURES !== "undefined") ? TRACK_FEATURES : {};
+  const upOk = t => !def.uptempo || (_TF[t.trackId] && ["moderate","high"].includes(_TF[t.trackId].eb) && ["mid","fast"].includes(_TF[t.trackId].tb));
   const perTeam = (def.teams||[]).map(cc => {
     const C = COUNTRIES[cc]; if (!C) return [];
     const seen = new Set(), out = [];
     for (const dec of Object.values(C.eras||{})) for (const t of dec){
-      if ((t.year||0) >= since && t.trackId!=null && !seen.has(t.trackId)){ seen.add(t.trackId); out.push(Object.assign({_cc:cc}, t)); }
+      if ((t.year||0) >= since && t.trackId!=null && !seen.has(t.trackId) && upOk(t)){ seen.add(t.trackId); out.push(Object.assign({_cc:cc}, t)); }
     }
     out.sort((a,b)=>(b.year||0)-(a.year||0));   // newest first within each country
     return out;
@@ -809,7 +811,7 @@ function ensureTrackFeatures(){
 }
 async function openFeatured(){
   viewingMix = null; activeCode = null; currentEra = null; currentGenre = null;
-  if (featuredGroups().some(g => (g.playlists||[]).some(d => d.filter))) await ensureTrackFeatures();
+  if (featuredGroups().some(g => (g.playlists||[]).some(d => d.filter || d.uptempo))) await ensureTrackFeatures();
   const sections = featuredGroups().map(g => {
     const cards = (g.playlists||[]).map(def => {
       const m = buildFeaturedMix(def);
