@@ -51,10 +51,16 @@
   .rankcol ol{list-style:none;margin:0;padding:0}
   .rankcol li{display:flex;align-items:center;gap:9px;padding:5px 0;border-top:1px solid var(--stroke);font-size:13px}
   .rankcol li:first-child{border-top:none}
-  .rankcol .rn{font-family:"Anton",sans-serif;color:var(--cyan);width:20px;text-align:center;flex:0 0 auto}
+  .rankcol .rn{font-family:"Anton",sans-serif;color:var(--cyan);width:30px;text-align:center;flex:0 0 auto}
   .rankcol .rnm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .rankcol .rv{font-family:"Anton",sans-serif;color:var(--pink);flex:0 0 auto}
-  .rankcol .rc{opacity:.5;font-size:11px;flex:0 0 auto}
+  .rankcol .rnm b{font-weight:700}
+  .rankcol .rv{font-family:"Anton",sans-serif;color:var(--pink);flex:0 0 auto;width:28px;text-align:right}
+  .rankcol .rc{opacity:.45;font-size:11px;flex:0 0 auto;width:34px;text-align:right}
+  .rankcol .rflag{width:20px;height:14px;object-fit:cover;border-radius:2px;flex:0 0 auto;border:1px solid #0a0916}
+  .scrollist{max-height:560px;overflow-y:auto;padding-right:8px}
+  .scrollist::-webkit-scrollbar{width:8px}
+  .scrollist::-webkit-scrollbar-track{background:transparent}
+  .scrollist::-webkit-scrollbar-thumb{background:var(--stroke);border-radius:4px}
   .tip{position:fixed;pointer-events:none;z-index:20;background:#0b0820;border:2px solid var(--cyan);
     border-radius:10px;padding:8px 11px;font-size:12px;line-height:1.35;max-width:240px;opacity:0;
     transform:translateY(4px);transition:opacity .1s;box-shadow:4px 4px 0 rgba(0,229,255,.25)}
@@ -104,8 +110,8 @@
     </div>
 
     <div class="ranks">
-      <div class="rankcol"><h3>🔥 Most popular catalogs</h3><ol id="top"></ol></div>
-      <div class="rankcol"><h3>🌱 Most under-the-radar</h3><ol id="bottom"></ol></div>
+      <div class="rankcol"><h3>🌍 Every country — most → least popular</h3><ol id="countries" class="scrollist"></ol></div>
+      <div class="rankcol"><h3>🔥 The world's 201 most popular songs</h3><ol id="songs" class="scrollist"></ol></div>
     </div>
   </div>
 
@@ -151,38 +157,46 @@
 
     // ---- per-country average popularity ----
     const isoInfo = {};                 // world-atlas numeric id -> {code,name,avg,n}
-    const rows = [];                    // for ranking
+    const rows = [];                    // per-country ranking
+    const songBest = new Map();          // per-song ranking, deduped by artist+title (keep best score)
     let totalTracks = 0, nCountries = 0;
     for (const cc in COUNTRIES){
       const C = COUNTRIES[cc]; const er = C.eras || {};
       let sum = 0, n = 0, any = 0;
       for (const d in er) for (const t of er[d]){ any++; totalTracks++;
-        if (t.trackId != null){ const s = popScore(t.trackId); if (s != null){ sum += s; n++; } } }
+        if (t.trackId != null){ const s = popScore(t.trackId); if (s != null){ sum += s; n++;
+          const k = (t.artist||"").toLowerCase().trim()+"|"+(t.title||"").toLowerCase().trim();
+          const pv = songBest.get(k); if (!pv || s > pv.score) songBest.set(k, {title:t.title, artist:t.artist, cc, score:s}); } } }
       if (!any) continue; nCountries++;
       const avg = n ? sum/n : null;
       if (C.iso != null && avg != null) isoInfo[+C.iso] = { code:cc, name:C.name, avg, n };
       if (avg != null) rows.push({ name:C.name, code:cc, avg, n });
     }
     rows.sort((a,b)=>b.avg-a.avg);
+    const allSongs = [...songBest.values()]; allSongs.sort((a,b)=>b.score-a.score);
     document.getElementById("ntracks").textContent = totalTracks.toLocaleString();
     document.getElementById("ncountries").textContent = nCountries;
 
-    // rankings + color domain use a meaningful sample so 1-song outliers don't top the list / blow out the scale
-    const MINN = 5;
-    const ranked = rows.filter(r=>r.n >= MINN);
-    const maxAvg = ranked.length ? ranked[0].avg : (rows[0] ? rows[0].avg : 100);
+    const MINN = 5;                                    // "small sample" flag in the tooltip
     const overall = rows.length ? rows.reduce((a,b)=>a+b.avg,0)/rows.length : 0;
+    // color domain uses a ≥5-song sample so a lone-song country can't blow out the scale
+    const sampled = rows.filter(r=>r.n >= MINN);
+    const maxAvg = sampled.length ? sampled[0].avg : (rows[0] ? rows[0].avg : 100);
     document.getElementById("stat").innerHTML =
-      "World average <b>" + Math.round(overall) + "</b>/100 · most popular catalog <b>" +
-      (ranked[0] ? ranked[0].name + " (" + Math.round(ranked[0].avg) + ")" : "—") + "</b>";
+      "World average <b>"+Math.round(overall)+"</b>/100 · <b>"+rows.length+"</b> countries · <b>"+totalTracks.toLocaleString()+"</b> songs scored";
 
-    function fillRank(elId, list){
-      document.getElementById(elId).innerHTML = list.map((r,i)=>
-        "<li><span class='rn'>"+(i+1)+"</span><span class='rnm'>"+r.name+"</span>"+
-        "<span class='rv'>"+Math.round(r.avg)+"</span><span class='rc'>"+r.n+" songs</span></li>").join("");
-    }
-    fillRank("top", ranked.slice(0,10));
-    fillRank("bottom", ranked.slice(-10).reverse());
+    function esc(s){ return String(s||"").replace(/[&<>"]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+    function flag(cc){ return cc ? "<img class='rflag' src='https://flagcdn.com/"+cc.toLowerCase()+".svg' alt='' loading='lazy' onerror=\"this.style.visibility='hidden'\">" : ""; }
+
+    // Chart 1 — every country, most → least popular (n = songs we have for it)
+    document.getElementById("countries").innerHTML = rows.map((r,i)=>
+      "<li><span class='rn'>"+(i+1)+"</span>"+flag(r.code)+"<span class='rnm'>"+esc(r.name)+"</span>"+
+      "<span class='rv'>"+Math.round(r.avg)+"</span><span class='rc'>"+r.n+"</span></li>").join("");
+
+    // Chart 2 — the world's 201 most popular songs
+    document.getElementById("songs").innerHTML = allSongs.slice(0,201).map((t,i)=>
+      "<li><span class='rn'>"+(i+1)+"</span>"+flag(t.cc)+"<span class='rnm'><b>"+esc(t.title)+"</b> · "+esc(t.artist)+"</span>"+
+      "<span class='rv'>"+Math.round(t.score)+"</span></li>").join("");
 
     // ---- map ----
     const svg = d3.select("#map");
