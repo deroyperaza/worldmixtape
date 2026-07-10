@@ -52,6 +52,8 @@ h2.sec{font-family:"Permanent Marker",cursive;color:var(--yellow);font-size:22px
   transform:rotate(-1deg)}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
 @media(max-width:760px){.cols{grid-template-columns:1fr}}
+.cols--games{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+h3.sec--sub{font-family:"Anton",sans-serif;font-weight:400;font-size:16px;letter-spacing:.02em;text-transform:uppercase;margin:0 0 10px;transform:none}
 
 /* leaderboard */
 .lb{list-style:none;margin:0;padding:0;background:var(--card);border:3px solid #0a0916;border-radius:16px;overflow:hidden}
@@ -116,6 +118,30 @@ footer.ab-foot p{font-size:12px;color:#8a83b8;margin:6px 0}
     <div>
       <h2 class="sec">♥ Top collectors — most favorites</h2>
       <ul class="lb" id="lb-collectors"><li class="empty">loading…</li></ul>
+    </div>
+  </div>
+
+  <h2 class="sec">🎮 Games — top scorers in each game</h2>
+  <div class="cols cols--games">
+    <div>
+      <h3 class="sec sec--sub" style="color:var(--pink)">🎯 Where &amp; When</h3>
+      <ul class="lb" id="lb-g-wherewhen"><li class="empty">loading…</li></ul>
+    </div>
+    <div>
+      <h3 class="sec sec--sub" style="color:var(--tang)">🎧 Sound Trip</h3>
+      <ul class="lb" id="lb-g-soundtrip"><li class="empty">loading…</li></ul>
+    </div>
+    <div>
+      <h3 class="sec sec--sub" style="color:var(--cyan)">🕰️ Time Machine</h3>
+      <ul class="lb" id="lb-g-timemachine"><li class="empty">loading…</li></ul>
+    </div>
+    <div>
+      <h3 class="sec sec--sub" style="color:var(--lime)">🧩 Culture Clusters</h3>
+      <ul class="lb" id="lb-g-clusters"><li class="empty">loading…</li></ul>
+    </div>
+    <div>
+      <h3 class="sec sec--sub" style="color:var(--violet)">💿 Cover Up</h3>
+      <ul class="lb" id="lb-g-coverup"><li class="empty">loading…</li></ul>
     </div>
   </div>
 
@@ -250,6 +276,12 @@ renderUserLB("lb-games", "leaderboard_games", "score", " pts", "plays",
   'No scores yet — <a href="/games/" style="color:var(--cyan)">play a game to get on the board</a>.');
 renderUserLB("lb-collectors", "leaderboard_faves", "count", " ♥", "faves",
   'No collectors yet — <a href="/" style="color:var(--cyan)">start saving favorites</a>.');
+
+/* per-game leaderboards */
+[["wherewhen","Where & When"],["soundtrip","Sound Trip"],["timemachine","Time Machine"],["clusters","Culture Clusters"],["coverup","Cover Up"]].forEach(function(g){
+  renderUserLB("lb-g-"+g[0], "leaderboard_game_"+g[0], "score", " pts", "plays",
+    'No scores yet — <a href="/games/" style="color:var(--cyan)">be the first</a>.');
+});
 </script>
 </body>
 </html>

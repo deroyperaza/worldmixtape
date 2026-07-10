@@ -61,9 +61,11 @@ function mergeStates(local,cloud){
   [local.passport,cloud.passport].forEach(function(p){Object.keys(p||{}).forEach(function(k){out.passport[k]=Math.max(out.passport[k]||0,p[k]||0);});});
   var ll=local.lastWinDay||"",cl=cloud.lastWinDay||"";
   if(cl>ll){out.lastWinDay=cloud.lastWinDay;out.streak=cloud.streak||0;}else{out.lastWinDay=local.lastWinDay;out.streak=local.streak||0;}
-  ["soundtrip","timemachine","clusters"].forEach(function(g){var pk=chooseNewerPlay((local.plays||{})[g],(cloud.plays||{})[g]);if(pk)out.plays[g]=pk;});
+  ["soundtrip","timemachine","clusters","coverup","wherewhen"].forEach(function(g){var pk=chooseNewerPlay((local.plays||{})[g],(cloud.plays||{})[g]);if(pk)out.plays[g]=pk;});
   out.stMode=local.stMode||cloud.stMode;
   out.gamesScore=Math.max(local.gamesScore||0,cloud.gamesScore||0);   // cumulative all-games score (leaderboard)
+  out.gameScores={};   // per-game cumulative scores → per-game leaderboards
+  [local.gameScores,cloud.gameScores].forEach(function(gs){Object.keys(gs||{}).forEach(function(k){out.gameScores[k]=Math.max(out.gameScores[k]||0,gs[k]||0);});});
   out.wwMode=local.wwMode||cloud.wwMode; if((local.ww||cloud.ww)){out.ww=local.ww||cloud.ww;}
   return out;
 }
@@ -93,7 +95,7 @@ if(FB){
   gAuth.getRedirectResult().catch(function(e){if(e&&e.code)console.warn("redirect",e);});
   gAuth.onAuthStateChanged(function(u){
     authUser=u||null;
-    if(u){pullAndMerge(u.uid).then(function(){renderHub();pushGamesLeaderboard();});loadCloudFavs(u.uid);}
+    if(u){pullAndMerge(u.uid).then(function(){renderHub();pushGamesLeaderboard();pushAllGameLeaderboards();});loadCloudFavs(u.uid);}
     else{cloudReady=false;FAVS=loadFavs();refreshFavBtns();renderHub();}
   });
 }
@@ -130,8 +132,12 @@ function loadCloudFavs(uid){
 /* global leaderboards (shown on /stats): cumulative all-games score + most-favorites collectors */
 function pushGamesLeaderboard(){ if(!gDb||!authUser)return; try{ gDb.collection("leaderboard_games").doc(authUser.uid).set({ name:wwSelfName(), photo:(authUser.photoURL||""), score:(STATE.gamesScore||0), uid:authUser.uid, updatedAt:FB.firestore.FieldValue.serverTimestamp() },{merge:true}).catch(function(e){console.warn("games lb",e);}); }catch(e){console.warn(e);} }
 function pushFavesLeaderboard(){ if(!gDb||!authUser)return; try{ gDb.collection("leaderboard_faves").doc(authUser.uid).set({ name:wwSelfName(), photo:(authUser.photoURL||""), count:FAVS.length, uid:authUser.uid, updatedAt:FB.firestore.FieldValue.serverTimestamp() },{merge:true}).catch(function(e){console.warn("faves lb",e);}); }catch(e){console.warn(e);} }
-/* every game funnels points into one cumulative score → the global games leaderboard */
-function awardGames(pts){ pts=Math.max(0,Math.round(pts||0)); if(!pts)return; if(!STATE.gamesScore)STATE.gamesScore=0; STATE.gamesScore+=pts; save(STATE); pushGamesLeaderboard(); }
+/* per-game leaderboards (shown on /stats): one collection per game, keyed by cumulative per-game score */
+var GAME_LB={soundtrip:"leaderboard_game_soundtrip",timemachine:"leaderboard_game_timemachine",clusters:"leaderboard_game_clusters",coverup:"leaderboard_game_coverup",wherewhen:"leaderboard_game_wherewhen"};
+function pushGameLeaderboard(game){ if(!gDb||!authUser)return; var coll=GAME_LB[game]; if(!coll)return; try{ gDb.collection(coll).doc(authUser.uid).set({ name:wwSelfName(), photo:(authUser.photoURL||""), score:((STATE.gameScores&&STATE.gameScores[game])||0), uid:authUser.uid, updatedAt:FB.firestore.FieldValue.serverTimestamp() },{merge:true}).catch(function(e){console.warn("game lb",e);}); }catch(e){console.warn(e);} }
+function pushAllGameLeaderboards(){ if(!STATE.gameScores)return; Object.keys(STATE.gameScores).forEach(function(g){ if((STATE.gameScores[g]||0)>0) pushGameLeaderboard(g); }); }
+/* every game funnels points into one cumulative score → the global games leaderboard, plus its own per-game board */
+function awardGames(pts,game){ pts=Math.max(0,Math.round(pts||0)); if(!pts)return; if(!STATE.gamesScore)STATE.gamesScore=0; STATE.gamesScore+=pts; if(game){ if(!STATE.gameScores)STATE.gameScores={}; STATE.gameScores[game]=(STATE.gameScores[game]||0)+pts; } save(STATE); pushGamesLeaderboard(); if(game)pushGameLeaderboard(game); }
 function favLabel(on){return on?"♥ saved":"♡ save song";}
 function refreshFavBtns(){
   document.querySelectorAll(".g-fav").forEach(function(b){var on=isFaved(b.getAttribute("data-id"));b.classList.toggle("on",on);b.textContent=favLabel(on);});
@@ -276,7 +282,7 @@ function stShareGrid(){return ST.guesses.map(function(g){return g===ST.ans?"🟩
 function finishST(win){
   ST.done=true;
   var summary={win:win,ans:ST.ans,tries:ST.guesses.length,grid:stShareGrid(),artist:ST.track.artist,title:ST.track.title,decade:ST.track.decade,year:ST.track.year,ytId:ST.track.ytId,start:ST.start,track:favRec(ST.track)};
-  if(win){stamp(ST.ans);bumpStreak();awardGames(Math.max(120,600-(ST.guesses.length-1)*100));}
+  if(win){stamp(ST.ans);bumpStreak();awardGames(Math.max(120,600-(ST.guesses.length-1)*100),"soundtrip");}
   recordPlay("soundtrip",summary);
   renderSTReveal(summary);
 }
@@ -329,7 +335,7 @@ function renderTM(){
 window.WMTG.tmPlay=function(){var pl=document.getElementById("tm-player"),btn=document.getElementById("tm-play");if(playedState()){pauseVid();pl.classList.remove("playing");btn.textContent="▶";}else{playVid(TM.track.ytId,TM.start);pl.classList.add("playing");btn.textContent="❚❚";}};
 window.WMTG.tmGuess=function(d){if(TM.done)return;if(TM.guesses.some(function(g){return g.d===d;}))return;var correct=d===TM.track.decade;TM.guesses.push({d:d,correct:correct});if(correct){finishTM(true);}else if(TM.guesses.length>=3){finishTM(false);}else renderTM();};
 function tmGrid(){return TM.guesses.map(function(g){return g.correct?"🟩":(TM.timeline.indexOf(g.d)<TM.ansIdx?"🟧":"🟪");}).join("");}
-function finishTM(win){TM.done=true;var s={win:win,cc:TM.cc,decade:TM.track.decade,year:TM.track.year,title:TM.track.title,artist:TM.track.artist,ytId:TM.track.ytId,start:TM.start,grid:tmGrid(),tries:TM.guesses.length,track:favRec(TM.track)};if(win)awardGames(Math.max(120,500-(TM.guesses.length-1)*120));recordPlay("timemachine",s);renderTMReveal(s);}
+function finishTM(win){TM.done=true;var s={win:win,cc:TM.cc,decade:TM.track.decade,year:TM.track.year,title:TM.track.title,artist:TM.track.artist,ytId:TM.track.ytId,start:TM.start,grid:tmGrid(),tries:TM.guesses.length,track:favRec(TM.track)};if(win)awardGames(Math.max(120,500-(TM.guesses.length-1)*120),"timemachine");recordPlay("timemachine",s);renderTMReveal(s);}
 function renderTMReveal(s){
   TM.track=TM.track||{ytId:s.ytId};TM.start=s.start;
   revealTrk.tm=s.track||null;
@@ -364,7 +370,7 @@ function startClusters(){
   var groups=chosen.map(function(c){var arts=shuffle(artistsWithTrack(c),rng).slice(0,4);return {cc:c,artists:arts.map(function(x){return x.a;}),tracks:arts};});
   var tiles=[];groups.forEach(function(g,gi){g.tracks.forEach(function(x){tiles.push({a:x.a,genre:x.genre,ytId:x.ytId,g:gi,cc:g.cc,trk:x.trk});});});
   tiles=shuffle(tiles,rng);
-  CL={groups:groups,tiles:tiles,sel:[],solved:[],lives:4,done:false,history:[],hearing:-1};
+  CL={groups:groups,tiles:tiles,sel:[],solved:[],lives:4,done:false,history:[],hearing:-1,paused:false};
   var pt=playedToday("clusters");
   if(pt){CL.done=true;renderCLReveal(pt.summary);return;}
   renderCL();
@@ -375,12 +381,12 @@ function renderCL(){
   var solvedHtml=CL.solved.map(function(gi){var g=CL.groups[gi];var col=["#c6ff00","#b388ff","#00e5ff","#ff6d00"][gi%4];return '<div class="g-solved" style="background:'+col+'"><h4>'+flagImg(g.cc)+esc(cname(g.cc))+'</h4>'+clArtistList(g.tracks)+'</div>';}).join("");
   var grid=CL.tiles.map(function(t,i){
     if(CL.solved.indexOf(t.g)>=0)return "";
-    var sel=CL.sel.indexOf(i)>=0,hearing=CL.hearing===i,favd=t.trk&&isFaved(t.trk.trackId);
+    var sel=CL.sel.indexOf(i)>=0,hearing=CL.hearing===i,playingThis=hearing&&!CL.paused,favd=t.trk&&isFaved(t.trk.trackId);
     return '<button class="g-tile'+(sel?" sel":"")+(hearing?" hearing":"")+'" onclick="WMTG.clTap('+i+')">'+
       '<span class="g-tile-art">'+esc(t.a)+'</span>'+
       (t.genre?'<span class="g-tile-genre">'+esc(t.genre)+'</span>':'')+
       '<span class="g-tile-actions">'+
-        '<span class="g-tile-play'+(hearing?" on":"")+'" role="button" tabindex="0" onclick="event.stopPropagation();WMTG.clHear('+i+')" aria-label="Hear a clip">'+(hearing?"♪":"▶")+'</span>'+
+        '<span class="g-tile-play'+(playingThis?" on":"")+'" role="button" tabindex="0" onclick="event.stopPropagation();WMTG.clHear('+i+')" aria-label="'+(playingThis?"Pause clip":"Hear a clip")+'">'+(playingThis?"❚❚":"▶")+'</span>'+
         '<span class="g-tile-fav'+(favd?" on":"")+'" role="button" tabindex="0" data-id="'+(t.trk?esc(t.trk.trackId):"")+'" onclick="event.stopPropagation();WMTG.clFav('+i+')" aria-label="Save to favorites">♥</span>'+
       '</span>'+
       '</button>';
@@ -396,7 +402,13 @@ function renderCL(){
 }
 window.WMTG.clTap=function(i){if(CL.done)return;var k=CL.sel.indexOf(i);if(k>=0)CL.sel.splice(k,1);else if(CL.sel.length<4)CL.sel.push(i);renderCL();};
 window.WMTG.clClear=function(){CL.sel=[];renderCL();};
-window.WMTG.clHear=function(i){var t=CL.tiles[i];if(!t||!t.ytId)return;CL.hearing=i;playVid(t.ytId,20);renderCL();};
+window.WMTG.clHear=function(i){var t=CL.tiles[i];if(!t||!t.ytId)return;
+  if(CL.hearing===i){ // same tile — toggle pause/resume instead of restarting
+    if(CL.paused){ try{YT_PLAYER&&YT_PLAYER.playVideo();}catch(e){} CL.paused=false; }
+    else { pauseVid(); CL.paused=true; }
+    renderCL(); return;
+  }
+  CL.hearing=i;CL.paused=false;playVid(t.ytId,20);renderCL();};
 window.WMTG.clFav=function(i){var t=CL.tiles[i];if(!t||!t.trk||t.trk.trackId==null){toast("can't save this one");return;}var added=toggleFav(t.trk);toast(added?"Saved "+t.a+" ♥":"Removed from favorites");renderCL();};
 window.WMTG.clSubmit=function(){
   if(CL.done||CL.sel.length!==4)return;
@@ -413,7 +425,7 @@ window.WMTG.clSubmit=function(){
   }
 };
 function clGrid(){return CL.history.map(function(row){return row.map(function(g){return CL_COLORS[g%4];}).join("");}).join("\n");}
-function finishCL(win){CL.done=true;var s={win:win,solved:CL.solved.length,grid:clGrid(),groups:CL.groups.map(function(g){return {cc:g.cc,artists:g.artists,items:g.tracks.map(function(x){return {a:x.a,genre:x.genre};})};})};CL.solved.forEach(function(gi){stamp(CL.groups[gi].cc);});awardGames(CL.solved.length*250+(win?200:0));recordPlay("clusters",s);renderCLReveal(s);}
+function finishCL(win){CL.done=true;var s={win:win,solved:CL.solved.length,grid:clGrid(),groups:CL.groups.map(function(g){return {cc:g.cc,artists:g.artists,items:g.tracks.map(function(x){return {a:x.a,genre:x.genre};})};})};CL.solved.forEach(function(gi){stamp(CL.groups[gi].cc);});awardGames(CL.solved.length*250+(win?200:0),"clusters");recordPlay("clusters",s);renderCLReveal(s);}
 function renderCLReveal(s){
   var body=document.getElementById("cl-body");
   var cards=s.groups.map(function(g,gi){var col=["#c6ff00","#b388ff","#00e5ff","#ff6d00"][gi%4];var lesson=(window.COUNTRY_MUSIC&&window.COUNTRY_MUSIC[g.cc]&&window.COUNTRY_MUSIC[g.cc][0])||"";var snip=lesson.split(". ").slice(0,1).join(". ");if(snip&&!/[.!?]$/.test(snip))snip+=".";var items=g.items||(g.artists||[]).map(function(a){return {a:a,genre:""};});return '<div class="g-solved" style="background:'+col+';margin-bottom:10px"><h4>'+flagImg(g.cc)+esc(cname(g.cc))+'</h4>'+clArtistList(items)+(snip?'<p style="margin-top:6px;opacity:.85">'+esc(snip)+'</p>':"")+'</div>';}).join("");
@@ -474,7 +486,7 @@ window.WMTG.cuGuess=function(c){
   if(CU.guesses.length>=CU_MAX)finishCU(false);else renderCU();
 };
 function cuGrid(){return CU.guesses.map(function(c){return c===CU.ans?"🟩":"🟪";}).join("");}
-function finishCU(win){CU.done=true;var s={win:win,ans:CU.ans,tries:CU.guesses.length,grid:cuGrid(),cover:CU.track.cover,artist:CU.track.artist,title:CU.track.title,decade:CU.track.decade,track:favRec(CU.track)};if(win){stamp(CU.ans);awardGames(Math.max(120,500-(CU.guesses.length-1)*150));}recordPlay("coverup",s);renderCUReveal(s);}
+function finishCU(win){CU.done=true;var s={win:win,ans:CU.ans,tries:CU.guesses.length,grid:cuGrid(),cover:CU.track.cover,artist:CU.track.artist,title:CU.track.title,decade:CU.track.decade,track:favRec(CU.track)};if(win){stamp(CU.ans);awardGames(Math.max(120,500-(CU.guesses.length-1)*150),"coverup");}recordPlay("coverup",s);renderCUReveal(s);}
 function renderCUReveal(s){
   CU.track=CU.track||{cover:s.cover};
   revealTrk.cu=s.track||null;
@@ -534,11 +546,12 @@ function wwDrawMap(clickable){
     .attr("fill",function(d){ if(!clickable){ if(String(d.id)===ansIso)return "#c6ff00"; if(WW.guess&&String(d.id)===String(WW.guess.iso))return "#ff2e92"; } return "#2c2456"; })
     .style("cursor",clickable?"crosshair":"default");
   if(clickable){
+    WW.armed=null;
     g.selectAll("path.ww-cpath")
-      .on("mouseover",function(e,d){ d3.select(this).attr("fill","#ff6d00"); wwTipShow(e,d); })
+      .on("mouseover",function(e,d){ if(!wwIsArmed(d)) d3.select(this).attr("fill","#ff6d00"); wwTipShow(e,d); })
       .on("mousemove",function(e){ wwTipMove(e); })
-      .on("mouseout",function(){ d3.select(this).attr("fill","#2c2456"); wwTipHide(); })
-      .on("click",function(e,d){ wwTipHide(); wwPick(d); });
+      .on("mouseout",function(e,d){ d3.select(this).attr("fill",wwIsArmed(d)?"#ff6d00":"#2c2456"); wwTipHide(); })
+      .on("click",function(e,d){ wwArm(d); });
     var zoom=d3.zoom().scaleExtent([1,9]).on("zoom",function(e){ g.attr("transform",e.transform); });
     svg.call(zoom).on("dblclick.zoom",null);
   } else if(WW.guess){
@@ -550,6 +563,20 @@ function wwDrawMap(clickable){
     }
   }
 }
+function wwIsArmed(d){ return WW.armed && d && String(WW.armed.iso)===String(d.id); }
+// first tap arms a country (shows its name + a Confirm button); a second tap on it, or the button, commits.
+function wwArm(feature){
+  if(WW.step!=="country"||!feature)return;
+  wwTipHide();
+  if(WW.armed && String(WW.armed.iso)===String(feature.id)){ wwPick(feature); return; }
+  var code=ISO_TO_CODE[String(feature.id)]||null;
+  var name=code?cname(code):((feature.properties&&feature.properties.name)||"there");
+  WW.armed={feature:feature,iso:feature.id,code:code,name:name};
+  d3.selectAll("#ww-map path.ww-cpath").attr("fill",function(d){ return String(d.id)===String(feature.id)?"#ff6d00":"#2c2456"; });
+  var bar=document.getElementById("ww-confirm");
+  if(bar){ bar.hidden=false; bar.innerHTML='<span class="ww-confirm-name">'+(code?flagImg(code):"📍")+' <b>'+esc(name)+'</b></span><button type="button" class="ww-confirm-go" onclick="WMTG.wwConfirm()">Guess this ✓</button>'; }
+}
+window.WMTG.wwConfirm=function(){ if(WW.step==="country"&&WW.armed) wwPick(WW.armed.feature); };
 function wwPick(feature){
   if(WW.step!=="country"||!feature)return;
   var q=WW.questions[WW.qi];
@@ -585,7 +612,7 @@ window.WMTG.wwPassSetup=function(){
   WW._names=["Player 1","Player 2"];
   document.getElementById("ww-body").innerHTML=
     '<button class="g-back" onclick="WMTG.wwHome()">← modes</button>'+
-    '<p class="g-intro">Add players. Everyone hears the <b>same 5 songs</b> and takes turns on this device.</p>'+
+    '<p class="g-intro">Add players. Each player gets their <b>own 5 songs</b> and takes turns on this device.</p>'+
     '<div id="ww-names"></div>'+
     '<div class="g-btns"><button class="g-btn s" onclick="WMTG.wwAddName()" style="flex:0 0 auto;padding:12px 16px">+ player</button><button class="g-btn p" style="background:var(--cyan)" onclick="WMTG.wwPassGo()">Start</button></div>';
   renderWWNames();
@@ -594,11 +621,11 @@ function renderWWNames(){ document.getElementById("ww-names").innerHTML=WW._name
 window.WMTG.wwName=function(i,v){WW._names[i]=v;};
 window.WMTG.wwAddName=function(){ if(WW._names.length>=6){toast("6 players max");return;} WW._names.push("Player "+(WW._names.length+1)); renderWWNames(); };
 window.WMTG.wwDelName=function(i){ WW._names.splice(i,1); renderWWNames(); };
-window.WMTG.wwPassGo=function(){ var names=WW._names.map(function(n){return (n||"").trim()||"Player";}); var qs=wwBuild(WW_N); if(qs.length<WW_N){toast("not enough songs");return;} startWWRound({mode:'pass', players:names, questions:qs}); };
+window.WMTG.wwPassGo=function(){ var names=WW._names.map(function(n){return (n||"").trim()||"Player";}); var need=names.length*WW_N; var all=wwBuild(need); if(all.length<need){toast("not enough songs for "+names.length+" players");return;} var sets=[]; for(var i=0;i<names.length;i++)sets.push(all.slice(i*WW_N,(i+1)*WW_N)); startWWRound({mode:'pass', players:names, questions:sets[0], questionSets:sets}); };
 
 /* ---- round engine ---- */
 function startWWRound(cfg){
-  WW={ mode:cfg.mode, questions:cfg.questions, timeline:wwTimeline(),
+  WW={ mode:cfg.mode, questions:cfg.questions, questionSets:cfg.questionSets||null, timeline:wwTimeline(),
     players:cfg.players.map(function(nm){return {name:nm,songs:[],total:0};}),
     pi:0, qi:0, step:"country",
     guess:null, done:false, challenge:cfg.challenge||null, _newBest:false, _challengeId:null };
@@ -612,8 +639,9 @@ function renderWWQuestion(){
   var body;
   if(WW.step==="country"){
     body=head+player+
-      '<div class="g-hint" style="text-align:center">Step 1 — <b>click the country</b> you think it\'s from <span style="opacity:.6">· scroll/pinch to zoom</span></div>'+
-      '<div class="ww-map" id="ww-map"></div>';
+      '<div class="g-hint" style="text-align:center">Step 1 — <b>tap a country</b> to see its name, then confirm <span style="opacity:.6">· scroll/pinch to zoom</span></div>'+
+      '<div class="ww-map" id="ww-map"></div>'+
+      '<div class="ww-confirm" id="ww-confirm" hidden></div>';
   } else if(WW.step==="decade"){
     var chips=WW.timeline.map(function(d){return '<button class="g-dec" onclick="WMTG.wwGuessDecade(\''+d+'\')">'+decLabel(d)+'</button>';}).join("");
     body=head+player+
@@ -649,10 +677,10 @@ function renderWWHandoff(){
   document.getElementById("ww-body").innerHTML=
     '<div class="ww-handoff"><div class="ww-hbadge">Pass the device</div>'+
     '<p>'+esc(WW.players[WW.pi].name)+' scored <b>'+WW.players[WW.pi].total.toLocaleString()+'</b>.</p>'+
-    '<h3>'+esc(next.name)+", you're up.</h3><p class=\"g-hint\">Same 5 songs. No peeking 🙈</p>"+
+    '<h3>'+esc(next.name)+", you're up.</h3><p class=\"g-hint\">A fresh 5 songs, just for you 🎧</p>"+
     '<div class="g-btns"><button class="g-btn p" style="background:var(--cyan)" onclick="WMTG.wwNextPlayer()">I&#39;m '+esc(next.name)+' — start</button></div></div>';
 }
-window.WMTG.wwNextPlayer=function(){ WW.pi++; WW.qi=0; WW.step="country"; WW.guess=null; renderWWQuestion(); };
+window.WMTG.wwNextPlayer=function(){ WW.pi++; if(WW.questionSets&&WW.questionSets[WW.pi])WW.questions=WW.questionSets[WW.pi]; WW.qi=0; WW.step="country"; WW.guess=null; renderWWQuestion(); };
 function finishWWRound(){
   WW.done=true; pauseVid();
   var me=WW.players[0];
@@ -660,15 +688,22 @@ function finishWWRound(){
     if(!STATE.ww)STATE.ww={};
     if(me.total>(STATE.ww.best||0)){ STATE.ww.best=me.total; STATE.ww.bestAt=dayStr(); WW._newBest=true; }
     STATE.ww.plays=(STATE.ww.plays||0)+1; save(STATE);
-    awardGames(me.total);                         // Where & When feeds the global games score
+    awardGames(me.total,"wherewhen");             // Where & When feeds the global games score + its own board
     if(WW.mode==="challengePlay") wwRecordOpponent(me.total);
     if(WW.mode==="challenge"){ wwCreateChallenge(me.total).then(function(id){ WW._challengeId=id; if(WW.done)renderWWResults(); }); }
   }
   renderWWResults();
 }
+function wwKeyRow(s,pi,si){var on=s.q.trackId!=null&&isFaved(s.q.trackId);return '<div class="ww-keyrow">'+flagImg(s.q.cc)+'<span class="ww-kt">'+esc(s.q.title)+' · '+esc(s.q.artist)+'</span><span class="ww-kd">'+esc(cname(s.q.cc))+' · '+decLabel(s.q.decade)+'</span>'+(s.q.trackId!=null?'<button type="button" class="ww-keyfav'+(on?" on":"")+'" data-id="'+esc(s.q.trackId)+'" onclick="WMTG.wwSavePlayerSong('+pi+','+si+')" aria-label="Save to favorites">♥</button>':'')+'</div>';}
+window.WMTG.wwSavePlayerSong=function(pi,si){var p=WW.players[pi];var s=p&&p.songs[si];if(!s||s.q.trackId==null){toast("can't save this one");return;}var added=toggleFav(wwFavTrack(s.q));toast(added?"Saved to your favorites ♥":"Removed from favorites");refreshFavBtns();};
 function wwAnswerKey(){
+  if(WW.mode==="pass"){
+    var out='<div class="ww-key"><h4>Every song this round — tap ♥ to save</h4>';
+    WW.players.forEach(function(p,pi){ if(!p.songs.length)return; out+='<div class="ww-keyplayer">'+esc(p.name)+"'s songs</div>"+p.songs.map(function(s,si){return wwKeyRow(s,pi,si);}).join(""); });
+    return out+'</div>';
+  }
   var me=WW.players[0];
-  return '<div class="ww-key"><h4>The five songs — tap ♥ to save</h4>'+me.songs.map(function(s,i){var on=s.q.trackId!=null&&isFaved(s.q.trackId);return '<div class="ww-keyrow">'+flagImg(s.q.cc)+'<span class="ww-kt">'+esc(s.q.title)+' · '+esc(s.q.artist)+'</span><span class="ww-kd">'+esc(cname(s.q.cc))+' · '+decLabel(s.q.decade)+'</span>'+(s.q.trackId!=null?'<button type="button" class="ww-keyfav'+(on?" on":"")+'" data-id="'+esc(s.q.trackId)+'" onclick="WMTG.wwSaveSong('+i+')" aria-label="Save to favorites">♥</button>':'')+'</div>';}).join("")+'</div>';
+  return '<div class="ww-key"><h4>The five songs — tap ♥ to save</h4>'+me.songs.map(function(s,i){return wwKeyRow(s,0,i);}).join("")+'</div>';
 }
 function renderWWResults(){
   var box=document.getElementById("ww-body");

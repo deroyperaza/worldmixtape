@@ -221,6 +221,8 @@
 .ww-signin{margin:12px 0;text-align:center}
 .ww-key{background:var(--card);border:1.5px solid var(--card-edge);border-radius:12px;padding:10px 14px;margin:12px 0}
 .ww-key h4{margin:2px 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;opacity:.7}
+.ww-keyplayer{margin:12px 0 2px;font-size:12px;font-weight:700;color:var(--tang)}
+.ww-keyplayer:first-of-type{margin-top:2px}
 .ww-keyrow{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:12px;border-top:1px solid var(--card-edge)}
 .ww-keyrow:first-of-type{border-top:none}
 .ww-keyrow .flag{width:20px;height:14px;flex:0 0 auto}
@@ -235,6 +237,12 @@
 .ww-map{background:#141029;border:2px solid var(--card-edge);border-radius:14px;overflow:hidden;margin:4px 0 10px;min-height:150px}
 .ww-map svg{display:block;width:100%}
 .ww-map--reveal{margin:0 0 4px}
+.ww-confirm{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.ww-confirm-name{display:inline-flex;align-items:center;gap:7px;font-size:15px}
+.ww-confirm-name .flag{width:24px;height:16px;object-fit:cover;border-radius:2px}
+.ww-confirm-go{font-family:"Anton",sans-serif;font-size:15px;letter-spacing:.03em;text-transform:uppercase;color:#0a0916;background:var(--tang);border:3px solid #0a0916;border-radius:22px;padding:8px 18px;cursor:pointer;box-shadow:3px 3px 0 #0a0916;transition:transform .1s}
+.ww-confirm-go:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #0a0916}
+.ww-confirm-go:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #0a0916}
 .ww-maplegend{display:flex;gap:18px;justify-content:center;font-size:11px;opacity:.85;margin:0 0 12px}
 .ww-maplegend .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle;border:1px solid #0a0916}
 .ww-maplegend .dot.pink{background:var(--pink)}
