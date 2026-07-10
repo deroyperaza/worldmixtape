@@ -50,11 +50,12 @@ header.hd{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:
 /* section */
 h2.sec{font-family:"Permanent Marker",cursive;color:var(--yellow);font-size:22px;margin:34px 0 14px;
   transform:rotate(-1deg)}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
-@media(max-width:760px){.cols{grid-template-columns:1fr}}
-.cols--three{grid-template-columns:1fr 1fr 1fr}
-@media(max-width:900px){.cols--three{grid-template-columns:1fr}}
-.cols--games{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px}
+.cols>div,.cols--three>div,.cols--games>div{min-width:0}
+@media(max-width:760px){.cols{grid-template-columns:minmax(0,1fr)}}
+.cols--three{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)}
+@media(max-width:900px){.cols--three{grid-template-columns:minmax(0,1fr)}}
+.cols--games{grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr))}
 h3.sec--sub{font-family:"Anton",sans-serif;font-weight:400;font-size:16px;letter-spacing:.02em;text-transform:uppercase;margin:0 0 10px;transform:none}
 
 /* leaderboard */

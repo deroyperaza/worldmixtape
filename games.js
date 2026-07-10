@@ -548,7 +548,7 @@ function wwDrawMap(clickable){
   if(clickable){
     WW.armed=null;
     g.selectAll("path.ww-cpath")
-      .on("mouseover",function(e,d){ if(!wwIsArmed(d)) d3.select(this).attr("fill","#ff6d00"); wwTipShow(e,d); })
+      .on("mouseover",function(e,d){ if(!wwIsArmed(d)) d3.select(this).attr("fill","#4e4394"); wwTipShow(e,d); })
       .on("mousemove",function(e){ wwTipMove(e); })
       .on("mouseout",function(e,d){ d3.select(this).attr("fill",wwIsArmed(d)?"#ff6d00":"#2c2456"); wwTipHide(); })
       .on("click",function(e,d){ wwArm(d); });
