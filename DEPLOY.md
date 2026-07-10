@@ -63,6 +63,22 @@ curl -s "https://worldmixtape.com/games/index.html?x=$(date +%s)" | grep -oE 'ga
 
 ---
 
+## Recent work — 2026-07-10
+
+**Popularity Atlas — `/popularity/index.html`** (new noindex prototype, like `/genres`)
+- Each track gets a **0–100 popularity score** = mean of its two signals' percentiles across the whole catalog:
+  `r` (Deezer rank) and `l` (Last.fm listeners), both in `track_features.js`. Percentile (not linear) because the
+  raw signals are heavily skewed. Computed live in-browser from `data.js` + `track_features.js` — no generated file.
+- World choropleth (country = avg of its songs' scores) + **Chart 1: all 201 countries ranked most→least popular**
+  + **Chart 2: the world's 201 most popular songs** (deduped by artist+title, highest score kept).
+
+**Catalog dedup — `data.js`** (bumped to `?v=103` across index/games/genres/popularity)
+- Removed **201 within-country duplicate entries** (186 songs listed twice in the *same* country, e.g. "Lift Me Up"
+  ×2 in Barbados). Keeper = era-accurate + playable (has ytId) + most popular.
+- **Cross-country same-recording entries were deliberately KEPT** — they're the diaspora feature (an artist under
+  both heritage + scene, e.g. Aznavour FR+AM, Niska FR+CD). Never bulk-dedup across countries.
+- `data.js` re-serialized as `// gen\nconst COUNTRIES = <JSON>;` (its exact wrapper). 21,152 → 20,951 tracks.
+
 ## Recent work — 2026-07-09
 
 **Games (`games.js`)**
