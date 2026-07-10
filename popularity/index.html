@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Popularity Atlas · World Mixtape</title>
+<meta name="robots" content="noindex"><!-- prototype -->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0916; --ink2:#141029; --panel:#0f0a24;
+    --paper:#fff7e6; --pink:#ff2e92; --cyan:#00e5ff; --yellow:#ffe600;
+    --empty:#1a1533; --stroke:#2b2350;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--ink);color:var(--paper);font-family:"Space Mono",monospace}
+  body{min-height:100vh;background:
+    radial-gradient(1200px 600px at 80% -10%, #1c1147 0%, transparent 60%),
+    radial-gradient(900px 500px at 0% 110%, #23124a 0%, transparent 55%), var(--ink)}
+  a{color:var(--cyan)}
+  header.hd{display:flex;align-items:center;gap:16px;flex-wrap:wrap;max-width:1180px;margin:0 auto;padding:12px 22px 0}
+  .hd__logolink{display:block;border:none;line-height:0;margin-left:-46px;flex:0 0 auto}
+  .hd__logo{width:262px;height:auto;display:block}
+  @media(max-width:680px){.hd__logo{width:168px} .hd__logolink{margin-left:-28px}}
+  .hd__t{font-family:"Anton",sans-serif;font-size:clamp(30px,6vw,52px);letter-spacing:.02em;line-height:.9;margin:0;text-transform:uppercase}
+  .hd__t b{color:var(--yellow)}
+  .hd__sub{font-size:13px;color:var(--paper);opacity:.82;margin:5px 0 0;letter-spacing:.02em;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .back{position:fixed;top:16px;right:16px;z-index:50;display:inline-flex;align-items:center;gap:5px;font-weight:700;font-size:19px;line-height:1;
+    color:#0a0916;background:#c6ff00;border:3px solid #0a0916;border-radius:20px;padding:4px 9px 4px 12px;
+    text-decoration:none;box-shadow:3px 3px 0 var(--pink);transform:rotate(-2deg)}
+  .back:hover{transform:rotate(-2deg) scale(1.06)}
+  .back__ic{width:36px;height:36px;border-radius:7px;display:block}
+  .lede{margin:8px 0 0;font-size:13px;line-height:1.5;opacity:.8;max-width:660px}
+  .wrap{max-width:1180px;margin:6px auto 40px;padding:0 22px}
+  .controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:16px 0 10px}
+  .stat{font-size:12px;letter-spacing:.03em;opacity:.9}
+  .stat b{color:var(--pink)}
+  .mapcard{position:relative;background:var(--panel);border:3px solid var(--stroke);border-radius:16px;
+    padding:6px;overflow:hidden}
+  svg.map{display:block;width:100%;height:auto}
+  .country{stroke:var(--ink);stroke-width:.4;cursor:default;transition:fill .35s ease}
+  .country:hover{stroke:var(--yellow);stroke-width:1.2}
+  .legend{display:flex;align-items:center;gap:12px;margin:14px 2px 0;flex-wrap:wrap}
+  .legend .bar{width:240px;height:14px;border-radius:7px;border:1px solid var(--stroke)}
+  .legend .lab{font-size:11px;letter-spacing:.05em;opacity:.75}
+  .legend .swatch{width:14px;height:14px;border-radius:4px;background:var(--empty);border:1px solid var(--stroke);
+    display:inline-block;vertical-align:-2px;margin-right:5px}
+  .ranks{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0 0}
+  @media(max-width:640px){.ranks{grid-template-columns:1fr}}
+  .rankcol h3{font-family:"Anton",sans-serif;font-size:15px;text-transform:uppercase;letter-spacing:.03em;margin:0 0 8px;color:var(--yellow)}
+  .rankcol ol{list-style:none;margin:0;padding:0}
+  .rankcol li{display:flex;align-items:center;gap:9px;padding:5px 0;border-top:1px solid var(--stroke);font-size:13px}
+  .rankcol li:first-child{border-top:none}
+  .rankcol .rn{font-family:"Anton",sans-serif;color:var(--cyan);width:20px;text-align:center;flex:0 0 auto}
+  .rankcol .rnm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rankcol .rv{font-family:"Anton",sans-serif;color:var(--pink);flex:0 0 auto}
+  .rankcol .rc{opacity:.5;font-size:11px;flex:0 0 auto}
+  .tip{position:fixed;pointer-events:none;z-index:20;background:#0b0820;border:2px solid var(--cyan);
+    border-radius:10px;padding:8px 11px;font-size:12px;line-height:1.35;max-width:240px;opacity:0;
+    transform:translateY(4px);transition:opacity .1s;box-shadow:4px 4px 0 rgba(0,229,255,.25)}
+  .tip.on{opacity:1;transform:none}
+  .tip .tn{font-family:"Anton",sans-serif;font-size:15px;text-transform:uppercase;color:var(--yellow);letter-spacing:.02em}
+  .tip .tg{color:var(--pink);font-weight:700}
+  .tip .tm{opacity:.75;font-size:11px;margin-top:3px}
+  footer{max-width:1180px;margin:0 auto;padding:8px 22px 40px;font-size:11px;opacity:.55;letter-spacing:.03em}
+  footer.ab-foot{border-top:1px solid var(--stroke);max-width:1180px;margin:22px auto 10px;padding:22px 22px 10px;text-align:center;opacity:1;font-size:inherit;letter-spacing:normal}
+  footer.ab-foot p{font-size:12px;color:#8a83b8;margin:6px 0}
+  .ft-logolink{display:block;width:140px;margin:0 auto 12px;line-height:0;transition:transform .12s}
+  .ft-logolink:hover{transform:scale(1.04)}
+  .ft-logo{display:block;width:140px;height:auto}
+  .hk{color:#fff7e6;font-weight:700;text-decoration:none}
+  .hk:hover{color:var(--yellow)}
+  .hk-logo{display:inline-block;margin-top:12px;transition:transform .12s;text-decoration:none}
+  .hk-logo:hover{transform:scale(1.08)}
+  .hk-ic{height:26px;width:auto;display:block}
+</style>
+</head>
+<body>
+  <header class="hd">
+    <a class="hd__logolink" href="/" aria-label="World Mixtape — home"><img class="hd__logo" src="/WMT-logo.svg" alt="World Mixtape" onerror="this.style.display='none'"/></a>
+    <div>
+      <h1 class="hd__t">Popularity <b>Atlas</b></h1>
+      <p class="hd__sub">where the world's biggest songs live</p>
+      <p class="lede">Every song carries a <b>0–100 popularity score</b> — its percentile rank across our whole catalog, blending Deezer's popularity rank and Last.fm listener counts. Each country is shaded by the <b>average score of every song we have for it</b>: brighter means, on average, more globally-streamed music.</p>
+    </div>
+    <a class="back" href="/" title="Back to the map" aria-label="Back to the map">←<img class="back__ic" src="/WMT-Icon.svg" alt=""></a>
+  </header>
+
+  <div class="wrap">
+    <div class="controls">
+      <span class="stat" id="stat"></span>
+    </div>
+
+    <div class="mapcard">
+      <svg class="map" id="map" viewBox="0 0 960 500" role="img" aria-label="World map heat-map of average song popularity by country"></svg>
+    </div>
+
+    <div class="legend">
+      <span class="lab"><span class="swatch"></span>no songs</span>
+      <span class="lab" id="legendmin">0</span>
+      <div class="bar" id="legendbar"></div>
+      <span class="lab" id="legendmax">100</span>
+      <span class="lab">avg popularity (0–100)</span>
+    </div>
+
+    <div class="ranks">
+      <div class="rankcol"><h3>🔥 Most popular catalogs</h3><ol id="top"></ol></div>
+      <div class="rankcol"><h3>🌱 Most under-the-radar</h3><ol id="bottom"></ol></div>
+    </div>
+  </div>
+
+  <div class="tip" id="tip"></div>
+
+  <footer>Prototype · popularity = per-track percentile of Deezer rank + Last.fm listeners, averaged per country · <span id="ntracks"></span> tracks across <span id="ncountries"></span> countries · map: Natural Earth via world-atlas.</footer>
+
+  <footer class="ab-foot">
+    <a class="ft-logolink" href="/" aria-label="World Mixtape — home"><img class="ft-logo" src="/WMT-logo-cream.svg" alt="World Mixtape"></a>
+    <p>a century of local music, decade by decade</p>
+    <p>An experiment by <a class="hk" href="https://hyperakt.com" target="_blank" rel="noopener">Hyperakt</a>.</p>
+    <a class="hk-logo" href="https://hyperakt.com" target="_blank" rel="noopener" aria-label="Hyperakt"><img class="hk-ic" src="/hyperakt-h.svg?v=3" alt="Hyperakt"></a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="/data.js?v=102"></script>
+  <script src="/track_features.js"></script>
+  <script>
+  (function(){
+    const ATLAS = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+    const ramp = d3.interpolateRgbBasis(["#3a2170","#7a2b8c","#ff2e92","#ff8a00","#ffe600"]);
+    const TF = (typeof TRACK_FEATURES !== "undefined") ? TRACK_FEATURES : {};
+
+    // ---- percentile normalization: build sorted signal arrays once ----
+    const rSorted = [], lSorted = [];
+    for (const id in TF){ const f = TF[id]; if (f.r != null) rSorted.push(f.r); if (f.l != null) lSorted.push(f.l); }
+    rSorted.sort((a,b)=>a-b); lSorted.sort((a,b)=>a-b);
+    function pctIn(sorted, v){ // % of values <= v (upper-bound binary search)
+      if (!sorted.length) return null;
+      let lo=0, hi=sorted.length; while(lo<hi){ const m=(lo+hi)>>1; if (sorted[m] <= v) lo=m+1; else hi=m; }
+      return lo / sorted.length * 100;
+    }
+    // 0–100 popularity for a track = mean of its available signal percentiles
+    function popScore(trackId){
+      const f = TF[String(trackId)]; if (!f) return null;
+      const parts = [];
+      if (f.r != null){ const p = pctIn(rSorted, f.r); if (p != null) parts.push(p); }
+      if (f.l != null){ const p = pctIn(lSorted, f.l); if (p != null) parts.push(p); }
+      if (!parts.length) return null;
+      return parts.reduce((a,b)=>a+b,0) / parts.length;
+    }
+
+    // ---- per-country average popularity ----
+    const isoInfo = {};                 // world-atlas numeric id -> {code,name,avg,n}
+    const rows = [];                    // for ranking
+    let totalTracks = 0, nCountries = 0;
+    for (const cc in COUNTRIES){
+      const C = COUNTRIES[cc]; const er = C.eras || {};
+      let sum = 0, n = 0, any = 0;
+      for (const d in er) for (const t of er[d]){ any++; totalTracks++;
+        if (t.trackId != null){ const s = popScore(t.trackId); if (s != null){ sum += s; n++; } } }
+      if (!any) continue; nCountries++;
+      const avg = n ? sum/n : null;
+      if (C.iso != null && avg != null) isoInfo[+C.iso] = { code:cc, name:C.name, avg, n };
+      if (avg != null) rows.push({ name:C.name, code:cc, avg, n });
+    }
+    rows.sort((a,b)=>b.avg-a.avg);
+    document.getElementById("ntracks").textContent = totalTracks.toLocaleString();
+    document.getElementById("ncountries").textContent = nCountries;
+
+    // rankings + color domain use a meaningful sample so 1-song outliers don't top the list / blow out the scale
+    const MINN = 5;
+    const ranked = rows.filter(r=>r.n >= MINN);
+    const maxAvg = ranked.length ? ranked[0].avg : (rows[0] ? rows[0].avg : 100);
+    const overall = rows.length ? rows.reduce((a,b)=>a+b.avg,0)/rows.length : 0;
+    document.getElementById("stat").innerHTML =
+      "World average <b>" + Math.round(overall) + "</b>/100 · most popular catalog <b>" +
+      (ranked[0] ? ranked[0].name + " (" + Math.round(ranked[0].avg) + ")" : "—") + "</b>";
+
+    function fillRank(elId, list){
+      document.getElementById(elId).innerHTML = list.map((r,i)=>
+        "<li><span class='rn'>"+(i+1)+"</span><span class='rnm'>"+r.name+"</span>"+
+        "<span class='rv'>"+Math.round(r.avg)+"</span><span class='rc'>"+r.n+" songs</span></li>").join("");
+    }
+    fillRank("top", ranked.slice(0,10));
+    fillRank("bottom", ranked.slice(-10).reverse());
+
+    // ---- map ----
+    const svg = d3.select("#map");
+    const projection = d3.geoNaturalEarth1();
+    const path = d3.geoPath(projection);
+    const tip = document.getElementById("tip");
+    const color = d3.scaleSequential(t=>ramp(t)).domain([0, maxAvg]);
+
+    document.getElementById("legendmax").textContent = Math.round(maxAvg);
+    const stops = d3.range(0,1.0001,0.1).map(t=>ramp(t)).join(",");
+    document.getElementById("legendbar").style.background = "linear-gradient(90deg," + stops + ")";
+
+    function showTip(evt, d){
+      const info = isoInfo[+d.id];
+      const name = (info && info.name) || (d.properties && d.properties.name) || "—";
+      if (!info){ tip.innerHTML = "<div class='tn'>"+name+"</div><div class='tm'>not in the Mixtape catalog</div>"; }
+      else {
+        tip.innerHTML = "<div class='tn'>"+name+"</div>"+
+          "<div>avg popularity <span class='tg'>"+Math.round(info.avg)+"</span> / 100</div>"+
+          "<div class='tm'>across "+info.n+" song"+(info.n===1?"":"s")+(info.n<MINN?" · small sample":"")+"</div>";
+      }
+      tip.classList.add("on");
+      const pad=14; let x=evt.clientX+pad, y=evt.clientY+pad;
+      if (x+250>innerWidth) x=evt.clientX-250; if (y+90>innerHeight) y=evt.clientY-90;
+      tip.style.left=x+"px"; tip.style.top=y+"px";
+    }
+    function hideTip(){ tip.classList.remove("on"); }
+
+    d3.json(ATLAS).then(world=>{
+      const features = topojson.feature(world, world.objects.countries).features;
+      projection.fitExtent([[6,6],[954,494]], {type:"FeatureCollection", features});
+      svg.append("g").selectAll("path")
+        .data(features).enter().append("path")
+        .attr("class","country").attr("d",path)
+        .attr("fill", d=>{ const info = isoInfo[+d.id]; return info ? color(info.avg) : "var(--empty)"; })
+        .on("mousemove", showTip).on("mouseleave", hideTip);
+    });
+  })();
+  </script>
+</body>
+</html>
