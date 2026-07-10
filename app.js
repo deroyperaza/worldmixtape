@@ -223,6 +223,18 @@ function pushFavesLeaderboard(){
     }, { merge: true }).catch(e => console.warn("faves lb", e));
   } catch (e) { console.warn(e); }
 }
+// "most plays" leaderboard on /stats — count each real (≥5s) song play for this signed-in user
+function pushPlaysLeaderboard(){
+  if (!(authUser && FB)) return;
+  try {
+    FB.firestore().collection("leaderboard_plays").doc(authUser.uid).set({
+      name: String(authUser.displayName || authUser.email || "Player").split("@")[0],
+      photo: authUser.photoURL || "", uid: authUser.uid,
+      count: FB.firestore.FieldValue.increment(1),
+      updatedAt: FB.firestore.FieldValue.serverTimestamp()
+    }, { merge: true }).catch(e => console.warn("plays lb", e));
+  } catch (e) { console.warn(e); }
+}
 
 if (FB){
   const auth = FB.auth(), db = FB.firestore();
@@ -1341,6 +1353,7 @@ function schedulePlayLog(trackId){
   if (trackId == null) return;
   _playLogT = setTimeout(() => {
     try { fetch(PLAY_LOG_URL + "?t=" + encodeURIComponent(trackId), { method: "POST", keepalive: true }).catch(() => {}); } catch (_){}
+    pushPlaysLeaderboard();   // count this real play toward the signed-in user's "most plays" board
   }, 5000);   // skips (<5s) don't count
 }
 

@@ -52,6 +52,8 @@ h2.sec{font-family:"Permanent Marker",cursive;color:var(--yellow);font-size:22px
   transform:rotate(-1deg)}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
 @media(max-width:760px){.cols{grid-template-columns:1fr}}
+.cols--three{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:900px){.cols--three{grid-template-columns:1fr}}
 .cols--games{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
 h3.sec--sub{font-family:"Anton",sans-serif;font-weight:400;font-size:16px;letter-spacing:.02em;text-transform:uppercase;margin:0 0 10px;transform:none}
 
@@ -110,10 +112,14 @@ footer.ab-foot p{font-size:12px;color:#8a83b8;margin:6px 0}
 
   <div class="kpis" id="kpis"></div>
 
-  <div class="cols">
+  <div class="cols cols--three">
     <div>
       <h2 class="sec">🏆 Top players — all games</h2>
       <ul class="lb" id="lb-games"><li class="empty">loading…</li></ul>
+    </div>
+    <div>
+      <h2 class="sec">🎧 Top listeners — most plays</h2>
+      <ul class="lb" id="lb-listeners"><li class="empty">loading…</li></ul>
     </div>
     <div>
       <h2 class="sec">♥ Top collectors — most favorites</h2>
@@ -276,6 +282,8 @@ renderUserLB("lb-games", "leaderboard_games", "score", " pts", "plays",
   'No scores yet — <a href="/games/" style="color:var(--cyan)">play a game to get on the board</a>.');
 renderUserLB("lb-collectors", "leaderboard_faves", "count", " ♥", "faves",
   'No collectors yet — <a href="/" style="color:var(--cyan)">start saving favorites</a>.');
+renderUserLB("lb-listeners", "leaderboard_plays", "count", " plays", "plays",
+  'No listeners yet — <a href="/" style="color:var(--cyan)">play some songs</a>.');
 
 /* per-game leaderboards */
 [["wherewhen","Where & When"],["soundtrip","Sound Trip"],["timemachine","Time Machine"],["clusters","Culture Clusters"],["coverup","Cover Up"]].forEach(function(g){
