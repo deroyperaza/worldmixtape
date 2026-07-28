@@ -977,13 +977,15 @@ function openCountry(code){
 
   if (hasInfo){
     const ji = inner.querySelector("#jhead-info");
-    ji.onclick = () => navigate(routeHash(activeCode, currentEra, true));
-    ji.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); navigate(routeHash(activeCode, currentEra, true)); } };
+    const openDossier = () => navigate(panelHash() + "/info");   // panelHash keeps the decade or shuffle context
+    ji.onclick = openDossier;
+    ji.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); openDossier(); } };
   }
   const jShare = inner.querySelector("#jhead-share");
   if (jShare) jShare.onclick = e => {   // stopPropagation: the whole header row opens the dossier when hasInfo
     e.stopPropagation();
-    shareLink(routeHash(activeCode, currentEra, false), `${c.name} on World Mixtape — ${ERA_LABEL[currentEra] || "a century of local music"}`);
+    const label = isShuffling() ? `${c.name} shuffled on World Mixtape` : `${c.name} on World Mixtape — ${ERA_LABEL[currentEra] || "a century of local music"}`;
+    shareLink(panelHash(), label);
   };
   inner.querySelectorAll(".era").forEach(b => b.onclick = () => navigate(routeHash(activeCode, b.dataset.era, false)));
   inner.querySelectorAll(".genre").forEach(b => b.onclick = () => renderGenre(b.dataset.genre));
@@ -1037,6 +1039,7 @@ function clearShuffleChip(){   // leave the in-country shuffle view
 
 function renderEra(key){
   clearShuffleChip();
+  currentShufSeed = null;   // rendering a decade leaves shuffle mode
   currentEra = key; currentGenre = null;
   const c = COUNTRIES[activeCode];
   const list = (c.eras[key] || []).slice().sort((a,b) => (a.year||0)-(b.year||0)); // chronological within the decade
@@ -1108,6 +1111,8 @@ const CODE_REGION = {};   // country code -> region name
 Object.entries(REGIONS).forEach(([r, codes]) => codes.forEach(code => { CODE_REGION[code] = r; }));
 
 let shuf = { country: "", region: "", era: "", genre: "" };
+let currentShufSeed = null;   // seed of the shuffle currently shown in an open country panel (drives its shareable link)
+let pendingShufSeed = null;   // when a #/CU/shuffle/<seed> link is being applied, the seed to reproduce
 
 // tagged track pool + full option lists — powers the faceted (cascading) shuffle filters
 const SHUF_INDEX = [];
@@ -1229,7 +1234,10 @@ function doShuffle(){
   const emptyEl = document.getElementById("f-empty");
   if (!all.length){ if (emptyEl) emptyEl.hidden = false; togglePop(true); return; }
   if (emptyEl) emptyEl.hidden = true;
-  for (let i = all.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [all[i], all[j]] = [all[j], all[i]]; }
+  // seed the shuffle so a whole-country shuffle can be reproduced from its shareable link
+  const shufSeed = pendingShufSeed || genSeed(); pendingShufSeed = null; currentShufSeed = shufSeed;
+  const rng = mulberry32(hashStr(shufSeed));
+  for (let i = all.length - 1; i > 0; i--){ const j = Math.floor(rng() * (i + 1)); [all[i], all[j]] = [all[j], all[i]]; }
   togglePop(false);
   queue = all; qIndex = -1;
   const scoped = !!shuf.country;   // a country, favorites, or a mixtape is selected → stay put
@@ -1257,13 +1265,16 @@ function doShuffle(){
         chip.id = "shuf-chip"; chip.className = "era era--shuf active";
         chip.innerHTML = '🔀 shuffle <span aria-hidden="true">✕</span>';
         chip.title = "exit shuffle";
-        chip.onclick = () => renderEra(currentEra && COUNTRIES[activeCode] && COUNTRIES[activeCode].eras[currentEra] ? currentEra : "now");
+        chip.onclick = () => { const back = (currentEra && COUNTRIES[activeCode] && COUNTRIES[activeCode].eras[currentEra]) ? currentEra : "now"; navigate(routeHash(activeCode, back, false)); };
         erasEl.prepend(chip); chip.scrollIntoView({ inline: "start", block: "nearest" });
       }
     }
     const meta = inner.querySelector("#jmeta");
     if (meta) meta.textContent = "🔀 SHUFFLED · " + all.length + " TRACKS · ✕ TO EXIT";
     renderTracks(all);
+    // reflect a reproducible link only for a plain whole-country shuffle (no extra facet filters)
+    if (activeCode && shuf.country === activeCode && !shuf.era && !shuf.genre && !shuf.region)
+      history.replaceState(null, "", "#" + shufHash(activeCode, currentShufSeed));
   } else {
     // global world shuffle → open a panel with the shuffled queue as a scrollable playlist.
     // CAP the queue: rendering 16k+ track rows (each with an <img>) freezes/crashes the browser.
@@ -2976,7 +2987,7 @@ function closeInfo(){
   if (vslot) vslot.innerHTML = "";   // stop the video / free the iframe
 }
 // closing the dossier routes back to the country panel's URL (so the hash stops advertising /info)
-const closeInfoNav = () => (activeCode ? navigate(routeHash(activeCode, currentEra, false)) : closeInfo());
+const closeInfoNav = () => (activeCode ? navigate(panelHash()) : closeInfo());
 document.getElementById("info-close").onclick = closeInfoNav;
 document.getElementById("info-scrim").onclick = closeInfoNav;
 document.addEventListener("keydown", e => { if (e.code === "Escape" && !info.hidden){ e.preventDefault(); e.stopPropagation(); closeInfoNav(); } }, true);
@@ -3183,6 +3194,7 @@ function drawCountryOutline(code, svgEl){
      #/CU/1970s      → Cuba's panel, the 1970s decade
      #/CU/info       → Cuba's panel with the country-info dossier overlay open
      #/CU/1970s/info → both a chosen decade and the dossier
+     #/CU/shuffle/ab3 → Cuba shuffled — the seed reproduces the exact same order
    Works on static hosting (GitHub Pages) with no server rewrites, always
    mirrors the current state so the URL is copy-paste shareable at any moment,
    and lets a pasted/edited link (or manual hash edit) reopen the same view.
@@ -3195,6 +3207,19 @@ function routeHash(code, era, wantInfo){
   if (wantInfo) h += "/info";
   return h;
 }
+function shufHash(code, seed){ return "/" + code + "/shuffle" + (seed ? "/" + seed : ""); }
+// small seeded RNG so a shuffle can be reproduced from a short URL token
+function genSeed(){ return Math.random().toString(36).slice(2, 8); }
+function hashStr(s){ let h = 1779033703 ^ s.length; for (let i = 0; i < s.length; i++){ h = Math.imul(h ^ s.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; } return h >>> 0; }
+function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+// true when the open country panel is currently showing a shuffle (chip present)
+function isShuffling(){ return !!(inner && inner.querySelector("#shuf-chip")); }
+// the shareable hash for whatever the open country panel is currently showing
+function panelHash(){
+  if (!activeCode) return "";
+  if (isShuffling() && currentShufSeed) return shufHash(activeCode, currentShufSeed);
+  return routeHash(activeCode, currentEra, false);
+}
 function parseRoute(){
   const raw = (location.hash || "").replace(/^#/, "").replace(/^\/+/, "");
   if (!raw) return null;
@@ -3202,12 +3227,15 @@ function parseRoute(){
   const code = (parts[0] || "").toUpperCase();
   if (!COUNTRIES[code]) return null;
   const eraKeys = new Set(ERAS.map(e => e[0]));
-  let era = "now", wantInfo = false;
+  let era = "now", wantInfo = false, shuffle = false, seed = null;
   for (let i = 1; i < parts.length; i++){
-    if (parts[i].toLowerCase() === "info") wantInfo = true;
-    else if (eraKeys.has(parts[i])) era = parts[i];
+    const p = parts[i], pl = p.toLowerCase();
+    if (pl === "info") wantInfo = true;
+    else if (pl === "shuffle") shuffle = true;
+    else if (eraKeys.has(p)) era = p;
+    else if (shuffle && !seed) seed = p;   // the token immediately after "shuffle"
   }
-  return { code, era, info: wantInfo };
+  return { code, era, info: wantInfo, shuffle, seed };
 }
 // drive the UI to match whatever the hash says (idempotent — safe to call repeatedly)
 function applyRoute(){
@@ -3225,7 +3253,15 @@ function applyRoute(){
     openCountry(r.code);
     openPanel();
   }
-  if (currentEra !== r.era || currentGenre) renderEra(r.era);   // land on the requested decade
+  if (r.shuffle){                           // shuffle view: reproduce (or start) the seeded shuffle
+    if (!isShuffling() || (r.seed && r.seed !== currentShufSeed)){
+      pendingShufSeed = r.seed || null;     // null → doShuffle mints a fresh seed and reflects it back
+      setShuf(r.code);                      // whole-country scope
+      doShuffle();
+    }
+  } else if (isShuffling() || currentEra !== r.era || currentGenre){
+    renderEra(r.era);                       // land on / return to the requested decade
+  }
   if (r.info){ if (info.hidden) openInfo(r.code); }             // dossier overlay on / off
   else if (!info.hidden) closeInfo();
 }
