@@ -66,6 +66,7 @@ d3.json(ATLAS).then(world => {
 
   svg.call(zoom);
   if (document.body.classList.contains("list-view")) buildCountryList();
+  applyRoute();   // deep-link: open a shared #/COUNTRY[/ERA][/info] route now that the map is ready
 });
 
 function nameOf(d){ const c = isoToCode[+d.id]; return c ? COUNTRIES[c].name : (d.properties && d.properties.name) || "Somewhere"; }
@@ -356,6 +357,7 @@ function paintTrackCounts(list, tl){
 
 function openFavorites(){
   activeCode = null; currentEra = null; currentGenre = null; favFilterCC = null; favFilterGenre = null;
+  clearRoute();
   if (!favs.length){
     inner.innerHTML = `<div class="jhead"><div class="jhead__top"><div class="jhead__flag jhead__flag--ico">♡</div>
       <h2 class="jhead__name" style="--accent:var(--pink)">Favorites</h2></div></div>
@@ -637,6 +639,7 @@ function searchCatalog(q){
 let lastSearch = { q:"", hits:[] };
 function openSearch(){
   activeCode = null; currentEra = null; currentGenre = null; viewingMix = null;
+  clearRoute();
   inner.innerHTML = `<div class="jhead jhead--search">
       <div class="jhead__top"><div class="jhead__flag jhead__flag--ico" style="--accent:var(--cyan)">🔍</div>
         <h2 class="jhead__name" style="--accent:var(--cyan)">Search</h2></div>
@@ -694,6 +697,7 @@ function renderMixStrip(){
 }
 function openMixtape(m){
   viewingMix = m; activeCode = null; currentEra = null; currentGenre = null;
+  clearRoute();
   const shared = !!m.shared, acc = mixAccent(m);
   inner.innerHTML = `<div class="jhead jhead--mix">
     <button class="mix-back" id="mix-back">${m.featured ? "‹ featured" : (shared ? "‹ explore the map" : "‹ favorites")}</button>
@@ -823,6 +827,7 @@ function ensureTrackFeatures(){
 }
 async function openFeatured(){
   viewingMix = null; activeCode = null; currentEra = null; currentGenre = null;
+  clearRoute();
   if (featuredGroups().some(g => (g.playlists||[]).some(d => d.filter || d.uptempo))) await ensureTrackFeatures();
   const sections = featuredGroups().map(g => {
     const cards = (g.playlists||[]).map(def => {
@@ -894,16 +899,15 @@ async function loadSharedMix(id){
 
 function onCountry(e, d) {
   const code = isoToCode[+d.id];
+  if (code === "FR" && isFrenchGuiana(e)){ d3.selectAll("path.country").classed("active", false); openEmpty("French Guiana"); openPanel(); clearRoute(); return; }   // that S-America blob is French Guiana, not France
+  if (code){ navigate(routeHash(code, "now", false)); return; }   // routed open (applyRoute does the highlight + centering + panel)
   d3.selectAll("path.country").classed("active", false);
-  if (code === "FR" && isFrenchGuiana(e)){ openEmpty("French Guiana"); openPanel(); return; }   // that S-America blob is French Guiana, not France
-  if (code) { gMap.selectAll("path.country").filter(x => isoToCode[+x.id] === code).classed("active", true); centerOnCountry(code); openCountry(code); }
-  else openEmpty(nameOf(d));
-  openPanel();
+  openEmpty(nameOf(d)); openPanel(); clearRoute();
 }
 
 function openPanel(){ panel.classList.add("show"); scrim.classList.add("show"); document.body.classList.add("panel-open"); panel.setAttribute("aria-hidden","false"); }
 function closePanel(){ panel.classList.remove("show"); scrim.classList.remove("show"); document.body.classList.remove("panel-open"); panel.setAttribute("aria-hidden","true"); d3.selectAll("path.country").classed("active", false); clearMapFocus(true); }
-function backToMap(){ closePanel(); setShuf(""); }   // leaving for the map resets shuffle scope to the world
+function backToMap(){ navigate(""); }   // clears the hash → applyRoute closes the panel + resets shuffle to the world
 document.getElementById("panel-close").onclick = backToMap;
 scrim.onclick = backToMap;
 /* mobile: swipe down (from the top of the sheet) to close the country panel */
@@ -963,6 +967,7 @@ function openCountry(code){
         <div class="jhead__flag">${flagImg(code)}</div>
         <h2 class="jhead__name" style="--accent:${c.color}">${c.name}${WC2026.has(code) ? '<span class="wc-ball" title="2026 World Cup team" aria-label="2026 World Cup team">⚽</span>' : ''}</h2>
         ${hasInfo ? '<span class="jhead__info" aria-hidden="true">i</span>' : ''}
+        <button class="jhead__share" id="jhead-share" type="button" title="Copy shareable link" aria-label="Copy a shareable link to ${esc(c.name)}">🔗</button>
       </div>
       <div class="jhead__meta" id="jmeta"></div>
     </div>
@@ -972,10 +977,15 @@ function openCountry(code){
 
   if (hasInfo){
     const ji = inner.querySelector("#jhead-info");
-    ji.onclick = () => openInfo(code);
-    ji.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); openInfo(code); } };
+    ji.onclick = () => navigate(routeHash(activeCode, currentEra, true));
+    ji.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); navigate(routeHash(activeCode, currentEra, true)); } };
   }
-  inner.querySelectorAll(".era").forEach(b => b.onclick = () => renderEra(b.dataset.era));
+  const jShare = inner.querySelector("#jhead-share");
+  if (jShare) jShare.onclick = e => {   // stopPropagation: the whole header row opens the dossier when hasInfo
+    e.stopPropagation();
+    shareLink(routeHash(activeCode, currentEra, false), `${c.name} on World Mixtape — ${ERA_LABEL[currentEra] || "a century of local music"}`);
+  };
+  inner.querySelectorAll(".era").forEach(b => b.onclick = () => navigate(routeHash(activeCode, b.dataset.era, false)));
   inner.querySelectorAll(".genre").forEach(b => b.onclick = () => renderGenre(b.dataset.genre));
   renderEra("now");
   setShuf(code);   // shuffle is now pre-filtered to this country
@@ -1261,6 +1271,7 @@ function doShuffle(){
     if (all.length > 250) all.length = 250;
     queue = all;
     activeCode = null; currentEra = null; currentGenre = null;
+    clearRoute();
     const scopeTxt = (document.getElementById("shuffle-scope").textContent || "the world");
     const countTxt = pool > all.length ? `${all.length} OF ${pool.toLocaleString()} TRACKS` : `${all.length} TRACKS`;
     inner.innerHTML = `<div class="jhead"><div class="jhead__top">` +
@@ -1839,7 +1850,7 @@ function buildCountryList(){
     '</div>' +
     (soon.length ? '<div class="clist__soonhdr">more countries — coming soon</div><div class="clist__soon">'
       + soon.map(n => '<span class="clist__soon-item">' + esc(n) + '</span>').join("") + '</div>' : "");
-  clist.querySelectorAll(".clist__item").forEach(el => el.onclick = () => { openCountry(el.dataset.code); openPanel(); });
+  clist.querySelectorAll(".clist__item").forEach(el => el.onclick = () => navigate(routeHash(el.dataset.code, "now", false)));
 }
 function setView(list){
   document.body.classList.toggle("list-view", list);
@@ -2934,6 +2945,9 @@ function openInfo(code){
   document.body.classList.add("info-open");
   infoInner.scrollTop = 0;   // always open a country dossier scrolled to the top
 
+  const iShare = document.getElementById("info-share");   // re-point per open — the dossier is reused across countries
+  if (iShare) iShare.onclick = () => shareLink(routeHash(code, currentEra, true), `${c.name} — country info · World Mixtape`);
+
   // lazy-load the YouTube video into its slide (only when the overlay is opened)
   const vslot = document.getElementById("info-vid");
   if (vslot && d.video){
@@ -2961,9 +2975,11 @@ function closeInfo(){
   const vslot = document.getElementById("info-vid");
   if (vslot) vslot.innerHTML = "";   // stop the video / free the iframe
 }
-document.getElementById("info-close").onclick = closeInfo;
-document.getElementById("info-scrim").onclick = closeInfo;
-document.addEventListener("keydown", e => { if (e.code === "Escape" && !info.hidden){ e.preventDefault(); e.stopPropagation(); closeInfo(); } }, true);
+// closing the dossier routes back to the country panel's URL (so the hash stops advertising /info)
+const closeInfoNav = () => (activeCode ? navigate(routeHash(activeCode, currentEra, false)) : closeInfo());
+document.getElementById("info-close").onclick = closeInfoNav;
+document.getElementById("info-scrim").onclick = closeInfoNav;
+document.addEventListener("keydown", e => { if (e.code === "Escape" && !info.hidden){ e.preventDefault(); e.stopPropagation(); closeInfoNav(); } }, true);
 
 // render a country's outline + a set of city markers into one SVG, fitted to `bounds`
 // ([[w,s],[e,n]]) or to the whole feature when bounds is null. Adds drag/scroll/pinch zoom.
@@ -3160,3 +3176,81 @@ function drawCountryOutline(code, svgEl){
     history.replaceState(null, "", location.pathname);
   }, 400);
 })();
+
+/* ============================================================================
+   Shareable deep-link routing — the hash reflects the open view:
+     #/CU            → Cuba's panel, default era (NOW)
+     #/CU/1970s      → Cuba's panel, the 1970s decade
+     #/CU/info       → Cuba's panel with the country-info dossier overlay open
+     #/CU/1970s/info → both a chosen decade and the dossier
+   Works on static hosting (GitHub Pages) with no server rewrites, always
+   mirrors the current state so the URL is copy-paste shareable at any moment,
+   and lets a pasted/edited link (or manual hash edit) reopen the same view.
+   navigate() is the ONLY writer of the hash; applyRoute() is the ONLY reader
+   that drives the UI — so there is no write→read loop.
+   ========================================================================= */
+function routeHash(code, era, wantInfo){
+  let h = "/" + code;
+  if (era && era !== "now") h += "/" + era;
+  if (wantInfo) h += "/info";
+  return h;
+}
+function parseRoute(){
+  const raw = (location.hash || "").replace(/^#/, "").replace(/^\/+/, "");
+  if (!raw) return null;
+  const parts = raw.split("/").filter(Boolean);
+  const code = (parts[0] || "").toUpperCase();
+  if (!COUNTRIES[code]) return null;
+  const eraKeys = new Set(ERAS.map(e => e[0]));
+  let era = "now", wantInfo = false;
+  for (let i = 1; i < parts.length; i++){
+    if (parts[i].toLowerCase() === "info") wantInfo = true;
+    else if (eraKeys.has(parts[i])) era = parts[i];
+  }
+  return { code, era, info: wantInfo };
+}
+// drive the UI to match whatever the hash says (idempotent — safe to call repeatedly)
+function applyRoute(){
+  const r = parseRoute();
+  if (!r){                                  // no country route → back to the bare map
+    if (info && !info.hidden) closeInfo();
+    if (document.body.classList.contains("panel-open")){ closePanel(); setShuf(""); }   // closes any panel view (country, mixtape, favorites…)
+    return;
+  }
+  if (activeCode !== r.code){               // open (or switch) the country panel
+    d3.selectAll("path.country").classed("active", false);
+    if (typeof gMap !== "undefined" && gMap)
+      gMap.selectAll("path.country").filter(x => isoToCode[+x.id] === r.code).classed("active", true);
+    centerOnCountry(r.code);
+    openCountry(r.code);
+    openPanel();
+  }
+  if (currentEra !== r.era || currentGenre) renderEra(r.era);   // land on the requested decade
+  if (r.info){ if (info.hidden) openInfo(r.code); }             // dossier overlay on / off
+  else if (!info.hidden) closeInfo();
+}
+// write the hash, then converge the UI. Replaces (never pushes) so the address
+// bar always shows the live view without spamming the browser history.
+function navigate(hash){
+  const target = hash ? "#" + hash : "";
+  if (location.hash !== target)
+    history.replaceState(null, "", hash ? "#" + hash : location.pathname + location.search);
+  applyRoute();
+}
+// drop a stale country hash when a non-country view (favorites/search/mix/shuffle) takes over the panel
+function clearRoute(){ if (location.hash) history.replaceState(null, "", location.pathname + location.search); }
+
+// build an absolute, shareable link for a hash route and hand it to the OS share sheet
+// (mobile) or the clipboard (desktop) — mirrors how shareMixtape() shares a mix.
+async function shareLink(hash, text){
+  const clean = "/" + String(hash).replace(/^#/, "").replace(/^\/+/, "");
+  const url = location.origin + location.pathname + "#" + clean;
+  if (navigator.share){
+    try { await navigator.share({ title: "WORLD MIXTAPE", text: text || "World Mixtape", url }); } catch(_){}
+  } else {
+    try { await navigator.clipboard.writeText(url); flashToast("link copied — paste it anywhere 🔗"); }
+    catch(_){ prompt("Copy this link:", url); }
+  }
+}
+
+window.addEventListener("hashchange", applyRoute);   // pasted link / manual edit / back-forward

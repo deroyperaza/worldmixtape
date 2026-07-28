@@ -584,6 +584,14 @@ body.list-view #map{display:none}
   transform:rotate(8deg);margin-left:-14px;position:relative;z-index:4;cursor:pointer;transition:transform .14s,background .14s}
 .jhead__top--info:hover .jhead__info{transform:rotate(8deg) scale(1.1);background:var(--lime)}
 .jhead__top--info:active .jhead__info{transform:rotate(8deg) translate(1px,1px);box-shadow:1px 1px 0 #0a0916}
+/* share sticker — copy a link to this country + decade */
+.jhead__share{flex:0 0 auto;align-self:center;width:30px;height:30px;padding:0;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;
+  background:var(--yellow);color:#0a0916;border:2.5px solid #0a0916;box-shadow:2.5px 2.5px 0 #0a0916;
+  transform:rotate(-6deg);cursor:pointer;transition:transform .14s,background .14s}
+.jhead__share:hover{transform:rotate(-6deg) scale(1.1);background:var(--lime)}
+.jhead__share:active{transform:rotate(-6deg) translate(1px,1px);box-shadow:1px 1px 0 #0a0916}
+.panel.scrolled .jhead__share{width:26px;height:26px;font-size:12px}
 
 .info{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:24px}
 .info[hidden]{display:none}
@@ -596,10 +604,16 @@ body.list-view #map{display:none}
   width:40px;height:40px;border-radius:50%;background:var(--lime);color:#0a0916;border:3px solid #0a0916;
   font-size:20px;font-weight:900;box-shadow:3px 3px 0 var(--pink)}
 .info__close:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--pink)}
+/* share this country info — sits just left of the close button */
+.info__share{position:absolute;top:16px;right:64px;z-index:10;cursor:pointer;
+  width:36px;height:36px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:var(--yellow);color:#0a0916;border:3px solid #0a0916;font-size:16px;box-shadow:3px 3px 0 var(--pink)}
+.info__share:hover{background:var(--cyan)}
+.info__share:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--pink)}
 
 /* sticky opaque header — content scrolls cleanly beneath it, never under the close button */
 .info-head{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;
-  margin:0 -24px 16px;padding:16px 70px 12px 24px;background:var(--ink2);border-bottom:2px solid #3a2f63}
+  margin:0 -24px 16px;padding:16px 112px 12px 24px;background:var(--ink2);border-bottom:2px solid #3a2f63}
 .info-head .jhead__flag .flag{height:34px;border-radius:4px;box-shadow:0 0 0 1.5px #0a0916}
 /* match the country tab's name block exactly (dark ink, uppercase, rotate -2deg, hard 5px shadow, no border) */
 .info-name{font-family:"Anton";font-size:clamp(30px,8vw,52px);line-height:.98;margin:0;
